@@ -1,10 +1,15 @@
-import { Sidebar , Navbar } from "@/components";
+import { Wrapper } from "@/components";
 
 export default function Home() {
   return (
     <div>
-      <Sidebar />
-      <Navbar />
+       <Wrapper>
+          <div className="flex justify-center">
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
+              Bienvenido a la página principal
+            </h1>  
+          </div>
+       </Wrapper>
     </div>
   );
 }
