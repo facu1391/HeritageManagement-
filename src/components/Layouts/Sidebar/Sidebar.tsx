@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import { Logo22 } from "@/public";
 
 interface SidebarItem {
   href: string;
@@ -27,10 +29,10 @@ export default function Sidebar() {
       <div className="h-full px-3 pb-4 overflow-y-auto">
         {/* Logo */}
         <div className="flex justify-center items-center mb-6">
-          <img
-            src="/logo.png"
+          <Image
+            src={Logo22}
             alt="Logo"
-            className="h-12 w-auto"
+            className="h-28 w-auto"
           />
         </div>
         {/* Sidebar Items */}
