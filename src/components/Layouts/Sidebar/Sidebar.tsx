@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import { Logo } from "@/public";
 
 interface SidebarItem {
   href: string;
@@ -21,14 +23,14 @@ export default function Sidebar() {
   return (
     <aside
       id="logo-sidebar"
-      className="fixed top-0 left-0 z-30 w-64 h-screen pt-20 bg-white border-r border-gray-200 dark:bg-gray-600 dark:border-gray-700"
+      className="fixed top-0 left-0 z-30 w-64 h-screen pt-20 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700"
       aria-label="Sidebar"
     >
       <div className="h-full px-3 pb-4 overflow-y-auto">
         {/* Logo */}
         <div className="flex justify-center items-center mb-6">
-          <img
-            src="/logo.png"
+          <Image
+            src={Logo}
             alt="Logo"
             className="h-12 w-auto"
           />
