@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Logo } from "@/public";
+import { Logo22 } from "@/public";
 
 interface SidebarItem {
   href: string;
@@ -27,15 +27,13 @@ export default function Sidebar() {
       aria-label="Sidebar"
     >
       <div className="h-full px-3 pb-4 overflow-y-auto">
-        {/* Logo */}
         <div className="flex justify-center items-center mb-6">
           <Image
-            src={Logo}
+            src={Logo22}
             alt="Logo"
             className="h-28 w-auto"
           />
         </div>
-        {/* Sidebar Items */}
         <ul className="space-y-2 font-medium">
           {sidebarItems.map((item, index) => (
             <div key={index}>
