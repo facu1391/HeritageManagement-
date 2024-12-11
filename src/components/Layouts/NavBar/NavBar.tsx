@@ -1,13 +1,19 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // Importa useRouter
 import Image from "next/image";
 import { Perfil } from "@/public";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const router = useRouter(); // Instancia de useRouter
 
   const toggleMenu = () => {
     setIsMenuOpen((prev) => !prev);
+  };
+
+  const handleLogout = () => {
+    router.push("/"); // Redirige a la raíz
   };
 
   return (
@@ -97,13 +103,13 @@ export default function Navbar() {
                   >
                     Ajustes
                   </a>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
+                  <button
+                    onClick={handleLogout} // Maneja el cierre de sesión
+                    className="block w-full text-left px-4 py-2 text-sm text-gray-700"
                     role="menuitem"
                   >
                     Cerrar sesión
-                  </a>
+                  </button>
                 </div>
               )}
             </div>
