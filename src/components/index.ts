@@ -3,3 +3,6 @@
 export { default as Sidebar } from "./Layouts/Sidebar/Sidebar";
 export { default as Navbar } from "./Layouts/NavBar/NavBar";
 export { default as Wrapper } from "./Layouts/Wrapper";
+export { default as FloatingButton }from "./Layouts/FloatingButton/FloatingButton"
+
+export { default as Spinner } from "./Spinner/Spinner";

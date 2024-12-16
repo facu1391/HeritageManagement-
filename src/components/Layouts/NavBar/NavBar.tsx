@@ -1,14 +1,16 @@
 "use client";
-import { useState } from "react";
+
+import React, { useState } from "react";
 import { useRouter } from "next/navigation"; // Importa useRouter
 import Image from "next/image";
 import { Perfil } from "@/public";
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const router = useRouter(); // Instancia de useRouter
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Para menú de usuario
 
-  const toggleMenu = () => {
+  const router = useRouter();
+
+  const toggleUserMenu = () => {
     setIsMenuOpen((prev) => !prev);
   };
 
@@ -43,15 +45,22 @@ export default function Navbar() {
                 className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-          </div>
+          </div> 
+            {/* Interruptor */}
+            <label className="inline-flex items-center cursor-pointer">
+              <input type="checkbox" value="" className="sr-only peer" />
+              <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+              <span className="ml-3 text-sm font-medium text-gray-300">Toggle me</span>
+            </label>
 
-          {/* Ícono de notificación y menú de usuario */}
+          {/* Botones de notificación, interruptor y menú de usuario */}
           <div className="flex items-center pr-2 space-x-4 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+            
+            {/* Botón de notificación */}
             <button
               type="button"
               className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
             >
-              <span className="absolute -inset-1.5" />
               <span className="sr-only">View notifications</span>
               <svg
                 className="size-6"
@@ -68,6 +77,10 @@ export default function Navbar() {
                 />
               </svg>
             </button>
+
+          
+
+            {/* Menú de usuario */}
             <div className="relative">
               <button
                 type="button"
@@ -75,9 +88,8 @@ export default function Navbar() {
                 id="user-menu-button"
                 aria-expanded={isMenuOpen}
                 aria-haspopup="true"
-                onClick={toggleMenu}
+                onClick={toggleUserMenu}
               >
-                <span className="absolute -inset-1.5" />
                 <span className="sr-only">Open user menu</span>
                 <Image
                   className="size-8 rounded-full"
@@ -104,7 +116,7 @@ export default function Navbar() {
                     Ajustes
                   </a>
                   <button
-                    onClick={handleLogout} // Maneja el cierre de sesión
+                    onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700"
                     role="menuitem"
                   >
