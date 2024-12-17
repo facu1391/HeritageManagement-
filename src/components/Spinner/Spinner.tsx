@@ -1,6 +1,6 @@
 export default function Spinner() {
     return (
-      <div className="flex items-center justify-center h-screen bg-transparent">
+      <div className="flex items-center justify-center  h-screen bg-transparent">
         <button
           disabled
           type="button"
