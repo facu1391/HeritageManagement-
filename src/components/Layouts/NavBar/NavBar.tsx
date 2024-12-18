@@ -1,21 +1,24 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation"; // Importa useRouter
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { Perfil } from "@/public";
+import { useTheme } from "@/Context/ThemeContext"; // Importa tu hook personalizado
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // Para menú de usuario
-
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
-  const toggleUserMenu = () => {
-    setIsMenuOpen((prev) => !prev);
-  };
+  const { darkMode, setTheme } = useTheme(); // Obtén darkMode y setTheme del contexto
 
-  const handleLogout = () => {
-    router.push("/"); // Redirige a la raíz
+  const toggleUserMenu = () => setIsMenuOpen((prev) => !prev);
+  const handleLogout = () => router.push("/");
+
+  // Maneja el cambio del interruptor
+  const handleThemeToggle = () => {
+    setTheme(darkMode === "light" ? "dark" : "light");
   };
 
   return (
@@ -45,21 +48,35 @@ export default function Navbar() {
                 className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
-          </div> 
-            {/* Interruptor */}
-            <label className="inline-flex items-center cursor-pointer">
-              <input type="checkbox" value="" className="sr-only peer" />
-              <div className="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-             
-            </label>
+          </div>
 
-          {/* Botones de notificación, interruptor y menú de usuario */}
-          <div className="flex items-center pr-2 space-x-4 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-            
+          {/* Interruptor */}
+          <label className="inline-flex items-center cursor-pointer">
+            <input
+              type="checkbox"
+              checked={darkMode === "dark"}
+              onChange={handleThemeToggle}
+              className="sr-only peer"
+            />
+            <div
+              className={`relative w-11 h-6 rounded-full transition-colors ${
+                darkMode === "dark" ? "bg-slate-600" : "bg-gray-200"
+              }`}
+            >
+              <div
+                className={`absolute top-[2px] start-[2px] h-5 w-5 bg-white border border-gray-300 rounded-full transition-transform ${
+                  darkMode === "dark" ? "translate-x-full" : "translate-x-0"
+                }`}
+              ></div>
+            </div>
+          </label>
+
+          {/* Botones de notificación y menú */}
+          <div className="flex items-center pr-2 space-x-4 sm:ml-6 sm:pr-0">
             {/* Botón de notificación */}
             <button
               type="button"
-              className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+              className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
             >
               <span className="sr-only">View notifications</span>
               <svg
@@ -78,16 +95,11 @@ export default function Navbar() {
               </svg>
             </button>
 
-          
-
             {/* Menú de usuario */}
             <div className="relative">
               <button
                 type="button"
-                className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                id="user-menu-button"
-                aria-expanded={isMenuOpen}
-                aria-haspopup="true"
+                className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2"
                 onClick={toggleUserMenu}
               >
                 <span className="sr-only">Open user menu</span>
@@ -100,25 +112,16 @@ export default function Navbar() {
                 />
               </button>
               {isMenuOpen && (
-                <div className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black/5 focus:outline-none">
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                  >
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black/5">
+                  <Link href="/Perfil" className="block px-4 py-2 text-sm text-gray-700">
                     Tu perfil
-                  </a>
-                  <a
-                    href="#"
-                    className="block px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
-                  >
+                  </Link>
+                  <a href="#" className="block px-4 py-2 text-sm text-gray-700">
                     Ajustes
                   </a>
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700"
-                    role="menuitem"
                   >
                     Cerrar sesión
                   </button>

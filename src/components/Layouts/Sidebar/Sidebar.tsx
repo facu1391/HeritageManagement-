@@ -13,7 +13,7 @@ const sidebarItems: SidebarItem[] = [
   { section: "Principal", href: "/Anexos", label: "Anexos", svgPath: "M4 12L12 4l8 8M6 10.5V19a1 1 0 001 1h3v-3a1 1 0 011-1h2a1 1 0 011 1v3h3a1 1 0 001-1v-8.5" },
   { href: "/Listados", label: "Listados", svgPath: "M4 6h16M4 12h16m-7 6h7" },
   { href: "/Control", label: "Control", svgPath: "M12 4.5V19m0-14.5c4.142 0 7.5 3.358 7.5 7.5S16.142 19.5 12 19.5M12 4.5c-4.142 0-7.5 3.358-7.5 7.5s3.358 7.5 7.5 7.5m6.364-12.05l-2.121-2.121m-8.486 0L4.95 9.95m12.05 4.243 2.121 2.121m-12.728 0 2.121-2.121" },
-  { href: "/Productos", label: "Inventario", svgPath: "M3 10.75l9-4.5 9 4.5-9 4.5-9-4.5Zm0 4.5l9 4.5 9-4.5m-9-4.5V4.5" },
+  { href: "/Inventarios", label: "Inventarios", svgPath: "M3 10.75l9-4.5 9 4.5-9 4.5-9-4.5Zm0 4.5l9 4.5 9-4.5m-9-4.5V4.5" },
   { section: "Administrar", href: "/agenda", label: "Agenda", svgPath: "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Z" },
   { href: "/", label: "Configuración", svgPath: "M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" },
 ];
