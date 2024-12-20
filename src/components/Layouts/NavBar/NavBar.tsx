@@ -22,7 +22,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-gray-800">
+    <nav className="bg-gray-800 ">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           {/* Buscador centrado */}
@@ -78,7 +78,7 @@ export default function Navbar() {
               type="button"
               className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
             >
-              <span className="sr-only">View notifications</span>
+              <span className="sr-only ">View notifications</span>
               <svg
                 className="size-6"
                 fill="none"
