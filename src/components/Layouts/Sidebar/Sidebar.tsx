@@ -43,29 +43,30 @@ export default function Sidebar() {
                   {item.section}
                 </span>
               )}
-              <Link href={item.href}>
-                <li>
-                  <a className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group">
-                    <svg
-                      className="w-6 h-6 text-gray-800 dark:text-white group-hover:text-D0298A"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth="1.5"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d={item.svgPath}
-                      />
-                    </svg>
-                    <span className="text-gray-900 ms-3 dark:text-white group-hover:text-D0298A">
-                      {item.label}
-                    </span>
-                  </a>
-                </li>
-              </Link>
+              <li>
+                <Link
+                  href={item.href}
+                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group"
+                >
+                  <svg
+                    className="w-6 h-6 text-gray-800 dark:text-white group-hover:text-D0298A"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d={item.svgPath}
+                    />
+                  </svg>
+                  <span className="text-gray-900 ms-3 dark:text-white group-hover:text-D0298A">
+                    {item.label}
+                  </span>
+                </Link>
+              </li>
             </div>
           ))}
         </ul>

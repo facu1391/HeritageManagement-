@@ -5,24 +5,23 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Perfil } from "@/public";
-import { useTheme } from "@/Context/ThemeContext"; // Importa tu hook personalizado
+import { useTheme } from "@/Context/ThemeContext";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
 
-  const { darkMode, setTheme } = useTheme(); // Obtén darkMode y setTheme del contexto
+  const { darkMode, setTheme } = useTheme();
 
   const toggleUserMenu = () => setIsMenuOpen((prev) => !prev);
   const handleLogout = () => router.push("/");
 
-  // Maneja el cambio del interruptor
   const handleThemeToggle = () => {
     setTheme(darkMode === "light" ? "dark" : "light");
   };
 
   return (
-    <nav className="bg-gray-800 ">
+    <nav className="bg-gray-800 dark:bg-gray-900">
       <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
         <div className="relative flex h-16 items-center justify-between">
           {/* Buscador centrado */}
@@ -45,13 +44,13 @@ export default function Navbar() {
               <input
                 type="text"
                 placeholder="Buscar"
-                className="w-full pl-10 pr-4 py-2 rounded-md border border-gray-300 bg-white text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 pr-4 py-2 rounded-md border dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300"
               />
             </div>
           </div>
 
           {/* Interruptor */}
-          <label className="inline-flex items-center cursor-pointer">
+          <label className="inline-flex items-center cursor-pointer ml-4">
             <input
               type="checkbox"
               checked={darkMode === "dark"}
