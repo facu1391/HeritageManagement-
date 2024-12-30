@@ -16,7 +16,8 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Gestión de patrimonio",
-  description: "Una plataforma integral para gestionar activos legislativos, que incluye seguimiento de propiedades, gestión de inventario e informes detallados.",
+  description:
+    "Una plataforma integral para gestionar activos legislativos, que incluye seguimiento de propiedades, gestión de inventario e informes detallados.",
 };
 
 export default function RootLayout({
@@ -26,11 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider>
-            <main >{children}</main>
+          <main>{children}</main>
         </ThemeProvider>
       </body>
     </html>

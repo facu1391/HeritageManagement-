@@ -6,8 +6,8 @@ export default {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  darkMode: 'class', // Modo oscuro activado por clase
   theme: {
-    darkMode: 'class',
     extend: {
       colors: {
         background: "var(--background)",

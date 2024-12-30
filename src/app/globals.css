@@ -2,22 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
-    --background-light: linear-gradient(to bottom, #ffffff, #f5f5f5); /* Blanco a gris claro */
-    --background-dark: linear-gradient(to bottom, #1a1a1a, #0a0a0a); /* Gris oscuro a negro */
-    --foreground: #171717;
+  --background-light: #ffffff;
+  --background-dark: #1a1a1a;
+  --foreground-light: #171717;
+  --foreground-dark: #ededed;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root {
-        --background: var(--background-dark);
-        --foreground: #ededed;
-    }
+/* Variables para light mode */
+:root {
+  --background: var(--background-light);
+  --foreground: var(--foreground-light);
 }
 
+/* Variables para dark mode */
+.dark {
+  --background: var(--background-dark);
+  --foreground: var(--foreground-dark);
+}
+
+/* Aplicar colores dinámicos */
 body {
+  background: var(--background);
   color: var(--foreground);
-  background: #ffffff; /* Fondo blanco fijo */
   font-family: Arial, Helvetica, sans-serif;
+  @apply transition-colors duration-300; /* Transición suave */
 }
