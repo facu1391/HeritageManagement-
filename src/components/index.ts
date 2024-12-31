@@ -6,3 +6,7 @@ export { default as Wrapper } from "./Layouts/Wrapper";
 export { default as FloatingButton }from "./Layouts/FloatingButton/FloatingButton"
 
 export { default as Spinner } from "./Spinner/Spinner";
+
+//Alerts
+export { default as ToastMessage } from "./Alerts/ToastMessage";
+export { default as LogoutAlert } from "./Alerts/LogoutAlert";

@@ -16,8 +16,13 @@ export default function Login() {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Validar credenciales
     if (email === "patri@gmail.com" && password === "patri2024") {
       setIsLoading(true);
+
+      // Guardar indicador para mostrar el mensaje de bienvenida
+      sessionStorage.setItem("showWelcome", "true");
+
       setTimeout(() => {
         setIsLoading(false);
         router.push("/Home");
@@ -29,14 +34,12 @@ export default function Login() {
 
   return (
     <div className="relative flex items-center justify-center h-screen bg-gradient-to-r from-purple-500 via-pink-500 to-red-500">
-      {/* Overlay y Spinner */}
       {isLoading && (
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
           <Spinner />
         </div>
       )}
 
-      {/* Contenido Principal */}
       <div className="bg-white p-8 rounded-lg shadow-lg w-96 z-10">
         <h2 className="text-2xl font-bold text-center text-black mb-6">Patrimonio</h2>
         <form onSubmit={handleLogin}>
