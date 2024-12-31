@@ -6,19 +6,28 @@ import Link from "next/link";
 import Image from "next/image";
 import { Perfil } from "@/public";
 import { useTheme } from "@/Context/ThemeContext";
+import { LogoutAlert } from "@/components"; // Importar el componente de alerta
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showAlert, setShowAlert] = useState(false); // Estado para controlar la alerta
   const router = useRouter();
 
   const { darkMode, setTheme } = useTheme();
 
   const toggleUserMenu = () => setIsMenuOpen((prev) => !prev);
-  const handleLogout = () => router.push("/");
+  const handleLogout = () => setShowAlert(true); // Mostrar alerta al hacer clic en cerrar sesión
 
   const handleThemeToggle = () => {
     setTheme(darkMode === "light" ? "dark" : "light");
   };
+
+  const confirmLogout = () => {
+    setShowAlert(false); // Ocultar alerta
+    router.push("/"); // Redirigir al inicio
+  };
+
+  const cancelLogout = () => setShowAlert(false); // Cancelar acción y cerrar alerta
 
   return (
     <nav className="bg-gray-800 dark:bg-gray-800">
@@ -72,7 +81,6 @@ export default function Navbar() {
 
           {/* Botones de notificación y menú */}
           <div className="flex items-center pr-2 space-x-4 sm:ml-6 sm:pr-0">
-            {/* Botón de notificación */}
             <button
               type="button"
               className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
@@ -101,7 +109,6 @@ export default function Navbar() {
                 className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2"
                 onClick={toggleUserMenu}
               >
-                <span className="sr-only">Open user menu</span>
                 <Image
                   className="size-8 rounded-full"
                   src={Perfil}
@@ -115,9 +122,6 @@ export default function Navbar() {
                   <Link href="/Perfil" className="block px-4 py-2 text-sm text-gray-700">
                     Tu perfil
                   </Link>
-                  <a href="#" className="block px-4 py-2 text-sm text-gray-700">
-                    Ajustes
-                  </a>
                   <button
                     onClick={handleLogout}
                     className="block w-full text-left px-4 py-2 text-sm text-gray-700"
@@ -130,6 +134,9 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      {/* Renderizar alerta de cierre de sesión */}
+      {showAlert && <LogoutAlert onConfirm={confirmLogout} onCancel={cancelLogout} />}
     </nav>
   );
 }
