@@ -1,15 +1,27 @@
+
 import { Wrapper } from "@/components";
+import { Card } from "@/components/Card/Card";
 
 export default function Annexes() {
   return (
-    <div>
-       <Wrapper>
-          <div className="flex justify-center">
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">
-              Bienvenido a la página de Anexos
-            </h1>  
-          </div>
-       </Wrapper>
-    </div>
+    <Wrapper>
+      <div className="flex flex-col items-center">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
+          Bienvenido a la página de Anexos
+        </h1>
+        <div className="flex flex-wrap gap-6 justify-center">
+          <Card 
+            title="Anexo 1" 
+            imageSrc="/img/anexo1.jpg" 
+            description="Descripción breve del primer anexo." 
+          />
+          <Card 
+            title="Anexo 2" 
+            imageSrc="/img/anexo2.jpg" 
+            description="Descripción breve del segundo anexo." 
+          />
+        </div>
+      </div>
+    </Wrapper>
   );
 }
