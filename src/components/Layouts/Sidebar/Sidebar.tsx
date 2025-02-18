@@ -1,3 +1,6 @@
+
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Logo22 } from "@/public";
@@ -6,7 +9,7 @@ interface SidebarItem {
   href: string;
   label: string;
   svgPath: string;
-  section?: string; // Para agrupar secciones opcionales
+  section?: string;
 }
 
 const sidebarItems: SidebarItem[] = [
@@ -18,59 +21,83 @@ const sidebarItems: SidebarItem[] = [
   { href: "/", label: "Configuración", svgPath: "M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75" },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+}
+
+export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   return (
-    <aside
-      id="logo-sidebar"
-      className="fixed top-0 left-0 z-30 w-64 h-screen pt-20 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700"
-      aria-label="Sidebar"
-    >
-      <div className="h-full px-3 pb-4 overflow-y-auto">
-        <div className="flex justify-center items-center mb-6">
-          <Link href="/Home">
-            <Image
-              src={Logo22}
-              alt="Logo"
-              className="h-28 w-auto cursor-pointer"
-            />
-          </Link>
+    <>
+      {/* Sidebar fijo en pantallas grandes */}
+      <aside
+        className="hidden lg:flex flex-col w-64 h-screen pt-20 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700"
+      >
+        <SidebarContent />
+      </aside>
+
+      {/* Sidebar desplegable en móviles */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 lg:hidden"
+          onClick={() => setIsOpen(false)}
+        >
+          <aside
+            className="fixed top-0 left-0 w-64 h-screen pt-20 bg-white border-r border-gray-200 dark:bg-gray-800 dark:border-gray-700 transition-transform transform translate-x-0"
+            onClick={(e) => e.stopPropagation()} // Evita que el click dentro del Sidebar lo cierre
+          >
+            <SidebarContent setIsOpen={setIsOpen} />
+          </aside>
         </div>
-        <ul className="space-y-2 font-medium">
-          {sidebarItems.map((item, index) => (
-            <div key={index}>
-              {item.section && (
-                <span className="text-gray-900 ms-3 dark:text-white">
-                  {item.section}
-                </span>
-              )}
-              <li>
-                <Link
-                  href={item.href}
-                  className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group"
-                >
-                  <svg
-                    className="w-6 h-6 text-gray-800 dark:text-white group-hover:text-D0298A"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d={item.svgPath}
-                    />
-                  </svg>
-                  <span className="text-gray-900 ms-3 dark:text-white group-hover:text-D0298A">
-                    {item.label}
-                  </span>
-                </Link>
-              </li>
-            </div>
-          ))}
-        </ul>
+      )}
+    </>
+  );
+}
+
+function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) {
+  return (
+    <div className="h-full px-3 pb-4 overflow-y-auto">
+      <div className="flex justify-center items-center mb-6">
+        <Link href="/Home">
+          <Image src={Logo22} alt="Logo" className="h-28 w-auto cursor-pointer" />
+        </Link>
       </div>
-    </aside>
+      <ul className="space-y-2 font-medium">
+        {sidebarItems.map((item, index) => (
+          <div key={index}>
+            {item.section && (
+              <span className="text-gray-900 ms-3 dark:text-white">
+                {item.section}
+              </span>
+            )}
+            <li>
+              <Link
+                href={item.href}
+                className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white group"
+                onClick={() => setIsOpen && setIsOpen(false)} // Cerrar Sidebar en móviles
+              >
+                <svg
+                  className="w-6 h-6 text-gray-800 dark:text-white group-hover:text-D0298A"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d={item.svgPath}
+                  />
+                </svg>
+                <span className="text-gray-900 ms-3 dark:text-white group-hover:text-D0298A">
+                  {item.label}
+                </span>
+              </Link>
+            </li>
+          </div>
+        ))}
+      </ul>
+    </div>
   );
 }

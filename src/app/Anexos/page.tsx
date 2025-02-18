@@ -20,6 +20,16 @@ export default function Annexes() {
             imageSrc="/img/anexo2.jpg" 
             description="Descripción breve del segundo anexo." 
           />
+           <Card 
+            title="Anexo 3" 
+            imageSrc="/img/anexo3.jpg" 
+            description="Descripción breve del tercer anexo." 
+          />
+           <Card 
+            title="Anexo 4" 
+            imageSrc="/img/anexo4.jpg" 
+            description="Descripción breve del cuarto anexo." 
+          />
         </div>
       </div>
     </Wrapper>
