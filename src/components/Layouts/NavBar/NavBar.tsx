@@ -32,7 +32,7 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
   };
   const cancelLogout = () => setShowAlert(false);
 
-  // Simulación de notificaciones (puedes conectarlo con datos reales)
+  // Simulación de notificaciones
   const notifications = [
     { id: 1, message: "Nueva solicitud de acceso" },
     { id: 2, message: "Actualización en el sistema" },
@@ -74,7 +74,7 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
       </div>
 
       {/* Controles a la derecha */}
-      <div className="flex items-center gap-4 relative">
+      <div className="flex items-center gap-2 sm:gap-4 relative">
         {/* Botón de cambiar tema */}
         <button
           onClick={() => setTheme(darkMode === "light" ? "dark" : "light")}
@@ -123,7 +123,7 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
             className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2"
           >
             <Image
-              className="size-8 rounded-full"
+              className="w-8 h-8 min-w-8 min-h-8 rounded-full"
               src={Perfil}
               alt="Perfil"
               width={32}
