@@ -9,10 +9,19 @@ interface CardProps {
 
 export const Card = ({ title, imageSrc, description }: CardProps) => {
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 w-80 text-center">
-      <Image src={imageSrc} alt={title} width={150} height={150} className="mx-auto rounded-lg" />
-      <h2 className="text-xl font-semibold text-gray-800 dark:text-white mt-2">{title}</h2>
-      <p className="text-gray-600 dark:text-gray-300 mt-1">{description}</p>
+    <div className="relative w-80 h-80 overflow-hidden rounded-lg shadow-md cursor-pointer transition-transform duration-300 hover:scale-105">
+      {/* La imagen se aclara al pasar el cursor */}
+      <Image
+        src={imageSrc}
+        alt={title}
+        fill
+        className="object-cover transition-all duration-300 hover:brightness-125"
+      />
+      {/* Overlay con el texto en la parte inferior */}
+      <div className="absolute inset-0 flex flex-col justify-end items-center p-4 bg-black bg-opacity-30">
+        <h2 className="text-xl font-semibold text-white">{title}</h2>
+        <p className="text-white mt-2">{description}</p>
+      </div>
     </div>
   );
 };

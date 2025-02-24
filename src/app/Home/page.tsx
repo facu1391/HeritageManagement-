@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Wrapper, ToastMessage } from "@/components";
 
+
 export default function HomePage() {
   const [showWelcome, setShowWelcome] = useState(false);
 
@@ -25,7 +26,8 @@ export default function HomePage() {
             Bienvenido al Home
           </h1>
         </div>
-      </Wrapper>
+      </Wrapper> 
+      
     </div>
   );
 }
