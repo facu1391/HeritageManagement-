@@ -1,6 +1,7 @@
 
 import { Wrapper } from "@/components";
 import { Card } from "@/components/Card/Card";
+import {  Anexo1, CasaCentral, Muni } from "@/public";
 
 export default function Annexes() {
   return (
@@ -11,23 +12,18 @@ export default function Annexes() {
         </h1>
         <div className="flex flex-wrap gap-6 justify-center">
           <Card 
-            title="Anexo 1" 
-            imageSrc="/img/anexo1.jpg" 
+            title="Casa Central" 
+            imageSrc={CasaCentral} 
             description="Descripción breve del primer anexo." 
           />
           <Card 
-            title="Anexo 2" 
-            imageSrc="/img/anexo2.jpg" 
+            title="Anexo 1" 
+            imageSrc={Anexo1} 
             description="Descripción breve del segundo anexo." 
           />
            <Card 
-            title="Anexo 3" 
-            imageSrc="/img/anexo3.jpg" 
-            description="Descripción breve del tercer anexo." 
-          />
-           <Card 
-            title="Anexo 4" 
-            imageSrc="/img/anexo4.jpg" 
+            title="Anexo 2" 
+            imageSrc={Muni} 
             description="Descripción breve del cuarto anexo." 
           />
         </div>
