@@ -135,3 +135,5 @@ export default function PatrimonioModal() {
     </>
   );
 }
+
+{/* id, descripcion, resolucion,  */}
