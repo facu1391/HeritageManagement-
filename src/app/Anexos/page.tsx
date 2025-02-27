@@ -1,7 +1,7 @@
 
 import { Wrapper } from "@/components";
 import { Card } from "@/components/Card/Card";
-import {  Anexo1, CasaCentral, Muni } from "@/public";
+import { Anexo1, CasaCentral, Muni } from "@/public";
 
 export default function Annexes() {
   return (
@@ -15,16 +15,19 @@ export default function Annexes() {
             title="Casa Central" 
             imageSrc={CasaCentral} 
             description="Descripción breve del primer anexo." 
+            href="/anexos/casa-central" // Nueva ruta
           />
           <Card 
             title="Anexo 1" 
             imageSrc={Anexo1} 
             description="Descripción breve del segundo anexo." 
+            href="/anexos/anexo-1" // Nueva ruta
           />
-           <Card 
+          <Card 
             title="Anexo 2" 
             imageSrc={Muni} 
             description="Descripción breve del cuarto anexo." 
+            href="/anexos/anexo-2" // Nueva ruta
           />
         </div>
       </div>
