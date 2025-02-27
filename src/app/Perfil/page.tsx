@@ -38,10 +38,7 @@ export default function Profile() {
             <span className="text-gray-600 dark:text-gray-400 font-medium">Número de Documento:</span>
             <span className="text-gray-800 dark:text-gray-300">12345678</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-gray-600 dark:text-gray-400 font-medium">Número de Legajo:</span>
-            <span className="text-gray-800 dark:text-gray-300">987654</span>
-          </div>
+       
           <div className="flex justify-between">
             <span className="text-gray-600 dark:text-gray-400 font-medium">Email:</span>
             <span className="text-gray-800 dark:text-gray-300">nombre.apellido@example.com</span>

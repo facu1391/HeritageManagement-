@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -6,132 +7,142 @@ import Link from "next/link";
 import Image from "next/image";
 import { Perfil } from "@/public";
 import { useTheme } from "@/Context/ThemeContext";
-import { LogoutAlert } from "@/components"; // Importar el componente de alerta
+import { LogoutAlert } from "@/components";
+import { FaBars } from "react-icons/fa"; // Ícono de menú
+import { BsSun, BsMoon, BsBell } from "react-icons/bs"; // Íconos de modo oscuro y notificaciones
 
-export default function Navbar() {
+interface NavbarProps {
+  setIsSidebarOpen: (isOpen: boolean) => void;
+}
+
+export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [showAlert, setShowAlert] = useState(false); // Estado para controlar la alerta
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
   const router = useRouter();
 
   const { darkMode, setTheme } = useTheme();
 
   const toggleUserMenu = () => setIsMenuOpen((prev) => !prev);
-  const handleLogout = () => setShowAlert(true); // Mostrar alerta al hacer clic en cerrar sesión
-
-  const handleThemeToggle = () => {
-    setTheme(darkMode === "light" ? "dark" : "light");
-  };
-
+  const toggleNotifications = () => setIsNotificationsOpen((prev) => !prev);
+  const handleLogout = () => setShowAlert(true);
   const confirmLogout = () => {
-    setShowAlert(false); // Ocultar alerta
-    router.push("/"); // Redirigir al inicio
+    setShowAlert(false);
+    router.push("/");
   };
+  const cancelLogout = () => setShowAlert(false);
 
-  const cancelLogout = () => setShowAlert(false); // Cancelar acción y cerrar alerta
+  // Simulación de notificaciones
+  const notifications = [
+    { id: 1, message: "Nueva solicitud de acceso" },
+    { id: 2, message: "Actualización en el sistema" },
+  ];
 
   return (
-    <nav className="bg-gray-800 dark:bg-gray-800">
-      <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-        <div className="relative flex h-16 items-center justify-between">
-          {/* Buscador centrado */}
-          <div className="flex-grow flex justify-center">
-            <div className="relative w-full max-w-md">
-              <svg
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35"
-                />
-              </svg>
-              <input
-                type="text"
-                placeholder="Buscar"
-                className="w-full pl-10 pr-4 py-2 rounded-md border dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300"
-              />
-            </div>
-          </div>
+    <nav className="bg-gray-800 dark:bg-gray-800 px-4 py-3 flex items-center justify-between">
+      {/* Botón de menú hamburguesa en móviles */}
+      <button
+        onClick={() => setIsSidebarOpen(true)}
+        className="lg:hidden text-white focus:outline-none"
+      >
+        <FaBars size={24} />
+      </button>
 
-          {/* Interruptor */}
-          <label className="inline-flex items-center cursor-pointer ml-4">
-            <input
-              type="checkbox"
-              checked={darkMode === "dark"}
-              onChange={handleThemeToggle}
-              className="sr-only peer"
+      {/* Buscador centrado */}
+      <div className="flex-grow flex justify-center">
+        <div className="relative w-full max-w-md">
+          <svg
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M11 19a8 8 0 100-16 8 8 0 000 16zM21 21l-4.35-4.35"
             />
-            <div
-              className={`relative w-11 h-6 rounded-full transition-colors ${
-                darkMode === "dark" ? "bg-slate-600" : "bg-gray-200"
-              }`}
-            >
-              <div
-                className={`absolute top-[2px] start-[2px] h-5 w-5 bg-white border border-gray-300 rounded-full transition-transform ${
-                  darkMode === "dark" ? "translate-x-full" : "translate-x-0"
-                }`}
-              ></div>
-            </div>
-          </label>
+          </svg>
+          <input
+            type="text"
+            placeholder="Buscar"
+            className="w-full pl-10 pr-4 py-2 rounded-md border dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300"
+          />
+        </div>
+      </div>
 
-          {/* Botones de notificación y menú */}
-          <div className="flex items-center pr-2 space-x-4 sm:ml-6 sm:pr-0">
-            <button
-              type="button"
-              className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-            >
-              <span className="sr-only ">View notifications</span>
-              <svg
-                className="size-6"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
-                />
-              </svg>
-            </button>
+      {/* Controles a la derecha */}
+      <div className="flex items-center gap-2 sm:gap-4 relative">
+        {/* Botón de cambiar tema */}
+        <button
+          onClick={() => setTheme(darkMode === "light" ? "dark" : "light")}
+          className="text-white p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition"
+        >
+          {darkMode === "dark" ? <BsSun size={20} /> : <BsMoon size={20} />}
+        </button>
 
-            {/* Menú de usuario */}
-            <div className="relative">
-              <button
-                type="button"
-                className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2"
-                onClick={toggleUserMenu}
-              >
-                <Image
-                  className="size-8 rounded-full"
-                  src={Perfil}
-                  alt="Perfil"
-                  width={32}
-                  height={32}
-                />
-              </button>
-              {isMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg ring-1 ring-black/5">
-                  <Link href="/Perfil" className="block px-4 py-2 text-sm text-gray-700">
-                    Tu perfil
-                  </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700"
-                  >
-                    Cerrar sesión
-                  </button>
-                </div>
+        {/* Botón de notificaciones */}
+        <div className="relative">
+          <button
+            onClick={toggleNotifications}
+            className="relative text-white p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition"
+          >
+            <BsBell size={20} />
+            {notifications.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-full">
+                {notifications.length}
+              </span>
+            )}
+          </button>
+
+          {/* Menú de notificaciones */}
+          {isNotificationsOpen && (
+            <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-700 rounded-md shadow-lg ring-1 ring-black/5 p-2">
+              <h3 className="text-sm font-semibold text-gray-700 dark:text-white border-b pb-2">
+                Notificaciones
+              </h3>
+              {notifications.length > 0 ? (
+                notifications.map((notif) => (
+                  <div key={notif.id} className="p-2 text-sm text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg">
+                    {notif.message}
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 dark:text-gray-400 p-2 text-sm">No hay notificaciones</p>
               )}
             </div>
-          </div>
+          )}
+        </div>
+
+        {/* Botón de perfil */}
+        <div className="relative">
+          <button
+            onClick={toggleUserMenu}
+            className="relative flex rounded-full bg-gray-800 text-sm focus:ring-2 focus:ring-white focus:ring-offset-2"
+          >
+            <Image
+              className="w-8 h-8 min-w-8 min-h-8 rounded-full"
+              src={Perfil}
+              alt="Perfil"
+              width={32}
+              height={32}
+            />
+          </button>
+          {isMenuOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg ring-1 ring-black/5">
+              <Link href="/Perfil" className="block px-4 py-2 text-sm text-gray-700 dark:text-white">
+                Tu perfil
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-white"
+              >
+                Cerrar sesión
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
