@@ -15,19 +15,19 @@ export default function Annexes() {
             title="Casa Central" 
             imageSrc={CasaCentral} 
             description="Descripción breve del primer anexo." 
-            href="/anexos/casa-central" // Nueva ruta
+            href="/Anexos/CasaCentral" // Nueva ruta
           />
           <Card 
             title="Anexo 1" 
             imageSrc={Anexo1} 
             description="Descripción breve del segundo anexo." 
-            href="/anexos/anexo-1" // Nueva ruta
+            href="/Anexos/Anexo-1" // Nueva ruta
           />
           <Card 
             title="Anexo 2" 
             imageSrc={Muni} 
             description="Descripción breve del cuarto anexo." 
-            href="/anexos/anexo-2" // Nueva ruta
+            href="/Anexos/Anexo-2" // Nueva ruta
           />
         </div>
       </div>
