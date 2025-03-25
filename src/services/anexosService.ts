@@ -1,42 +1,38 @@
 
-const API_URL = "https://anexos.onrender.com/api";
+const API_BASE = "https://anexos.onrender.com/api";
 
-export const getAnexos = async () => {
-  const response = await fetch(`${API_URL}/anexos`);
-  if (!response.ok) throw new Error("Error al obtener anexos");
-  return response.json();
+export const obtenerAnexos = async () => {
+  const res = await fetch(`${API_BASE}/anexos`);
+  return await res.json();
 };
 
-export const createAnexo = async (nombre: string) => {
-  const response = await fetch(`${API_URL}/anexos`, {
+export const agregarAnexo = async (anexo: {
+  id: number;
+  nombre: string;
+  direccion?: string;
+}) => {
+  const res = await fetch(`${API_BASE}/anexos`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ nombre }),
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(anexo),
   });
-
-  if (!response.ok) throw new Error("Error al crear anexo");
-  return response.json();
+  return await res.json();
 };
 
-export const updateAnexo = async (id: number, nombre: string) => {
-  const response = await fetch(`${API_URL}/anexos/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ nombre }),
-  });
-
-  if (!response.ok) throw new Error("Error al actualizar anexo");
-  return response.json();
+export const obtenerSubdependencias = async (idAnexo: number) => {
+  const res = await fetch(`${API_BASE}/anexos/${idAnexo}/subdependencias`);
+  return await res.json();
 };
 
-export const deleteAnexo = async (id: number) => {
-  const response = await fetch(`${API_URL}/anexos/${id}`, {
-    method: "DELETE",
+export const agregarSubdependencia = async (sub: {
+  id: number;
+  id_anexo: number;
+  nombre: string;
+}) => {
+  const res = await fetch(`${API_BASE}/subdependencias`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(sub),
   });
-
-  if (!response.ok) throw new Error("Error al eliminar anexo");
+  return await res.json();
 };

@@ -1,149 +1,141 @@
 
 "use client";
-
-import { useState, useEffect } from "react";
-import { getAnexos, createAnexo, deleteAnexo, updateAnexo } from "@/services/anexosService";
-import { getSubdependencias, createSubdependencia } from "@/services/subdependenciasService";
-import { FiTrash2, FiEdit2, FiCheck, FiX } from "react-icons/fi";
+import { useEffect, useState } from "react";
+import {
+  obtenerAnexos,
+  agregarAnexo,
+  obtenerSubdependencias,
+  agregarSubdependencia,
+} from "@/services/anexosService";
 
 export default function CasaCentral() {
-  const [anexos, setAnexos] = useState<{ id: number; nombre: string }[]>([]);
-  const [subdependencias, setSubdependencias] = useState<{ id: number; nombre: string }[]>([]);
-  const [nuevoAnexo, setNuevoAnexo] = useState("");
-  const [nuevaSubdependencia, setNuevaSubdependencia] = useState("");
-  const [anexoSeleccionado, setAnexoSeleccionado] = useState<number | null>(null);
-  const [editandoId, setEditandoId] = useState<number | null>(null);
-  const [nombreEditado, setNombreEditado] = useState("");
+  const [anexos, setAnexos] = useState([]);
+  const [subdependencias, setSubdependencias] = useState([]);
+  const [idAnexo, setIdAnexo] = useState("");
+  const [nombreAnexo, setNombreAnexo] = useState("");
+  const [direccionAnexo, setDireccionAnexo] = useState("");
+  const [idSub, setIdSub] = useState("");
+  const [nombreSub, setNombreSub] = useState("");
+  const [anexoSeleccionado, setAnexoSeleccionado] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const anexosData = await getAnexos();
-        console.log("Anexos recibidos:", anexosData);
-        setAnexos(anexosData);
-        if (anexosData.length > 0) {
-          setAnexoSeleccionado(anexosData[0].id);
-          const subdependenciasData = await getSubdependencias(anexosData[0].id);
-          setSubdependencias(subdependenciasData);
-        }
-      } catch (error) {
-        console.error("Error cargando los datos", error);
-      }
-    };
-    fetchData();
+    obtenerAnexos().then(setAnexos);
   }, []);
 
-  const handleAgregarAnexo = async () => {
-    try {
-      const newAnexo = await createAnexo(nuevoAnexo);
-      setAnexos([...anexos, newAnexo]);
-      setNuevoAnexo("");
-    } catch (error) {
-      console.error(error);
+  useEffect(() => {
+    if (anexoSeleccionado) {
+      obtenerSubdependencias(parseInt(anexoSeleccionado)).then(setSubdependencias);
+    } else {
+      setSubdependencias([]);
     }
+  }, [anexoSeleccionado]);
+
+  const handleGuardarAnexo = async () => {
+    await agregarAnexo({
+      id: parseInt(idAnexo),
+      nombre: nombreAnexo,
+      direccion: direccionAnexo,
+    });
+    setIdAnexo("");
+    setNombreAnexo("");
+    setDireccionAnexo("");
+    const nuevos = await obtenerAnexos();
+    setAnexos(nuevos);
   };
 
-  const handleEliminarAnexo = async (id: number) => {
-    try {
-      await deleteAnexo(id);
-      setAnexos(anexos.filter((anexo) => anexo.id !== id));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleEditarClick = (id: number, nombre: string) => {
-    setEditandoId(id);
-    setNombreEditado(nombre);
-  };
-
-  const handleGuardarEdicion = async (id: number) => {
-    try {
-      const updatedAnexo = await updateAnexo(id, nombreEditado);
-      setAnexos(
-        anexos.map((anexo) => (anexo.id === id ? { ...anexo, nombre: updatedAnexo.nombre } : anexo))
-      );
-      setEditandoId(null);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleGuardarSubdependencia = async () => {
+    await agregarSubdependencia({
+      id: parseInt(idSub),
+      id_anexo: parseInt(anexoSeleccionado),
+      nombre: nombreSub,
+    });
+    setIdSub("");
+    setNombreSub("");
+    const actualizadas = await obtenerSubdependencias(parseInt(anexoSeleccionado));
+    setSubdependencias(actualizadas);
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-2xl font-bold">Gestión de Anexos y Subdependencias</h1>
+    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center py-10">
+      <h1 className="text-2xl font-bold mb-8">Gestión de Anexos</h1>
 
       {/* Agregar Anexo */}
-      <div className="bg-white p-4 rounded shadow-md mt-4">
-        <h2 className="font-semibold text-lg">Agregar Anexo</h2>
+      <div className="bg-gray-800 p-6 rounded-md w-full max-w-md mb-6">
+        <h2 className="text-lg font-semibold mb-4">Agregar Anexo</h2>
         <input
           type="text"
-          placeholder="Nombre del Anexo"
-          value={nuevoAnexo}
-          onChange={(e) => setNuevoAnexo(e.target.value)}
-          className="w-full border rounded px-3 py-2 mt-2"
+          placeholder="ID"
+          value={idAnexo}
+          onChange={(e) => setIdAnexo(e.target.value)}
+          className="w-full mb-3 p-2 rounded bg-gray-700 text-white"
+        />
+        <input
+          type="text"
+          placeholder="Nombre"
+          value={nombreAnexo}
+          onChange={(e) => setNombreAnexo(e.target.value)}
+          className="w-full mb-3 p-2 rounded bg-gray-700 text-white"
+        />
+        <input
+          type="text"
+          placeholder="Dirección"
+          value={direccionAnexo}
+          onChange={(e) => setDireccionAnexo(e.target.value)}
+          className="w-full mb-4 p-2 rounded bg-gray-700 text-white"
         />
         <button
-          onClick={handleAgregarAnexo}
-          className="bg-blue-500 text-white px-4 py-2 mt-2 rounded hover:bg-blue-600 transition-colors"
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white p-2 rounded"
+          onClick={handleGuardarAnexo}
         >
-          Agregar Anexo
+          Guardar Anexo
         </button>
       </div>
 
-      {/* Lista de Anexos */}
-      <div className="bg-white p-4 rounded shadow-md mt-4">
-        <h2 className="font-semibold text-lg">Anexos</h2>
-        {anexos.map((anexo) => (
-          <div
-            key={anexo.id}
-            className="border rounded px-3 py-2 mt-2 flex justify-between items-center"
-          >
-            {editandoId === anexo.id ? (
-              <input
-                type="text"
-                value={nombreEditado}
-                onChange={(e) => setNombreEditado(e.target.value)}
-                className="border rounded px-2 py-1"
-              />
-            ) : (
-              <span>{anexo.nombre}</span>
-            )}
+      {/* Seleccionar Anexo */}
+      <div className="bg-gray-800 p-6 rounded-md w-full max-w-md mb-6">
+        <h2 className="text-lg font-semibold mb-4">Seleccionar Anexo</h2>
+        <select
+          className="w-full mb-3 p-2 rounded bg-gray-700 text-white"
+          value={anexoSeleccionado}
+          onChange={(e) => setAnexoSeleccionado(e.target.value)}
+        >
+          <option value="">Seleccione un Anexo</option>
+          {anexos.map((anexo) => (
+            <option key={anexo.id} value={anexo.id}>
+              {anexo.id} - {anexo.nombre}
+            </option>
+          ))}
+        </select>
+        <ul className="list-disc pl-5 text-sm text-gray-300">
+          {subdependencias.map((sub) => (
+            <li key={sub.id}>{sub.id} - {sub.nombre}</li>
+          ))}
+        </ul>
+      </div>
 
-            <div className="flex gap-2">
-              {editandoId === anexo.id ? (
-                <>
-                  <button
-                    onClick={() => handleGuardarEdicion(anexo.id)}
-                    className="text-green-500 hover:bg-green-100 p-2 rounded-full transition-all"
-                  >
-                    <FiCheck size={18} />
-                  </button>
-                  <button
-                    onClick={() => setEditandoId(null)}
-                    className="text-gray-500 hover:bg-gray-100 p-2 rounded-full transition-all"
-                  >
-                    <FiX size={18} />
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={() => handleEditarClick(anexo.id, anexo.nombre)}
-                  className="text-yellow-500 hover:bg-yellow-100 p-2 rounded-full transition-all"
-                >
-                  <FiEdit2 size={18} />
-                </button>
-              )}
-
-              <button
-                onClick={() => handleEliminarAnexo(anexo.id)}
-                className="text-red-500 hover:bg-red-100 p-2 rounded-full transition-all"
-              >
-                <FiTrash2 size={18} />
-              </button>
-            </div>
-          </div>
-        ))}
+      {/* Agregar Subdependencia */}
+      <div className="bg-gray-800 p-6 rounded-md w-full max-w-md">
+        <h2 className="text-lg font-semibold mb-4">Agregar Subdependencia</h2>
+        <input
+          type="text"
+          placeholder="ID"
+          value={idSub}
+          onChange={(e) => setIdSub(e.target.value)}
+          className="w-full mb-3 p-2 rounded bg-gray-700 text-white"
+        />
+        <input
+          type="text"
+          placeholder="Nombre"
+          value={nombreSub}
+          onChange={(e) => setNombreSub(e.target.value)}
+          className="w-full mb-4 p-2 rounded bg-gray-700 text-white"
+        />
+        <button
+          className="w-full bg-green-500 hover:bg-green-600 text-white p-2 rounded"
+          onClick={handleGuardarSubdependencia}
+        >
+          Guardar Subdependencia
+        </button>
       </div>
     </div>
   );
