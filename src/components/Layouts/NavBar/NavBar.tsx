@@ -7,9 +7,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { Perfil } from "@/public";
 import { useTheme } from "@/Context/ThemeContext";
-import { LogoutAlert } from "@/components";
-import { FaBars } from "react-icons/fa"; // Ícono de menú
-import { BsSun, BsMoon, BsBell } from "react-icons/bs"; // Íconos de modo oscuro y notificaciones
+import { FaBars } from "react-icons/fa";
+import { BsSun, BsMoon, BsBell } from "react-icons/bs";
 
 interface NavbarProps {
   setIsSidebarOpen: (isOpen: boolean) => void;
@@ -18,21 +17,11 @@ interface NavbarProps {
 export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [showAlert, setShowAlert] = useState(false);
-  const router = useRouter();
-
   const { darkMode, setTheme } = useTheme();
 
   const toggleUserMenu = () => setIsMenuOpen((prev) => !prev);
   const toggleNotifications = () => setIsNotificationsOpen((prev) => !prev);
-  const handleLogout = () => setShowAlert(true);
-  const confirmLogout = () => {
-    setShowAlert(false);
-    router.push("/");
-  };
-  const cancelLogout = () => setShowAlert(false);
 
-  // Simulación de notificaciones
   const notifications = [
     { id: 1, message: "Nueva solicitud de acceso" },
     { id: 2, message: "Actualización en el sistema" },
@@ -40,7 +29,6 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
 
   return (
     <nav className="bg-gray-800 dark:bg-gray-800 px-4 py-3 flex items-center justify-between">
-      {/* Botón de menú hamburguesa en móviles */}
       <button
         onClick={() => setIsSidebarOpen(true)}
         className="lg:hidden text-white focus:outline-none"
@@ -48,7 +36,6 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
         <FaBars size={24} />
       </button>
 
-      {/* Buscador centrado */}
       <div className="flex-grow flex justify-center">
         <div className="relative w-full max-w-md">
           <svg
@@ -73,9 +60,7 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
         </div>
       </div>
 
-      {/* Controles a la derecha */}
       <div className="flex items-center gap-2 sm:gap-4 relative">
-        {/* Botón de cambiar tema */}
         <button
           onClick={() => setTheme(darkMode === "light" ? "dark" : "light")}
           className="text-white p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition"
@@ -83,7 +68,6 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
           {darkMode === "dark" ? <BsSun size={20} /> : <BsMoon size={20} />}
         </button>
 
-        {/* Botón de notificaciones */}
         <div className="relative">
           <button
             onClick={toggleNotifications}
@@ -97,7 +81,6 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
             )}
           </button>
 
-          {/* Menú de notificaciones */}
           {isNotificationsOpen && (
             <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-700 rounded-md shadow-lg ring-1 ring-black/5 p-2">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-white border-b pb-2">
@@ -116,7 +99,6 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
           )}
         </div>
 
-        {/* Botón de perfil */}
         <div className="relative">
           <button
             onClick={toggleUserMenu}
@@ -135,19 +117,10 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
               <Link href="/Perfil" className="block px-4 py-2 text-sm text-gray-700 dark:text-white">
                 Tu perfil
               </Link>
-              <button
-                onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-white"
-              >
-                Cerrar sesión
-              </button>
             </div>
           )}
         </div>
       </div>
-
-      {/* Renderizar alerta de cierre de sesión */}
-      {showAlert && <LogoutAlert onConfirm={confirmLogout} onCancel={cancelLogout} />}
     </nav>
   );
 }

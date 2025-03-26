@@ -12,6 +12,3 @@ export { default as ToastMessage } from "./Alerts/ToastMessage";
 export { default as LogoutAlert } from "./Alerts/LogoutAlert";
 
 //Forms
-export { default as ListaAnexos } from "./Formulario/ListaAnexos";
-export { default as AnexoForm } from "./Formulario/AnexoForm";
-export { default as SubdependenciaForm } from "./Formulario/SubdependenciaForm";
