@@ -1,7 +1,6 @@
 
 "use client";
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
@@ -68,7 +67,7 @@ export default function CasaCentral() {
       setDireccionAnexo("");
       const nuevos = await obtenerAnexos();
       setAnexos(nuevos);
-    } catch (error) {
+    } catch {
       toast.error("Error al guardar anexo");
     }
   };
@@ -85,7 +84,7 @@ export default function CasaCentral() {
       setNombreSub("");
       const actualizadas = await obtenerSubdependencias(parseInt(anexoSeleccionado));
       setSubdependencias(actualizadas);
-    } catch (error) {
+    } catch {
       toast.error("Error al guardar subdependencia");
     }
   };
