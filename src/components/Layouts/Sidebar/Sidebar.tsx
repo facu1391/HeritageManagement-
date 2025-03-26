@@ -4,6 +4,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Logo22 } from "@/public";
+import { useState } from "react";
+import { LogoutAlert } from "@/components";
 
 interface SidebarItem {
   href: string;
@@ -38,14 +40,7 @@ const sidebarItems: SidebarItem[] = [
       "M3 10.75l9-4.5 9 4.5-9 4.5-9-4.5Zm0 4.5l9 4.5 9-4.5m-9-4.5V4.5",
   },
   {
-    section: "Administrar",
-    href: "/agenda",
-    label: "Agenda",
-    svgPath:
-      "M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Z",
-  },
-  {
-    href: "/",
+    href: "/Configuracion",
     label: "Configuración",
     svgPath:
       "M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75",
@@ -61,7 +56,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   return (
     <>
       {/* Sidebar fijo en pantallas grandes */}
-      <aside className="hidden lg:flex flex-col w-64 h-screen pt-20 bg-gray-800 border-r border-gray-700">
+      <aside className="hidden lg:flex flex-col justify-between w-64 h-screen pt-20 bg-gray-800 border-r border-gray-700">
         <SidebarContent />
       </aside>
 
@@ -72,7 +67,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
           onClick={() => setIsOpen(false)}
         >
           <aside
-            className="fixed top-0 left-0 w-64 h-screen pt-20 bg-gray-800 border-r border-gray-700 transition-transform transform translate-x-0"
+            className="fixed top-0 left-0 w-64 h-screen pt-20 bg-gray-800 border-r border-gray-700 transition-transform transform translate-x-0 flex flex-col justify-between"
             onClick={(e) => e.stopPropagation()}
           >
             <SidebarContent setIsOpen={setIsOpen} />
@@ -84,51 +79,90 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
 }
 
 function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }) {
+  const [showAlert, setShowAlert] = useState(false);
+
+  const confirmLogout = () => {
+    setShowAlert(false);
+    window.location.href = "/";
+  };
+
+  const cancelLogout = () => {
+    setShowAlert(false);
+  };
+
   return (
-    <div className="h-full px-3 pb-4 overflow-y-auto">
-      <div className="flex justify-center items-center mb-6">
-        <Link href="/Home">
-          <Image
-            src={Logo22}
-            alt="Logo"
-            className="h-28 w-auto cursor-pointer"
-          />
-        </Link>
-      </div>
-      <ul className="space-y-2 font-medium">
-        {sidebarItems.map((item, index) => (
-          <div key={index}>
-            {item.section && (
-              <span className="text-white ms-3">{item.section}</span>
-            )}
-            <li>
-              <Link
-                href={item.href}
-                className="flex items-center p-2 text-white rounded-lg group"
-                onClick={() => setIsOpen && setIsOpen(false)}
-              >
-                <svg
-                  className="w-6 h-6 text-white group-hover:text-D0298A"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
+    <div className="h-full flex flex-col justify-between px-3 pb-4 overflow-y-auto">
+      <div>
+        <div className="flex justify-center items-center mb-6">
+          <Link href="/Home">
+            <Image
+              src={Logo22}
+              alt="Logo"
+              className="h-28 w-auto cursor-pointer"
+            />
+          </Link>
+        </div>
+        <ul className="space-y-2 font-medium">
+          {sidebarItems.map((item, index) => (
+            <div key={index}>
+              {item.section && (
+                <span className="text-white ms-3">{item.section}</span>
+              )}
+              <li>
+                <Link
+                  href={item.href}
+                  className="flex items-center p-2 text-white rounded-lg group"
+                  onClick={() => setIsOpen && setIsOpen(false)}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d={item.svgPath}
-                  />
-                </svg>
-                <span className="text-white ms-3 group-hover:text-D0298A">
-                  {item.label}
-                </span>
-              </Link>
-            </li>
-          </div>
-        ))}
-      </ul>
+                  <svg
+                    className="w-6 h-6 text-white group-hover:text-D0298A"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.5"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d={item.svgPath}
+                    />
+                  </svg>
+                  <span className="text-white ms-3 group-hover:text-D0298A">
+                    {item.label}
+                  </span>
+                </Link>
+              </li>
+            </div>
+          ))}
+        </ul>
+      </div>
+
+      {/* Botón Cerrar sesión al fondo */}
+      <div className="mt-6 border-t border-gray-700 pt-4">
+        <button
+          onClick={() => setShowAlert(true)}
+          className="w-full text-left flex items-center text-white hover:text-red-400 px-3 py-2 rounded-lg"
+        >
+          <svg
+            className="w-6 h-6 text-white mr-3"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
+            />
+          </svg>
+          Cerrar sesión
+        </button>
+      </div>
+
+      {showAlert && <LogoutAlert onConfirm={confirmLogout} onCancel={cancelLogout} />}
     </div>
   );
 }

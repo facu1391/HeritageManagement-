@@ -1,5 +1,5 @@
 
-const API_BASE = "https://anexos.onrender.com/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
 export const obtenerAnexos = async () => {
   const res = await fetch(`${API_BASE}/anexos`);
