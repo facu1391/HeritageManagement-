@@ -1,8 +1,8 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   obtenerAnexos,
   agregarAnexo,
@@ -67,7 +67,7 @@ export default function CasaCentral() {
       setDireccionAnexo("");
       const nuevos = await obtenerAnexos();
       setAnexos(nuevos);
-    } catch (error) {
+    } catch {
       toast.error("Error al guardar anexo");
     }
   };
@@ -84,7 +84,7 @@ export default function CasaCentral() {
       setNombreSub("");
       const actualizadas = await obtenerSubdependencias(parseInt(anexoSeleccionado));
       setSubdependencias(actualizadas);
-    } catch (error) {
+    } catch {
       toast.error("Error al guardar subdependencia");
     }
   };
