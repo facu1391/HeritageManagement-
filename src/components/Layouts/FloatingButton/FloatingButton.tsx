@@ -4,10 +4,19 @@
 import { useState } from "react";
 import { FaPlus } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import toast, { Toaster } from "react-hot-toast";
 
 export default function PatrimonioModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [formData, setFormData] = useState({
+    id: "",
+    resolucion: "",
+    anexo: "",
+    subdependencia: "",
+    estado: "",
+    descripcion: "",
+  });
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -18,8 +27,43 @@ export default function PatrimonioModal() {
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (
+      !formData.id ||
+      !formData.resolucion ||
+      !formData.anexo ||
+      !formData.subdependencia ||
+      !formData.estado ||
+      !formData.descripcion ||
+      !selectedImage
+    ) {
+      toast.error("Todos los campos son obligatorios.");
+      return;
+    }
+
+    toast.success("✅ Patrimonio guardado correctamente");
+    setIsModalOpen(false);
+    setFormData({
+      id: "",
+      resolucion: "",
+      anexo: "",
+      subdependencia: "",
+      estado: "",
+      descripcion: "",
+    });
+    setSelectedImage(null);
+  };
+
   return (
     <>
+      <Toaster />
       <button
         className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-cyan-700 text-white text-sm font-medium py-3 px-5 rounded-full shadow-lg hover:bg-cyan-800 focus:ring-2 focus:ring-gray-400 focus:outline-none dark:bg-cyan-600 dark:hover:bg-cyan-700 dark:focus:ring-gray-600"
         onClick={() => setIsModalOpen(true)}
@@ -43,22 +87,26 @@ export default function PatrimonioModal() {
               </button>
             </div>
 
-            <form className="mt-4 space-y-4">
+            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">ID</label>
                   <input
+                    name="id"
+                    value={formData.id}
+                    onChange={handleChange}
                     type="text"
                     className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
-                    defaultValue="003265"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Resolución</label>
                   <input
+                    name="resolucion"
+                    value={formData.resolucion}
+                    onChange={handleChange}
                     type="text"
                     className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
-                    defaultValue="19"
                   />
                 </div>
               </div>
@@ -66,13 +114,25 @@ export default function PatrimonioModal() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Anexo</label>
-                  <select className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white">
+                  <select
+                    name="anexo"
+                    value={formData.anexo}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="">Seleccionar</option>
                     <option>Anexo A</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Sub Dependencia</label>
-                  <select className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Subdependencia</label>
+                  <select
+                    name="subdependencia"
+                    value={formData.subdependencia}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="">Seleccionar</option>
                     <option>Sub A1</option>
                   </select>
                 </div>
@@ -81,16 +141,24 @@ export default function PatrimonioModal() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Estado</label>
-                  <select className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white">
+                  <select
+                    name="estado"
+                    value={formData.estado}
+                    onChange={handleChange}
+                    className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
+                  >
+                    <option value="">Seleccionar</option>
                     <option>Bueno</option>
+                    <option>Regular</option>
+                    <option>Malo</option>
                   </select>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Imagen</label>
                   <input
                     type="file"
-                    className="mt-1 block w-full text-sm text-gray-900 dark:text-gray-300 border rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400"
                     onChange={handleImageChange}
+                    className="mt-1 block w-full text-sm text-gray-900 dark:text-gray-300 border rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400"
                   />
                   {selectedImage && (
                     <div className="mt-3 flex justify-center">
@@ -107,10 +175,13 @@ export default function PatrimonioModal() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción</label>
                 <textarea
+                  name="descripcion"
+                  value={formData.descripcion}
+                  onChange={handleChange}
                   rows={3}
                   className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
                   placeholder="Ingrese la descripción del patrimonio"
-                ></textarea>
+                />
               </div>
 
               <div className="flex justify-end gap-2 mt-4">
@@ -135,5 +206,6 @@ export default function PatrimonioModal() {
     </>
   );
 }
+
 
 {/* id, descripcion, resolucion,  */}
