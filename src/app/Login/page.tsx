@@ -52,7 +52,7 @@ export default function Login() {
         {/* Formulario */}
         <div className="w-full md:w-1/2 p-8 bg-white">
           <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-            Sistema Patrimonial
+            Sistema Patrimonio
           </h2>
           <form onSubmit={handleLogin}>
             <div className="mb-4">

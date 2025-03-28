@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Perfil } from "@/public";
@@ -123,4 +122,4 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
       </div>
     </nav>
   );
-}
+}    
