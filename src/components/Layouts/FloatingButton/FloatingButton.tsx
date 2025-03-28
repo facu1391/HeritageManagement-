@@ -9,6 +9,7 @@ export default function PatrimonioModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [estado, setEstado] = useState("");
+  const [resolucionTipo, setResolucionTipo] = useState("");
   const [opciones, setOpciones] = useState({
     noDado: false,
     reparacion: false,
@@ -46,7 +47,7 @@ export default function PatrimonioModal() {
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 overflow-y-auto">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-4xl m-6">
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 w-full max-w-5xl m-6">
             <div className="flex justify-between items-center border-b pb-2">
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Formulario de Patrimonio
@@ -60,8 +61,8 @@ export default function PatrimonioModal() {
             </div>
 
             <form className="mt-4 space-y-4">
-              {/* Primera fila: ID, Clase, Resolución */}
-              <div className="grid grid-cols-3 gap-4">
+              {/* Primera fila: ID, Ubicación, Rubro y Clase */}
+              <div className="grid grid-cols-4 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">ID</label>
                   <input
@@ -70,27 +71,73 @@ export default function PatrimonioModal() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Clase</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Ubicación</label>
                   <input
                     type="text"
                     className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">N° Resolución</label>
-                    <input
-                      type="number"
-                      className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
-                    />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Rubro</label>
+                  <select className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white">
+                    <option>Seleccionar Rubro</option>
+                    <option>Rubro A</option>
+                    <option>Rubro B</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Clase</label>
+                  <select className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white">
+                    <option>Seleccionar Clase</option>
+                    <option>Clase A</option>
+                    <option>Clase B</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Descripción */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción</label>
+                <input
+                  type="text"
+                  placeholder="Ingrese descripción"
+                  className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              {/* Resolución y Fecha */}
+              <div className="grid grid-cols-3 gap-4">
+                <div className="col-span-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">N° Resolución</label>
+                  <input
+                    type="number"
+                    className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
+                  />
+                </div>
+                <div className="col-span-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tipo</label>
+                  <div className="flex gap-2 mt-1">
+                    {["PSA", "Decreto", "Otro"].map((item) => (
+                      <label key={item} className="flex items-center gap-1 text-sm text-gray-700 dark:text-gray-300">
+                        <input
+                          type="radio"
+                          name="resolucionTipo"
+                          value={item}
+                          checked={resolucionTipo === item}
+                          onChange={() => setResolucionTipo(item)}
+                          className="accent-cyan-700"
+                        />
+                        {item}
+                      </label>
+                    ))}
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Sigla</label>
-                    <input
-                      type="text"
-                      className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
-                    />
-                  </div>
+                </div>
+                <div className="col-span-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Fecha Resolución</label>
+                  <input
+                    type="date"
+                    className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
+                  />
                 </div>
               </div>
 
@@ -118,7 +165,7 @@ export default function PatrimonioModal() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Marcar opciones</label>
                 <div className="grid grid-cols-3 gap-2">
-                  {[
+                  {[ 
                     { name: "noDado", label: "Nro dado" },
                     { name: "reparacion", label: "P/Reparación" },
                     { name: "paraBaja", label: "Para baja" },
@@ -139,13 +186,13 @@ export default function PatrimonioModal() {
                 </div>
               </div>
 
-              {/* Descripción */}
+              {/* Comentarios */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Comentarios</label>
                 <textarea
                   rows={3}
                   className="mt-1 block w-full border-gray-300 rounded-lg shadow-sm focus:ring-gray-400 focus:border-gray-400 dark:bg-gray-700 dark:text-white"
-                  placeholder="Ingrese la descripción"
+                  placeholder="Ingrese comentarios"
                 ></textarea>
               </div>
 
