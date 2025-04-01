@@ -11,4 +11,5 @@ export { default as Spinner } from "./Spinner/Spinner";
 export { default as ToastMessage } from "./Alerts/ToastMessage";
 export { default as LogoutAlert } from "./Alerts/LogoutAlert";
 
-//Forms
+//Modals
+export { default as Modal } from "./Modal/Modal";
