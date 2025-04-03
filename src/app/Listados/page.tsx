@@ -2,9 +2,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Wrapper,  Modal} from "@/components";
+import Image from "next/image";
+import { Wrapper, Modal } from "@/components";
 import { obtenerMobiliario } from "@/services/mobiliarioService";
-
 
 interface Mobiliario {
   id: string;
@@ -65,11 +65,14 @@ export default function Listings() {
               <div className="flex flex-col gap-4">
                 <div className="flex justify-center">
                   {selected.foto_url ? (
-                    <img
-                      src={selected.foto_url}
-                      alt="Foto del mobiliario"
-                      className="w-32 h-32 object-cover rounded-lg shadow"
-                    />
+                    <div className="relative w-32 h-32">
+                      <Image
+                        src={selected.foto_url}
+                        alt="Foto del mobiliario"
+                        fill
+                        className="object-cover rounded-lg shadow"
+                      />
+                    </div>
                   ) : (
                     <div className="w-32 h-32 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg text-sm text-gray-500 dark:text-gray-300 shadow">
                       Sin foto
