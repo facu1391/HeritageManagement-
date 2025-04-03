@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { FaPlus } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { FiCalendar } from "react-icons/fi";
@@ -104,8 +105,12 @@ export default function PatrimonioModal() {
       toast.success("Registro guardado correctamente.");
       setIsModalOpen(false);
       resetForm();
-    } catch (err: any) {
-      toast.error("Error al guardar: " + err.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error("Error al guardar: " + error.message);
+      } else {
+        toast.error("Error al guardar.");
+      }
     } finally {
       setLoading(false);
     }
@@ -280,7 +285,14 @@ export default function PatrimonioModal() {
 
                 {selectedImage && (
                   <div className="mt-3 flex justify-center">
-                    <img src={selectedImage} alt="Vista previa" className="w-32 h-32 object-cover rounded-lg shadow" />
+                    <div className="relative w-32 h-32">
+                      <Image
+                        src={selectedImage}
+                        alt="Vista previa"
+                        fill
+                        className="rounded-lg shadow object-cover"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
