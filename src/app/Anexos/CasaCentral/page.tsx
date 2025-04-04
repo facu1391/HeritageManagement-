@@ -37,7 +37,7 @@ export default function CasaCentral() {
 
   useEffect(() => {
     obtenerAnexos()
-      .then(setAnexos)
+      .then((data) => setAnexos(data.sort((a: Anexo, b: Anexo) => a.id - b.id)))
       .catch(() => toast.error("Error al cargar anexos"))
       .finally(() => setLoadingAnexos(false));
   }, []);
@@ -46,7 +46,7 @@ export default function CasaCentral() {
     if (anexoSeleccionado) {
       setLoadingSubs(true);
       obtenerSubdependencias(parseInt(anexoSeleccionado))
-        .then(setSubdependencias)
+        .then((subs) => setSubdependencias(subs.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id)))
         .catch(() => toast.error("Error al cargar subdependencias"))
         .finally(() => setLoadingSubs(false));
     } else {
@@ -66,7 +66,7 @@ export default function CasaCentral() {
       setNombreAnexo("");
       setDireccionAnexo("");
       const nuevos = await obtenerAnexos();
-      setAnexos(nuevos);
+      setAnexos(nuevos.sort((a: Anexo, b: Anexo) => a.id - b.id));
     } catch {
       toast.error("Error al guardar anexo");
     }
@@ -83,7 +83,7 @@ export default function CasaCentral() {
       setIdSub("");
       setNombreSub("");
       const actualizadas = await obtenerSubdependencias(parseInt(anexoSeleccionado));
-      setSubdependencias(actualizadas);
+      setSubdependencias(actualizadas.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id));
     } catch {
       toast.error("Error al guardar subdependencia");
     }

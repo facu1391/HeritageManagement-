@@ -1,14 +1,25 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { FaPlus } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { FiCalendar } from "react-icons/fi";
-import { createPatrimonio } from "@/services/patrimonioService";
 import { toast, Toaster } from "react-hot-toast";
+import { createPatrimonio } from "@/services/patrimonioService";
+import { obtenerAnexos, obtenerSubdependencias } from "@/services/anexosService";
 import { PatrimonioData } from "@/types/patrimonio";
+
+interface Anexo {
+  id: number;
+  nombre: string;
+}
+
+interface Subdependencia {
+  id: number;
+  nombre: string;
+}
 
 export default function PatrimonioModal() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,7 +27,8 @@ export default function PatrimonioModal() {
   const [loading, setLoading] = useState(false);
 
   const [id, setId] = useState("");
-  const [ubicacion, setUbicacion] = useState("");
+  const [anexo, setAnexo] = useState("");
+  const [subdependencia, setSubdependencia] = useState("");
   const [rubro, setRubro] = useState("");
   const [clase, setClase] = useState("");
   const [descripcion, setDescripcion] = useState("");
@@ -35,9 +47,25 @@ export default function PatrimonioModal() {
     etiqueta: false,
   });
 
+  const [anexos, setAnexos] = useState<Anexo[]>([]);
+  const [subdependencias, setSubdependencias] = useState<Subdependencia[]>([]);
+
+  useEffect(() => {
+    obtenerAnexos().then(setAnexos);
+  }, []);
+
+  useEffect(() => {
+    if (anexo) {
+      obtenerSubdependencias(Number(anexo)).then(setSubdependencias);
+    } else {
+      setSubdependencias([]);
+    }
+  }, [anexo]);
+
   const resetForm = () => {
     setId("");
-    setUbicacion("");
+    setAnexo("");
+    setSubdependencia("");
     setRubro("");
     setClase("");
     setDescripcion("");
@@ -57,12 +85,34 @@ export default function PatrimonioModal() {
     setSelectedImage(null);
   };
 
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onload = () => setSelectedImage(reader.result as string);
-      reader.readAsDataURL(file);
+      const formData = new FormData();
+      formData.append("foto", file);
+  
+      // 👇 Agregamos este log para verificar
+      console.log("Subiendo imagen a:", `${process.env.NEXT_PUBLIC_API_BASE}/uploads`);
+  
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/uploads`, {
+          method: "POST",
+          body: formData,
+        });
+  
+        if (!res.ok) {
+          const errorText = await res.text();
+          console.error("Respuesta del servidor:", errorText); // 🔍 mostrar respuesta cruda
+          throw new Error("Error al subir imagen");
+        }
+  
+        const data = await res.json();
+        setSelectedImage(data.url);
+        toast.success("Imagen subida correctamente");
+      } catch (error) {
+        toast.error("Error al subir imagen");
+        console.error("Error al subir imagen:", error);
+      }
     }
   };
 
@@ -76,14 +126,14 @@ export default function PatrimonioModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!id || !ubicacion || !descripcion || !resolucionNumero || !resolucionTipo || !fechaResolucion || !estado) {
+    if (!id || !anexo || !subdependencia || !descripcion || !resolucionNumero || !resolucionTipo || !fechaResolucion || !estado) {
       toast.error("Por favor complete todos los campos obligatorios.");
       return;
     }
 
     const payload: PatrimonioData = {
       id,
-      ubicacion_id: parseInt(ubicacion),
+      ubicacion_id: parseInt(subdependencia),
       descripcion,
       resolucion_numero: resolucionNumero,
       resolucion_tipo: resolucionTipo,
@@ -120,7 +170,7 @@ export default function PatrimonioModal() {
     <>
       <Toaster position="top-right" />
       <button
-        className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-cyan-700 text-white text-xs sm:text-sm font-medium py-3 px-4 sm:px-5 rounded-full shadow-lg hover:bg-cyan-800 dark:bg-cyan-600 dark:hover:bg-cyan-700"
+        className="fixed bottom-4 right-4 z-50 flex items-center gap-2 bg-cyan-700 text-white text-sm font-medium py-3 px-5 rounded-full shadow-lg hover:bg-cyan-800 dark:bg-cyan-600 dark:hover:bg-cyan-700"
         onClick={() => setIsModalOpen(true)}
       >
         <FaPlus className="w-4 h-4" />
@@ -147,35 +197,55 @@ export default function PatrimonioModal() {
                   value={id}
                   onChange={(e) => setId(e.target.value)}
                   placeholder="ID"
-                  className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white focus:ring-cyan-400 focus:border-cyan-400"
+                  className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
                 />
-                <input
-                  type="text"
-                  value={ubicacion}
-                  onChange={(e) => setUbicacion(e.target.value)}
-                  placeholder="Ubicación"
-                  className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white focus:ring-cyan-400 focus:border-cyan-400"
-                />
+
+                <select
+                  value={anexo}
+                  onChange={(e) => setAnexo(e.target.value)}
+                  className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="">Seleccionar Anexo</option>
+                  {anexos.map((a) => (
+                    <option key={a.id} value={a.id}>
+                      {a.nombre}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={subdependencia}
+                  onChange={(e) => setSubdependencia(e.target.value)}
+                  className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
+                >
+                  <option value="">Seleccionar Subdependencia</option>
+                  {subdependencias.map((s) => (
+                    <option key={s.id} value={s.id}>
+                      {s.nombre}
+                    </option>
+                  ))}
+                </select>
+
                 <select
                   value={rubro}
                   onChange={(e) => setRubro(e.target.value)}
-                  className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white focus:ring-cyan-400 focus:border-cyan-400"
+                  className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
                 >
                   <option>Seleccionar Rubro</option>
                   <option>Rubro A</option>
                   <option>Rubro B</option>
                 </select>
+
                 <select
                   value={clase}
                   onChange={(e) => setClase(e.target.value)}
-                  className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white focus:ring-cyan-400 focus:border-cyan-400"
+                  className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
                 >
                   <option>Seleccionar Clase</option>
                   <option>Clase A</option>
                   <option>Clase B</option>
                 </select>
               </div>
-
               <input
                 type="text"
                 value={descripcion}
@@ -193,7 +263,7 @@ export default function PatrimonioModal() {
                   className="w-full border-b border-gray-300 bg-transparent text-sm p-2 dark:text-white focus:outline-none focus:border-cyan-400"
                 />
                 <div className="flex flex-col gap-1">
-                  <label className="text-sm text-gray-700 dark:text-gray-300">Tipo Resolución</label>
+                  <label className="text-sm text-gray-700 dark:text-gray-300">Tipo de Resolución</label>
                   {["PSA", "Decreto", "Otro"].map((item) => (
                     <label key={item} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                       <input
@@ -242,12 +312,12 @@ export default function PatrimonioModal() {
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Marcar opciones</label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
                   {[
-                    { name: "noDado", label: "Nro dado" },
-                    { name: "reparacion", label: "P/Reparación" },
+                    { name: "noDado", label: "No dado" },
+                    { name: "reparacion", label: "Reparación" },
                     { name: "paraBaja", label: "Para baja" },
                     { name: "faltante", label: "Faltante" },
                     { name: "sobrante", label: "Sobrante" },
-                    { name: "etiqueta", label: "Problema de etiqueta" },
+                    { name: "etiqueta", label: "Problema etiqueta" },
                   ].map((opt) => (
                     <label key={opt.name} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                       <input
@@ -271,7 +341,7 @@ export default function PatrimonioModal() {
               />
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Foto</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Foto del mobiliario</label>
                 <div className="relative w-full border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg p-4 flex flex-col items-center justify-center text-center">
                   <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
