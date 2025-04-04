@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Wrapper, Modal } from "@/components";
 import { obtenerMobiliario } from "@/services/mobiliarioService";
 
@@ -57,44 +56,9 @@ export default function Listings() {
       ) : mobiliario.length === 0 ? (
         <p className="text-center text-gray-600 dark:text-gray-300">No hay registros</p>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
-          {/* Detalle */}
-          <div className="col-span-1 bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col gap-4 max-w-md w-full mx-auto">
-            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">Detalle</h2>
-            {selected ? (
-              <div className="flex flex-col gap-4">
-                <div className="flex justify-center">
-                  {selected.foto_url ? (
-                    <div className="relative w-32 h-32">
-                      <Image
-                        src={selected.foto_url}
-                        alt="Foto del mobiliario"
-                        fill
-                        className="object-cover rounded-lg shadow"
-                      />
-                    </div>
-                  ) : (
-                    <div className="w-32 h-32 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg text-sm text-gray-500 dark:text-gray-300 shadow">
-                      Sin foto
-                    </div>
-                  )}
-                </div>
-                <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-                  <p><strong>ID:</strong> {selected.id}</p>
-                  <p><strong>Descripción:</strong> {selected.descripcion}</p>
-                  <p><strong>Resolución:</strong> {selected.resolucion}</p>
-                  <p><strong>Fecha:</strong> {selected.fecha_resolucion}</p>
-                  <p><strong>Estado:</strong> {selected.estado_conservacion}</p>
-                  <p><strong>Comentarios:</strong> {selected.comentarios}</p>
-                </div>
-              </div>
-            ) : (
-              <p className="text-gray-500 dark:text-gray-400">Seleccione un mobiliario.</p>
-            )}
-          </div>
-
-          {/* Listado */}
-          <div className="col-span-2 bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
+        <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
+          {/* Listado - lado izquierdo */}
+          <div className="w-full md:w-2/3 bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">Listado</h2>
             <input
               type="text"
@@ -126,6 +90,40 @@ export default function Listings() {
                 <li className="text-center text-sm text-gray-500 dark:text-gray-400">No hay resultados</li>
               )}
             </ul>
+          </div>
+
+          {/* Detalle - lado derecho */}
+          <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col gap-4">
+            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">Detalle</h2>
+            {selected ? (
+              <div className="flex flex-col gap-4">
+                <div className="flex justify-center">
+                  {selected.foto_url ? (
+                    <div className="w-32 h-32">
+                      <img
+                        src={selected.foto_url}
+                        alt="Foto del mobiliario"
+                        className="w-32 h-32 object-cover rounded-lg shadow"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-32 h-32 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg text-sm text-gray-500 dark:text-gray-300 shadow">
+                      Sin foto
+                    </div>
+                  )}
+                </div>
+                <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
+                  <p><strong>ID:</strong> {selected.id}</p>
+                  <p><strong>Descripción:</strong> {selected.descripcion}</p>
+                  <p><strong>Resolución:</strong> {selected.resolucion}</p>
+                  <p><strong>Fecha:</strong> {selected.fecha_resolucion}</p>
+                  <p><strong>Estado:</strong> {selected.estado_conservacion}</p>
+                  <p><strong>Comentarios:</strong> {selected.comentarios}</p>
+                </div>
+              </div>
+            ) : (
+              <p className="text-gray-500 dark:text-gray-400">Seleccione un mobiliario.</p>
+            )}
           </div>
         </div>
       )}
