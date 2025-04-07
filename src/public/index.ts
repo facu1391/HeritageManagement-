@@ -1,5 +1,9 @@
 
 export { default as Login23 } from "./login23.jpg";
+export { default as Logo1 } from "./Logo1.webp";
+export { default as Logo4 } from "./logo4.png";
+export { default as Logo2 } from "./Logo2.webp";
+export { default as Logo3 } from "./Logo3.webp";
 export { default as Login3 } from "./login3.jpg";
 export { default as Google } from "./google.svg";
 export { default as Perfil } from "./perfil12.png";

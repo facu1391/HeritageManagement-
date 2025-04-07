@@ -11,3 +11,46 @@ export const obtenerMobiliario = async () => {
     return [];
   }
 };
+
+interface MobiliarioUpdate {
+  descripcion: string;
+  fecha_resolucion: string;
+  estado_conservacion: string;
+  comentarios: string;
+}
+
+export const editarMobiliario = async (id: string, datos: MobiliarioUpdate) => {
+  try {
+    const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(datos),
+    });
+
+    if (!res.ok) {
+      const msg = await res.text();
+      throw new Error(msg || "Error al editar mobiliario");
+    }
+
+    return await res.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const eliminarMobiliario = async (id: string) => {
+  try {
+    const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) {
+      const msg = await res.text();
+      throw new Error(msg || "Error al eliminar mobiliario");
+    }
+
+    return await res.json();
+  } catch (error) {
+    throw error;
+  }
+};
