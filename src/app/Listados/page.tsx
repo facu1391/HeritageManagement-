@@ -58,7 +58,7 @@ export default function Listings() {
       ) : (
         <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
           {/* Listado - lado izquierdo */}
-          <div className="w-full md:w-2/3 bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
+          <div className="w-full md:w-[40%] bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">Listado</h2>
             <input
               type="text"
@@ -93,21 +93,21 @@ export default function Listings() {
           </div>
 
           {/* Detalle - lado derecho */}
-          <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col gap-4">
+          <div className="w-full md:w-[60%] bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col gap-4">
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">Detalle</h2>
             {selected ? (
               <div className="flex flex-col gap-4">
                 <div className="flex justify-center">
                   {selected.foto_url ? (
-                    <div className="w-32 h-32">
+                    <div className="w-60 h-60">
                       <img
                         src={selected.foto_url}
                         alt="Foto del mobiliario"
-                        className="w-32 h-32 object-cover rounded-lg shadow"
+                        className="w-60 h-60 object-cover rounded-lg shadow"
                       />
                     </div>
                   ) : (
-                    <div className="w-32 h-32 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg text-sm text-gray-500 dark:text-gray-300 shadow">
+                    <div className="w-60 h-60 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg text-sm text-gray-500 dark:text-gray-300 shadow">
                       Sin foto
                     </div>
                   )}
@@ -133,6 +133,15 @@ export default function Listings() {
         {selected && (
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-gray-800 dark:text-white mb-2">Detalle Completo</h2>
+            <div className="flex justify-center">
+              {selected.foto_url && (
+                <img
+                  src={selected.foto_url}
+                  alt="Foto del mobiliario"
+                  className="w-60 h-60 object-cover rounded-lg shadow mb-4"
+                />
+              )}
+            </div>
             <p><strong>ID:</strong> {selected.id}</p>
             <p><strong>Descripción:</strong> {selected.descripcion}</p>
             <p><strong>Resolución:</strong> {selected.resolucion}</p>
