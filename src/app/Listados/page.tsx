@@ -2,32 +2,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Wrapper, Modal } from "@/components";
-import {
-  editarMobiliario,
-  eliminarMobiliario,
-  obtenerMobiliario,
-} from "@/services/mobiliarioService";
-
-import {
-  FaIdBadge,
-  FaFileAlt,
-  FaCalendarAlt,
-  FaRegCommentDots,
-  FaWrench,
-  FaInfoCircle,
-} from "react-icons/fa";
+import { Wrapper, Modal, PatrimonioForm, ConfirmModal } from "@/components";
+import { editarMobiliario, eliminarMobiliario, obtenerMobiliario } from "@/services/mobiliarioService";
 import { toast, Toaster } from "react-hot-toast";
-
-interface Mobiliario {
-  id: string;
-  descripcion: string;
-  resolucion: string;
-  fecha_resolucion: string | null;
-  estado_conservacion: string;
-  comentarios: string;
-  foto_url: string;
-}
+import { FaTrash } from "react-icons/fa";
+import type { Mobiliario, FormData, FormularioPatrimonio } from "@/types/types";
 
 export default function Listings() {
   const [mobiliario, setMobiliario] = useState<Mobiliario[]>([]);
@@ -36,14 +15,8 @@ export default function Listings() {
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-
-  const [formValues, setFormValues] = useState({
-    descripcion: "",
-    fecha_resolucion: "",
-    estado_conservacion: "",
-    comentarios: "",
-  });
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     obtenerMobiliario()
@@ -55,27 +28,26 @@ export default function Listings() {
       .finally(() => setLoading(false));
   }, []);
 
-  useEffect(() => {
-    if (selected) {
-      setFormValues({
-        descripcion: selected.descripcion || "",
-        fecha_resolucion: selected.fecha_resolucion || "",
-        estado_conservacion: selected.estado_conservacion || "",
-        comentarios: selected.comentarios || "",
-      });
-    }
-  }, [selected]);
-
-  const handleEdit = async () => {
+  const handleEditSubmit = async (form: FormData) => {
     if (!selected) return;
+
     try {
-      await editarMobiliario(selected.id, formValues);
-      toast.success("Actualizado correctamente");
+      await editarMobiliario(selected.id, {
+        descripcion: form.descripcion,
+        fecha_resolucion: form.fechaResolucion,
+        estado_conservacion: form.estado,
+        comentarios: form.comentarios,
+      });
+
       const updated = mobiliario.map((item) =>
-        item.id === selected.id ? { ...item, ...formValues } : item
+        item.id === selected.id
+          ? { ...item, ...form, fecha_resolucion: form.fechaResolucion, estado_conservacion: form.estado }
+          : item
       );
       setMobiliario(updated);
       setIsEditing(false);
+      setIsModalOpen(false);
+      toast.success("Actualizado correctamente");
     } catch (error) {
       const msg = error instanceof Error ? error.message : "Error al editar";
       toast.error(msg);
@@ -85,15 +57,18 @@ export default function Listings() {
   const handleDelete = async () => {
     if (!selected) return;
     try {
+      setDeleting(true);
       await eliminarMobiliario(selected.id);
       toast.success("Eliminado correctamente");
       setMobiliario((prev) => prev.filter((m) => m.id !== selected.id));
       setSelected(null);
       setIsModalOpen(false);
-      setShowDeleteConfirm(false);
+      setShowConfirmModal(false);
     } catch (error) {
       const msg = error instanceof Error ? error.message : "Error al eliminar";
       toast.error(msg);
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -139,7 +114,7 @@ export default function Listings() {
                   onDoubleClick={() => {
                     setSelected(item);
                     setIsModalOpen(true);
-                    setIsEditing(false);
+                    setIsEditing(true);
                   }}
                   onClick={() => setSelected(item)}
                   className={`p-2 rounded-lg cursor-pointer transition ${
@@ -148,7 +123,9 @@ export default function Listings() {
                       : "hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}
                 >
-                  <p className="font-medium text-gray-800 dark:text-white">{item.descripcion || "Sin descripción"}</p>
+                  <p className="font-medium text-gray-800 dark:text-white">
+                    {item.descripcion || "Sin descripción"}
+                  </p>
                   <p className="text-xs text-gray-500 dark:text-gray-400">ID: {item.id}</p>
                 </li>
               ))}
@@ -183,6 +160,16 @@ export default function Listings() {
                   <p><strong>Estado:</strong> {selected.estado_conservacion}</p>
                   <p><strong>Comentarios:</strong> {selected.comentarios}</p>
                 </div>
+
+                <div className="flex justify-end mt-4">
+                  <button
+                    onClick={() => setShowConfirmModal(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
+                  >
+                    <FaTrash className="text-white" />
+                    Eliminar Mobiliario
+                  </button>
+                </div>
               </div>
             ) : (
               <p className="text-gray-500 dark:text-gray-400">Seleccione un mobiliario.</p>
@@ -191,145 +178,58 @@ export default function Listings() {
         </div>
       )}
 
-      <Modal isOpen={isModalOpen} onClose={() => {
-        setIsModalOpen(false);
-        setIsEditing(false);
-        setShowDeleteConfirm(false);
-      }}>
-        {selected && (
+      <Modal
+        isOpen={isModalOpen}
+        onClose={() => {
+          setIsModalOpen(false);
+          setIsEditing(false);
+        }}
+      >
+        {selected && isEditing && (
           <div className="w-full max-w-4xl mx-auto p-6 max-h-[90vh] overflow-y-auto">
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-              {isEditing ? "Editar Mobiliario" : "Detalle Completo"}
-            </h2>
-
-            <div className="flex justify-center mb-6">
-              {selected.foto_url ? (
-                <img
-                  src={selected.foto_url}
-                  alt="Foto del mobiliario"
-                  className="w-72 h-72 object-cover rounded-lg shadow"
-                />
-              ) : (
-                <div className="w-72 h-72 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg text-sm text-gray-500 dark:text-gray-300 shadow">
-                  Sin foto
-                </div>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm text-gray-800 dark:text-gray-200">
-              <div>
-                <p className="font-semibold flex items-center gap-2"><FaIdBadge /> ID:</p>
-                <p>{selected.id}</p>
-              </div>
-
-              <div>
-                <p className="font-semibold flex items-center gap-2"><FaInfoCircle /> Descripción:</p>
-                {isEditing ? (
-                  <input
-                    className="w-full mt-1 p-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white"
-                    value={formValues.descripcion}
-                    onChange={(e) => setFormValues({ ...formValues, descripcion: e.target.value })}
-                  />
-                ) : (
-                  <p>{selected.descripcion}</p>
-                )}
-              </div>
-
-              <div>
-                <p className="font-semibold flex items-center gap-2"><FaFileAlt /> Resolución:</p>
-                <p>{selected.resolucion}</p>
-              </div>
-
-              <div>
-                <p className="font-semibold flex items-center gap-2"><FaCalendarAlt /> Fecha Resolución:</p>
-                {isEditing ? (
-                  <input
-                    type="date"
-                    className="w-full mt-1 p-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white"
-                    value={formValues.fecha_resolucion}
-                    onChange={(e) => setFormValues({ ...formValues, fecha_resolucion: e.target.value })}
-                  />
-                ) : (
-                  <p>{selected.fecha_resolucion}</p>
-                )}
-              </div>
-
-              <div>
-                <p className="font-semibold flex items-center gap-2"><FaWrench /> Estado:</p>
-                {isEditing ? (
-                  <input
-                    className="w-full mt-1 p-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white"
-                    value={formValues.estado_conservacion}
-                    onChange={(e) => setFormValues({ ...formValues, estado_conservacion: e.target.value })}
-                  />
-                ) : (
-                  <p>{selected.estado_conservacion}</p>
-                )}
-              </div>
-
-              <div className="sm:col-span-2">
-                <p className="font-semibold flex items-center gap-2"><FaRegCommentDots /> Comentarios:</p>
-                {isEditing ? (
-                  <textarea
-                    className="w-full mt-1 p-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white"
-                    value={formValues.comentarios}
-                    onChange={(e) => setFormValues({ ...formValues, comentarios: e.target.value })}
-                  />
-                ) : (
-                  <p>{selected.comentarios || "Sin comentarios"}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex justify-end gap-3 mt-8">
-              <button
-                onClick={() => setIsModalOpen(false)}
-                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-600"
-              >
-                Cerrar
-              </button>
-              {isEditing ? (
-                <button
-                  onClick={handleEdit}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                >
-                  Guardar
-                </button>
-              ) : showDeleteConfirm ? (
-                <>
-                  <button
-                    onClick={() => handleDelete()}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                  >
-                    Confirmar eliminación
-                  </button>
-                  <button
-                    onClick={() => setShowDeleteConfirm(false)}
-                    className="px-4 py-2 bg-gray-200 dark:bg-gray-600 text-gray-800 dark:text-white rounded hover:bg-gray-300 dark:hover:bg-gray-500"
-                  >
-                    Cancelar
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => setShowDeleteConfirm(true)}
-                    className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-                  >
-                    Eliminar
-                  </button>
-                </>
-              )}
-            </div>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Editar Mobiliario</h2>
+            <PatrimonioForm
+              modo="editar"
+              initialData={{
+                id: selected.id,
+                anexo: "",
+                subdependencia: String(selected.ubicacion_id),
+                rubro: "",
+                clase: "",
+                descripcion: selected.descripcion,
+                resolucionNumero: selected.resolucion_numero,
+                resolucionTipo: selected.resolucion_tipo,
+                fechaResolucion: selected.fecha_resolucion ?? "",
+                estado: selected.estado_conservacion,
+                comentarios: selected.comentarios,
+                foto_url: selected.foto_url,
+                opciones: {
+                  noDado: selected.no_dado,
+                  reparacion: selected.reparacion,
+                  paraBaja: selected.para_baja,
+                  faltante: selected.faltante,
+                  sobrante: selected.sobrante,
+                  etiqueta: selected.etiqueta,
+                },
+              }}
+              onSubmit={handleEditSubmit}
+              onCancel={() => {
+                setIsModalOpen(false);
+                setIsEditing(false);
+              }}
+            />
           </div>
         )}
       </Modal>
+
+      <ConfirmModal
+        isOpen={showConfirmModal}
+        onCancel={() => setShowConfirmModal(false)}
+        onConfirm={handleDelete}
+        loading={deleting}
+        title="¿Eliminar mobiliario?"
+        message="Esta acción no se puede deshacer. ¿Deseás continuar?"
+      />
     </Wrapper>
   );
 }
