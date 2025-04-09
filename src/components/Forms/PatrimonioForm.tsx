@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -127,8 +128,8 @@ export default function PatrimonioForm({
   };
 
   return (
-    <form className="space-y-4" onSubmit={handleSubmit}>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <form className="space-y-6" onSubmit={handleSubmit}>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
         <div className="relative">
           <FaIdBadge className="absolute left-3 top-3 text-gray-400" />
           <input
@@ -137,14 +138,14 @@ export default function PatrimonioForm({
             disabled={modo === "editar"}
             onChange={(e) => handleInput("id", e.target.value)}
             placeholder="ID"
-            className="w-full p-2 pl-10 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
+            className="w-full p-3 pl-10 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
           />
         </div>
 
         <select
           value={form.anexo}
           onChange={(e) => handleInput("anexo", e.target.value)}
-          className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
+          className="w-full p-3 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
         >
           <option value="">Seleccionar Anexo</option>
           {anexos.map((a) => (
@@ -157,7 +158,7 @@ export default function PatrimonioForm({
         <select
           value={form.subdependencia}
           onChange={(e) => handleInput("subdependencia", e.target.value)}
-          className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
+          className="w-full p-3 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
         >
           <option value="">Seleccionar Subdependencia</option>
           {subdependencias.map((s) => (
@@ -170,7 +171,7 @@ export default function PatrimonioForm({
         <select
           value={form.rubro}
           onChange={(e) => handleInput("rubro", e.target.value)}
-          className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
+          className="w-full p-3 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
         >
           <option>Seleccionar Rubro</option>
           <option>Rubro A</option>
@@ -180,7 +181,7 @@ export default function PatrimonioForm({
         <select
           value={form.clase}
           onChange={(e) => handleInput("clase", e.target.value)}
-          className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
+          className="w-full p-3 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
         >
           <option>Seleccionar Clase</option>
           <option>Clase A</option>
@@ -193,16 +194,16 @@ export default function PatrimonioForm({
         value={form.descripcion}
         onChange={(e) => handleInput("descripcion", e.target.value)}
         placeholder="Descripción"
-        className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
+        className="w-full p-3 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 items-center">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         <input
           type="number"
           value={form.resolucionNumero}
           onChange={(e) => handleInput("resolucionNumero", e.target.value)}
           placeholder="N° Resolución"
-          className="w-full border-b border-gray-300 bg-transparent text-sm p-2 dark:text-white focus:outline-none focus:border-cyan-400"
+          className="w-full border-b border-gray-300 bg-transparent text-sm p-3 dark:text-white focus:outline-none focus:border-cyan-400"
         />
         <div className="flex flex-col gap-1">
           <label className="text-sm text-gray-700 dark:text-gray-300">Tipo de Resolución</label>
@@ -225,17 +226,17 @@ export default function PatrimonioForm({
             type="date"
             value={form.fechaResolucion}
             onChange={(e) => handleInput("fechaResolucion", e.target.value)}
-            className="w-full p-2 pl-10 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
+            className="w-full p-3 pl-10 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
           />
           <FiCalendar className="absolute left-3 top-3 text-gray-400" />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
           <FaWrench /> Estado de Conservación
         </label>
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-6">
           {["Nuevo", "Bueno", "Regular", "Inútil"].map((item) => (
             <label key={item} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <input
@@ -253,8 +254,8 @@ export default function PatrimonioForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Marcar opciones</label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Marcar opciones</label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
           {[
             { key: "noDado", label: "No dado" },
             { key: "reparacion", label: "Reparación" },
@@ -277,7 +278,7 @@ export default function PatrimonioForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1 flex items-center gap-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
           <FaRegCommentDots /> Comentarios
         </label>
         <textarea
@@ -285,14 +286,16 @@ export default function PatrimonioForm({
           value={form.comentarios}
           onChange={(e) => handleInput("comentarios", e.target.value)}
           placeholder="Comentarios"
-          className="w-full p-2 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
+          className="w-full p-3 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Foto del mobiliario</label>
-        <div className="relative w-full border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg p-4 flex flex-col items-center justify-center text-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Foto del mobiliario
+        </label>
+        <div className="relative w-full border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg p-6 flex flex-col items-center justify-center text-center">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
           </svg>
           <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -301,7 +304,7 @@ export default function PatrimonioForm({
           <input type="file" onChange={handleImageChange} className="absolute opacity-0 w-full h-full cursor-pointer" />
         </div>
         {selectedImage && (
-          <div className="mt-3 flex justify-center">
+          <div className="mt-4 flex justify-center">
             <div className="relative w-32 h-32">
               <Image
                 src={selectedImage}
@@ -314,7 +317,7 @@ export default function PatrimonioForm({
         )}
       </div>
 
-      <div className="flex justify-end gap-3 mt-4">
+      <div className="flex justify-end gap-3 mt-6">
         <button
           type="button"
           onClick={onCancel}
