@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Logo22 } from "@/public";
+import { Logo4 } from "@/public";
 import { useState } from "react";
 import { LogoutAlert } from "@/components";
 
@@ -96,7 +96,7 @@ function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }
         <div className="flex justify-center items-center mb-6">
           <Link href="/Home">
             <Image
-              src={Logo22}
+              src={Logo4}
               alt="Logo"
               className="h-28 w-auto cursor-pointer"
             />

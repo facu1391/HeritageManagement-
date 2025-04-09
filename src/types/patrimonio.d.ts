@@ -15,5 +15,5 @@ export interface PatrimonioData {
     etiqueta: boolean;
     comentarios: string;
     foto_url: string;
-  }
+}
   

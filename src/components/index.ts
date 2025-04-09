@@ -13,3 +13,7 @@ export { default as LogoutAlert } from "./Alerts/LogoutAlert";
 
 //Modals
 export { default as Modal } from "./Modal/Modal";
+export { default as ConfirmModal } from "./Modal/ConfirmModal";
+
+//Forms
+export { default as PatrimonioForm  } from "./Forms/PatrimonioForm"
