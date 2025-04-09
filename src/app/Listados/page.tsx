@@ -2,11 +2,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { Wrapper, Modal, PatrimonioForm, ConfirmModal } from "@/components";
 import { editarMobiliario, eliminarMobiliario, obtenerMobiliario } from "@/services/mobiliarioService";
 import { toast, Toaster } from "react-hot-toast";
 import { FaTrash } from "react-icons/fa";
-import type { Mobiliario, FormData, FormularioPatrimonio } from "@/types/types";
+import type { Mobiliario, FormData } from "@/types/types";
+import useIsMobile from "@/hooks/useIsMobile";
 
 export default function Listings() {
   const [mobiliario, setMobiliario] = useState<Mobiliario[]>([]);
@@ -17,6 +19,8 @@ export default function Listings() {
   const [isEditing, setIsEditing] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     obtenerMobiliario()
@@ -41,7 +45,12 @@ export default function Listings() {
 
       const updated = mobiliario.map((item) =>
         item.id === selected.id
-          ? { ...item, ...form, fecha_resolucion: form.fechaResolucion, estado_conservacion: form.estado }
+          ? {
+              ...item,
+              ...form,
+              fecha_resolucion: form.fechaResolucion,
+              estado_conservacion: form.estado,
+            }
           : item
       );
       setMobiliario(updated);
@@ -111,12 +120,20 @@ export default function Listings() {
               {filteredMobiliario.map((item) => (
                 <li
                   key={item.id}
-                  onDoubleClick={() => {
+                  onClick={() => {
                     setSelected(item);
-                    setIsModalOpen(true);
-                    setIsEditing(true);
+                    if (isMobile) {
+                      setIsModalOpen(true);
+                      setIsEditing(true);
+                    }
                   }}
-                  onClick={() => setSelected(item)}
+                  onDoubleClick={() => {
+                    if (!isMobile) {
+                      setSelected(item);
+                      setIsModalOpen(true);
+                      setIsEditing(true);
+                    }
+                  }}
                   className={`p-2 rounded-lg cursor-pointer transition ${
                     selected?.id === item.id
                       ? "bg-blue-100 dark:bg-cyan-700"
@@ -130,7 +147,9 @@ export default function Listings() {
                 </li>
               ))}
               {filteredMobiliario.length === 0 && (
-                <li className="text-center text-sm text-gray-500 dark:text-gray-400">No hay resultados</li>
+                <li className="text-center text-sm text-gray-500 dark:text-gray-400">
+                  No hay resultados
+                </li>
               )}
             </ul>
           </div>
@@ -141,9 +160,11 @@ export default function Listings() {
               <div className="flex flex-col gap-4">
                 <div className="flex justify-center">
                   {selected.foto_url ? (
-                    <img
+                    <Image
                       src={selected.foto_url}
                       alt="Foto del mobiliario"
+                      width={288}
+                      height={288}
                       className="w-72 h-72 object-cover rounded-lg shadow"
                     />
                   ) : (
@@ -160,7 +181,6 @@ export default function Listings() {
                   <p><strong>Estado:</strong> {selected.estado_conservacion}</p>
                   <p><strong>Comentarios:</strong> {selected.comentarios}</p>
                 </div>
-
                 <div className="flex justify-end mt-4">
                   <button
                     onClick={() => setShowConfirmModal(true)}
@@ -186,7 +206,7 @@ export default function Listings() {
         }}
       >
         {selected && isEditing && (
-          <div className="w-full max-w-4xl mx-auto p-6 max-h-[90vh] overflow-y-auto">
+          <div>
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Editar Mobiliario</h2>
             <PatrimonioForm
               modo="editar"

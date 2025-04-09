@@ -20,7 +20,6 @@ export interface PatrimonioData {
 }
  
 
-
 export interface Anexo {
     id: number;
     nombre: string;
