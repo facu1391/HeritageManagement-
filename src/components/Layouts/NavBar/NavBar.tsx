@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -27,7 +26,7 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
   ];
 
   return (
-    <nav className="bg-gray-800 dark:bg-gray-800 px-4 py-3 flex items-center justify-between">
+    <nav className="fixed top-0 left-0 w-full bg-gray-800 dark:bg-gray-800 px-4 py-3 flex items-center justify-between z-50">
       <button
         onClick={() => setIsSidebarOpen(true)}
         className="lg:hidden text-white focus:outline-none"
@@ -87,12 +86,17 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
               </h3>
               {notifications.length > 0 ? (
                 notifications.map((notif) => (
-                  <div key={notif.id} className="p-2 text-sm text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg">
+                  <div
+                    key={notif.id}
+                    className="p-2 text-sm text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg"
+                  >
                     {notif.message}
                   </div>
                 ))
               ) : (
-                <p className="text-gray-500 dark:text-gray-400 p-2 text-sm">No hay notificaciones</p>
+                <p className="text-gray-500 dark:text-gray-400 p-2 text-sm">
+                  No hay notificaciones
+                </p>
               )}
             </div>
           )}
@@ -113,7 +117,10 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
           </button>
           {isMenuOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg ring-1 ring-black/5">
-              <Link href="/Perfil" className="block px-4 py-2 text-sm text-gray-700 dark:text-white">
+              <Link
+                href="/Perfil"
+                className="block px-4 py-2 text-sm text-gray-700 dark:text-white"
+              >
                 Tu perfil
               </Link>
             </div>
@@ -122,4 +129,4 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
       </div>
     </nav>
   );
-}    
+}

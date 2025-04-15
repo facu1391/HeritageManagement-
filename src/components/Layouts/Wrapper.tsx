@@ -13,15 +13,17 @@ export default function Wrapper({ children }: WrapperProps) {
 
   return (
     <div className="flex h-screen">
-      {/* Sidebar para pantallas grandes */}
+      {/* Sidebar (fijo en escritorio y desplegable en móvil) */}
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
-      <div className="flex-grow flex flex-col">
-        {/* Navbar con botón para abrir el Sidebar */}
+      {/* Contenedor principal: se añade un margen izquierdo en escritorio para que el contenido no se superponga con el sidebar fijo */}
+      <div className="flex-grow flex flex-col lg:ml-64">
+        {/* Navbar fijo */}
         <Navbar setIsSidebarOpen={setIsSidebarOpen} />
         <FloatingButton />
 
-        <main className="flex-grow p-4 bg-gray-100 dark:bg-gray-900">
+        {/* Para que el contenido no quede oculto por el Navbar fijo, se agrega margen superior */}
+        <main className="flex-grow p-4 bg-gray-100 dark:bg-gray-900 mt-16">
           {children}
         </main>
       </div>
