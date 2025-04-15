@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -37,7 +36,9 @@ export default function CasaCentral() {
 
   useEffect(() => {
     obtenerAnexos()
-      .then((data) => setAnexos(data.sort((a: Anexo, b: Anexo) => a.id - b.id)))
+      .then((data) =>
+        setAnexos(data.sort((a: Anexo, b: Anexo) => a.id - b.id))
+      )
       .catch(() => toast.error("Error al cargar anexos"))
       .finally(() => setLoadingAnexos(false));
   }, []);
@@ -46,7 +47,11 @@ export default function CasaCentral() {
     if (anexoSeleccionado) {
       setLoadingSubs(true);
       obtenerSubdependencias(parseInt(anexoSeleccionado))
-        .then((subs) => setSubdependencias(subs.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id)))
+        .then((subs) =>
+          setSubdependencias(
+            subs.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id)
+          )
+        )
         .catch(() => toast.error("Error al cargar subdependencias"))
         .finally(() => setLoadingSubs(false));
     } else {
@@ -82,8 +87,12 @@ export default function CasaCentral() {
       toast.success("Subdependencia guardada correctamente");
       setIdSub("");
       setNombreSub("");
-      const actualizadas = await obtenerSubdependencias(parseInt(anexoSeleccionado));
-      setSubdependencias(actualizadas.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id));
+      const actualizadas = await obtenerSubdependencias(
+        parseInt(anexoSeleccionado)
+      );
+      setSubdependencias(
+        actualizadas.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id)
+      );
     } catch {
       toast.error("Error al guardar subdependencia");
     }
@@ -103,10 +112,17 @@ export default function CasaCentral() {
         </button>
       </div>
 
-      <h1 className="text-2xl font-bold mb-8 mt-24 text-center">Gestión de Anexos</h1>
+      <h1 className="text-2xl font-bold mb-8 mt-24 text-center">
+        Gestión de Anexos
+      </h1>
 
-      <div className="grid grid-cols-1 gap-6 w-full max-w-md">
-        {/* Agregar Anexo */}
+      {/*
+        Contenedor de tarjetas:
+        - En móvil (por defecto): max-w-4xl
+        - En escritorio (lg): max-w-5xl para agrandar las tarjetas
+      */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-4xl lg:max-w-5xl mx-auto">
+        {/* Tarjeta 1: Agregar Anexo */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold mb-4">Agregar Anexo</h2>
           <input
@@ -138,11 +154,13 @@ export default function CasaCentral() {
           </button>
         </div>
 
-        {/* Seleccionar Anexo */}
+        {/* Tarjeta 2: Seleccionar Anexo */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold mb-4">Seleccionar Anexo</h2>
           {loadingAnexos ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400">Cargando anexos...</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Cargando anexos...
+            </p>
           ) : (
             <select
               className="w-full mb-3 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700"
@@ -159,20 +177,24 @@ export default function CasaCentral() {
           )}
 
           {loadingSubs ? (
-            <p className="text-sm text-gray-500 dark:text-gray-400">Cargando subdependencias...</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              Cargando subdependencias...
+            </p>
           ) : (
             <ul className="list-disc pl-5 text-sm text-gray-700 dark:text-gray-300">
               {subdependencias.length === 0 && anexoSeleccionado && (
                 <li>No hay subdependencias</li>
               )}
               {subdependencias.map((sub) => (
-                <li key={sub.id}>{sub.id} - {sub.nombre}</li>
+                <li key={sub.id}>
+                  {sub.id} - {sub.nombre}
+                </li>
               ))}
             </ul>
           )}
         </div>
 
-        {/* Agregar Subdependencia */}
+        {/* Tarjeta 3: Agregar Subdependencia */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold mb-4">Agregar Subdependencia</h2>
           <input

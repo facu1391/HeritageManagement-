@@ -35,7 +35,7 @@ export const editarMobiliario = async (id: string, datos: MobiliarioUpdate) => {
     return await res.json();
   } catch (error) {
     throw error;
-  }
+  } 
 };
 
 export const eliminarMobiliario = async (id: string) => {
