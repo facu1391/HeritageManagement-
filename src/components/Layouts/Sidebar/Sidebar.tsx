@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -56,7 +55,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
   return (
     <>
       {/* Sidebar fijo en pantallas grandes */}
-      <aside className="hidden lg:flex flex-col justify-between w-64 h-screen pt-20 bg-gray-800 border-r border-gray-700">
+      <aside className="hidden lg:flex fixed top-0 left-0 flex-col justify-between w-64 h-screen pt-20 bg-gray-800 border-r border-gray-700">
         <SidebarContent />
       </aside>
 
@@ -138,7 +137,7 @@ function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }
         </ul>
       </div>
 
-      {/* Botón Cerrar sesión al fondo */}
+      {/* Botón Cerrar sesión */}
       <div className="mt-6 border-t border-gray-700 pt-4">
         <button
           onClick={() => setShowAlert(true)}
@@ -162,7 +161,9 @@ function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }
         </button>
       </div>
 
-      {showAlert && <LogoutAlert onConfirm={confirmLogout} onCancel={cancelLogout} />}
+      {showAlert && (
+        <LogoutAlert onConfirm={confirmLogout} onCancel={cancelLogout} />
+      )}
     </div>
   );
-}  
+}
