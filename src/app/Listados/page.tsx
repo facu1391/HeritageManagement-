@@ -10,6 +10,24 @@ import { FaTrash } from "react-icons/fa";
 import type { Mobiliario, FormData } from "@/types/types";
 import useIsMobile from "@/hooks/useIsMobile";
 
+// Función para extraer número y tipo de resolución del campo concatenado
+function parseResolucion(resolucion: string | null): { resolucionNumero: string; resolucionTipo: string } {
+  if (!resolucion) return { resolucionNumero: "", resolucionTipo: "" };
+  // Suponiendo el formato: "Resol Nº{numero} {tipo}"
+  const regex = /Resol Nº(\S+)\s*(.*)/;
+  const matches = resolucion.match(regex);
+  if (matches) {
+    let numero = matches[1];
+    let tipo = matches[2];
+    // Si el número es "None", lo reseteamos a cadena vacía
+    if (numero.toLowerCase() === "none") {
+      numero = "";
+    }
+    return { resolucionNumero: numero, resolucionTipo: tipo };
+  }
+  return { resolucionNumero: "", resolucionTipo: "" };
+}
+
 export default function Listings() {
   const [mobiliario, setMobiliario] = useState<Mobiliario[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,6 +59,9 @@ export default function Listings() {
         fecha_resolucion: form.fechaResolucion,
         estado_conservacion: form.estado,
         comentarios: form.comentarios,
+        // Se incluyen los nuevos campos de resolución desde el formulario
+        resolucion_numero: form.resolucionNumero,
+        resolucion_tipo: form.resolucionTipo,
       });
 
       const updated = mobiliario.map((item) =>
@@ -50,6 +71,11 @@ export default function Listings() {
               ...form,
               fecha_resolucion: form.fechaResolucion,
               estado_conservacion: form.estado,
+              // Actualizamos el front con los valores nuevos
+              resolucion_numero: form.resolucionNumero,
+              resolucion_tipo: form.resolucionTipo,
+              // También se puede recalcular la cadena "resolución" en el front si lo deseas:
+              resolucion: `Resol Nº${form.resolucionNumero} ${form.resolucionTipo}`.trim(),
             }
           : item
       );
@@ -176,7 +202,16 @@ export default function Listings() {
                 <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
                   <p><strong>ID:</strong> {selected.id}</p>
                   <p><strong>Descripción:</strong> {selected.descripcion}</p>
-                  <p><strong>Resolución:</strong> {selected.resolucion}</p>
+                  {/* Se muestran campos parseados */}
+                  {(() => {
+                    const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
+                    return (
+                      <>
+                        <p><strong>Resolución N°:</strong> {resolucionNumero || "No definida"}</p>
+                        <p><strong>Tipo Resol.:</strong> {resolucionTipo || "No definida"}</p>
+                      </>
+                    );
+                  })()}
                   <p><strong>Fecha:</strong> {selected.fecha_resolucion}</p>
                   <p><strong>Estado:</strong> {selected.estado_conservacion}</p>
                   <p><strong>Comentarios:</strong> {selected.comentarios}</p>
@@ -208,36 +243,46 @@ export default function Listings() {
         {selected && isEditing && (
           <div>
             <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Editar Mobiliario</h2>
-            <PatrimonioForm
-              modo="editar"
-              initialData={{
-                id: selected.id,
-                anexo: "",
-                subdependencia: String(selected.ubicacion_id),
-                rubro: "",
-                clase: "",
-                descripcion: selected.descripcion,
-                resolucionNumero: selected.resolucion_numero,
-                resolucionTipo: selected.resolucion_tipo,
-                fechaResolucion: selected.fecha_resolucion ?? "",
-                estado: selected.estado_conservacion,
-                comentarios: selected.comentarios,
-                foto_url: selected.foto_url,
-                opciones: {
-                  noDado: selected.no_dado,
-                  reparacion: selected.reparacion,
-                  paraBaja: selected.para_baja,
-                  faltante: selected.faltante,
-                  sobrante: selected.sobrante,
-                  etiqueta: selected.etiqueta,
-                },
-              }}
-              onSubmit={handleEditSubmit}
-              onCancel={() => {
-                setIsModalOpen(false);
-                setIsEditing(false);
-              }}
-            />
+            {/*
+              Antes de pasar "initialData" al formulario, parseamos "selected.resolucion".
+              Así, aunque el back solo retorne "resolucion" concatenado, el form se rellenará con
+              los valores correctos.
+            */}
+            {(() => {
+              const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
+              return (
+                <PatrimonioForm
+                  modo="editar"
+                  initialData={{
+                    id: selected.id,
+                    anexo: "",
+                    subdependencia: String(selected.ubicacion_id),
+                    rubro: "",
+                    clase: "",
+                    descripcion: selected.descripcion,
+                    resolucionNumero,
+                    resolucionTipo,
+                    fechaResolucion: selected.fecha_resolucion ?? "",
+                    estado: selected.estado_conservacion,
+                    comentarios: selected.comentarios,
+                    foto_url: selected.foto_url,
+                    opciones: {
+                      noDado: selected.no_dado,
+                      reparacion: selected.para_reparacion,
+                      para_baja: selected.para_baja,
+                      faltante: selected.faltante,
+                      sobrante: selected.sobrante,
+                      etiqueta: selected.problema_etiqueta,
+                    },
+                  }}
+                  onSubmit={handleEditSubmit}
+                  onCancel={() => {
+                    setIsModalOpen(false);
+                    setIsEditing(false);
+                  }}
+                />
+              );
+            })()}
           </div>
         )}
       </Modal>
