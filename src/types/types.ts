@@ -1,6 +1,4 @@
 
-// types.ts
-
 export interface PatrimonioData {
     id: string;
     ubicacion_id: number;
@@ -18,8 +16,7 @@ export interface PatrimonioData {
     comentarios: string;
     foto_url: string;
 }
- 
-
+  
 export interface Anexo {
     id: number;
     nombre: string;
@@ -50,7 +47,7 @@ export interface FormularioPatrimonio {
       faltante: boolean;
       sobrante: boolean;
       etiqueta: boolean;
-};
+    };
 }
   
 export interface Mobiliario {
@@ -72,10 +69,13 @@ export interface Mobiliario {
     etiqueta: boolean;
 }
   
+  // Se actualiza la interfaz de datos para la edición
 export interface FormData {
     descripcion: string;
     fechaResolucion: string;
     estado: string;
     comentarios: string;
+    resolucionNumero: string;
+    resolucionTipo: string;
 }
   

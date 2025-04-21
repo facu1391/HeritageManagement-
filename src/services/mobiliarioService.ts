@@ -17,6 +17,9 @@ interface MobiliarioUpdate {
   fecha_resolucion: string;
   estado_conservacion: string;
   comentarios: string;
+  // Se agregan los nuevos campos; se usan opcionales si no son obligatorios en el backend
+  resolucion_numero?: string;
+  resolucion_tipo?: string;
 }
 
 export const editarMobiliario = async (id: string, datos: MobiliarioUpdate) => {
@@ -35,7 +38,7 @@ export const editarMobiliario = async (id: string, datos: MobiliarioUpdate) => {
     return await res.json();
   } catch (error) {
     throw error;
-  } 
+  }
 };
 
 export const eliminarMobiliario = async (id: string) => {

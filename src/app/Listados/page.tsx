@@ -41,6 +41,9 @@ export default function Listings() {
         fecha_resolucion: form.fechaResolucion,
         estado_conservacion: form.estado,
         comentarios: form.comentarios,
+        // Se incluyen los nuevos campos de resolución
+        resolucion_numero: form.resolucionNumero,
+        resolucion_tipo: form.resolucionTipo,
       });
 
       const updated = mobiliario.map((item) =>
@@ -50,6 +53,8 @@ export default function Listings() {
               ...form,
               fecha_resolucion: form.fechaResolucion,
               estado_conservacion: form.estado,
+              resolucion_numero: form.resolucionNumero,
+              resolucion_tipo: form.resolucionTipo,
             }
           : item
       );
@@ -176,7 +181,12 @@ export default function Listings() {
                 <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
                   <p><strong>ID:</strong> {selected.id}</p>
                   <p><strong>Descripción:</strong> {selected.descripcion}</p>
-                  <p><strong>Resolución:</strong> {selected.resolucion}</p>
+                  <p>
+                    <strong>Resolución N°:</strong> {selected.resolucion_numero || "No definida"}
+                  </p>
+                  <p>
+                    <strong>Tipo Resol.:</strong> {selected.resolucion_tipo || "No definida"}
+                  </p>
                   <p><strong>Fecha:</strong> {selected.fecha_resolucion}</p>
                   <p><strong>Estado:</strong> {selected.estado_conservacion}</p>
                   <p><strong>Comentarios:</strong> {selected.comentarios}</p>

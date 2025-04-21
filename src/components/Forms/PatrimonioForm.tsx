@@ -254,7 +254,9 @@ export default function PatrimonioForm({
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Marcar opciones</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          Marcar opciones
+        </label>
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
           {[
             { key: "noDado", label: "No dado" },
