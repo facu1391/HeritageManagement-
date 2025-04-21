@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -52,10 +51,12 @@ export default function PatrimonioForm({
   const [subdependencias, setSubdependencias] = useState<Subdependencia[]>([]);
   const [nomencladorOpen, setNomencladorOpen] = useState(false);
 
+  // Cargo los anexos
   useEffect(() => {
     obtenerAnexos().then(setAnexos);
   }, []);
 
+  // Cada vez que cambie "anexo", cargo sus subdependencias
   useEffect(() => {
     if (form.anexo) {
       obtenerSubdependencias(Number(form.anexo)).then(setSubdependencias);
@@ -64,20 +65,34 @@ export default function PatrimonioForm({
     }
   }, [form.anexo]);
 
+  // Cuando me llega initialData, relleno form garantizando strings (no null/undefined)
   useEffect(() => {
-    if (initialData) {
-      setForm((prev) => ({
-        ...prev,
-        ...initialData,
-        resolucionNumero: initialData.resolucionNumero || "",
-        resolucionTipo: initialData.resolucionTipo || "",
-        opciones: {
-          ...prev.opciones,
-          ...initialData.opciones,
-        },
-      }));
-      setSelectedImage(initialData.foto_url || null);
-    }
+    if (!initialData) return;
+
+    setForm({
+      id:               initialData.id               ?? "",
+      anexo:            initialData.anexo            ?? "",
+      subdependencia:   initialData.subdependencia   ?? "",
+      rubro:            initialData.rubro            ?? "",
+      clase:            initialData.clase            ?? "",
+      descripcion:      initialData.descripcion      ?? "",
+      resolucionNumero: initialData.resolucionNumero ?? "",
+      resolucionTipo:   initialData.resolucionTipo   ?? "",
+      fechaResolucion:  initialData.fechaResolucion  ?? "",
+      estado:           initialData.estado           ?? "",
+      comentarios:      initialData.comentarios      ?? "",
+      foto_url:         initialData.foto_url         ?? "",
+      opciones: {
+        noDado:     initialData.opciones.noDado     ?? false,
+        reparacion: initialData.opciones.reparacion ?? false,
+        paraBaja:   initialData.opciones.paraBaja   ?? false,
+        faltante:   initialData.opciones.faltante   ?? false,
+        sobrante:   initialData.opciones.sobrante   ?? false,
+        etiqueta:   initialData.opciones.etiqueta   ?? false,
+      },
+    });
+
+    setSelectedImage(initialData.foto_url ?? null);
   }, [initialData]);
 
   const handleInput = (key: keyof FormularioPatrimonio, value: string) => {
@@ -96,22 +111,23 @@ export default function PatrimonioForm({
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("foto", file);
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/uploads`, {
-          method: "POST",
-          body: formData,
-        });
-        if (!res.ok) throw new Error("Error al subir imagen");
-        const data = await res.json();
-        setSelectedImage(data.url);
-        handleInput("foto_url", data.url);
-        toast.success("Imagen subida correctamente");
-      } catch (err) {
-        toast.error((err as Error).message || "Error al subir imagen");
-      }
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append("foto", file);
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/uploads`, {
+        method: "POST",
+        body: formData,
+      });
+      if (!res.ok) throw new Error("Error al subir imagen");
+      const data = await res.json();
+      setSelectedImage(data.url);
+      handleInput("foto_url", data.url);
+      toast.success("Imagen subida correctamente");
+    } catch (err) {
+      toast.error((err as Error).message || "Error al subir imagen");
     }
   };
 
@@ -123,6 +139,7 @@ export default function PatrimonioForm({
   return (
     <>
       <form className="space-y-6" onSubmit={handleSubmit}>
+        {/* ID, Anexo y Subdependencia */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
           <div className="relative">
             <FaIdBadge className="absolute left-3 top-3 text-gray-400" />
@@ -135,6 +152,7 @@ export default function PatrimonioForm({
               className="w-full p-3 pl-10 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
             />
           </div>
+
           <select
             value={form.anexo}
             onChange={(e) => handleInput("anexo", e.target.value)}
@@ -147,6 +165,7 @@ export default function PatrimonioForm({
               </option>
             ))}
           </select>
+
           <select
             value={form.subdependencia}
             onChange={(e) => handleInput("subdependencia", e.target.value)}
@@ -159,15 +178,12 @@ export default function PatrimonioForm({
               </option>
             ))}
           </select>
-          {/* Rubro+Clase */}
+
+          {/* Rubro + Clase con botón para abrir Nomenclador */}
           <div className="col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-              <p>
-                <strong>Rubro:</strong> {form.rubro || "No seleccionado"}
-              </p>
-              <p>
-                <strong>Clase:</strong> {form.clase || "No seleccionado"}
-              </p>
+              <p><strong>Rubro:</strong> {form.rubro || "No seleccionado"}</p>
+              <p><strong>Clase:</strong> {form.clase || "No seleccionado"}</p>
             </div>
             <button
               type="button"
@@ -179,6 +195,7 @@ export default function PatrimonioForm({
           </div>
         </div>
 
+        {/* Descripción */}
         <input
           type="text"
           value={form.descripcion}
@@ -187,6 +204,7 @@ export default function PatrimonioForm({
           className="w-full p-3 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
         />
 
+        {/* Resolución: número, tipo y fecha */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           <input
             type="number"
@@ -200,10 +218,7 @@ export default function PatrimonioForm({
               Tipo de Resolución
             </label>
             {["PSA", "Decreto", "Otro"].map((item) => (
-              <label
-                key={item}
-                className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
-              >
+              <label key={item} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <input
                   type="radio"
                   name="resolucionTipo"
@@ -227,16 +242,14 @@ export default function PatrimonioForm({
           </div>
         </div>
 
+        {/* Estado de conservación */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
             <FaWrench /> Estado de Conservación
           </label>
           <div className="flex flex-wrap gap-6">
             {["Nuevo", "Bueno", "Regular", "Inútil"].map((item) => (
-              <label
-                key={item}
-                className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
-              >
+              <label key={item} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <input
                   type="radio"
                   name="estado"
@@ -251,6 +264,7 @@ export default function PatrimonioForm({
           </div>
         </div>
 
+        {/* Opciones */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Marcar opciones
@@ -264,10 +278,7 @@ export default function PatrimonioForm({
               { key: "sobrante", label: "Sobrante" },
               { key: "etiqueta", label: "Problema etiqueta" },
             ].map(({ key, label }) => (
-              <label
-                key={key}
-                className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
-              >
+              <label key={key} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <input
                   type="checkbox"
                   checked={form.opciones[key as keyof typeof form.opciones]}
@@ -280,6 +291,7 @@ export default function PatrimonioForm({
           </div>
         </div>
 
+        {/* Comentarios */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
             <FaRegCommentDots /> Comentarios
@@ -293,6 +305,7 @@ export default function PatrimonioForm({
           />
         </div>
 
+        {/* Subir imagen */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Foto del mobiliario
@@ -308,8 +321,7 @@ export default function PatrimonioForm({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              <span className="text-indigo-600 font-medium underline">Subir imagen</span> o arrastrar y
-              soltar
+              <span className="text-indigo-600 font-medium underline">Subir imagen</span> o arrastrar y soltar
             </p>
             <input
               type="file"
@@ -326,11 +338,12 @@ export default function PatrimonioForm({
                   fill
                   className="rounded-lg shadow object-cover"
                 />
-              </div>  
+              </div>
             </div>
           )}
         </div>
 
+        {/* Botones Cancelar / Guardar */}
         <div className="flex justify-end gap-3 mt-6">
           <button
             type="button"
@@ -349,9 +362,9 @@ export default function PatrimonioForm({
         </div>
       </form>
 
+      {/* Modal Nomenclador */}
       {nomencladorOpen && (
         <Nomenclador
-          // Aquí pasas props reales a tu componente
           onSave={(sel) => {
             setForm((prev) => ({
               ...prev,
