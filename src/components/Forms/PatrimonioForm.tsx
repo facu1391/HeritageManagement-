@@ -15,7 +15,6 @@ interface Props {
   initialData?: FormularioPatrimonio;
   onSubmit: (data: FormularioPatrimonio) => void;
   onCancel: () => void;
-  onDelete?: () => void;
   loading?: boolean;
 }
 
@@ -51,7 +50,6 @@ export default function PatrimonioForm({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [anexos, setAnexos] = useState<Anexo[]>([]);
   const [subdependencias, setSubdependencias] = useState<Subdependencia[]>([]);
-  // Estado para controlar el modal Nomenclador
   const [nomencladorOpen, setNomencladorOpen] = useState(false);
 
   useEffect(() => {
@@ -101,25 +99,18 @@ export default function PatrimonioForm({
     if (file) {
       const formData = new FormData();
       formData.append("foto", file);
-
       try {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/uploads`, {
           method: "POST",
           body: formData,
         });
-
         if (!res.ok) throw new Error("Error al subir imagen");
-
         const data = await res.json();
         setSelectedImage(data.url);
         handleInput("foto_url", data.url);
         toast.success("Imagen subida correctamente");
-      } catch (error: unknown) {
-        if (error instanceof Error) {
-          toast.error(error.message);
-        } else {
-          toast.error("Error al subir imagen");
-        }
+      } catch (err) {
+        toast.error((err as Error).message || "Error al subir imagen");
       }
     }
   };
@@ -144,7 +135,6 @@ export default function PatrimonioForm({
               className="w-full p-3 pl-10 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
             />
           </div>
-
           <select
             value={form.anexo}
             onChange={(e) => handleInput("anexo", e.target.value)}
@@ -157,7 +147,6 @@ export default function PatrimonioForm({
               </option>
             ))}
           </select>
-
           <select
             value={form.subdependencia}
             onChange={(e) => handleInput("subdependencia", e.target.value)}
@@ -170,14 +159,9 @@ export default function PatrimonioForm({
               </option>
             ))}
           </select>
-
-          {/*
-            En lugar de mostrar dos <select> separados para rubro y clase, 
-            mostramos un área con los valores actuales (o "No seleccionado") 
-            y un botón que abre el modal Nomenclador.
-          */}
-          <div className="col-span-2 flex items-center gap-4">
-            <div className="text-sm text-gray-700 dark:text-gray-300">
+          {/* Rubro+Clase */}
+          <div className="col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
               <p>
                 <strong>Rubro:</strong> {form.rubro || "No seleccionado"}
               </p>
@@ -188,7 +172,7 @@ export default function PatrimonioForm({
             <button
               type="button"
               onClick={() => setNomencladorOpen(true)}
-              className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
             >
               Nomenclador
             </button>
@@ -209,19 +193,24 @@ export default function PatrimonioForm({
             value={form.resolucionNumero}
             onChange={(e) => handleInput("resolucionNumero", e.target.value)}
             placeholder="N° Resolución"
-            className="w-full border-b border-gray-300 bg-transparent text-sm p-3 dark:text-white focus:outline-none focus:border-cyan-400"
+            className="w-full border-b border-gray-300 bg-transparent text-sm p-3 dark:text-white focus:outline-none focus:border-indigo-500"
           />
           <div className="flex flex-col gap-1">
-            <label className="text-sm text-gray-700 dark:text-gray-300">Tipo de Resolución</label>
+            <label className="text-sm text-gray-700 dark:text-gray-300">
+              Tipo de Resolución
+            </label>
             {["PSA", "Decreto", "Otro"].map((item) => (
-              <label key={item} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <label
+                key={item}
+                className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
+              >
                 <input
                   type="radio"
                   name="resolucionTipo"
                   value={item}
                   checked={form.resolucionTipo === item}
                   onChange={() => handleInput("resolucionTipo", item)}
-                  className="accent-cyan-700"
+                  className="accent-indigo-600"
                 />
                 {item}
               </label>
@@ -244,14 +233,17 @@ export default function PatrimonioForm({
           </label>
           <div className="flex flex-wrap gap-6">
             {["Nuevo", "Bueno", "Regular", "Inútil"].map((item) => (
-              <label key={item} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <label
+                key={item}
+                className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
+              >
                 <input
                   type="radio"
                   name="estado"
                   value={item}
                   checked={form.estado === item}
                   onChange={() => handleInput("estado", item)}
-                  className="accent-cyan-700"
+                  className="accent-indigo-600"
                 />
                 {item}
               </label>
@@ -260,7 +252,9 @@ export default function PatrimonioForm({
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Marcar opciones</label>
+          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Marcar opciones
+          </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
             {[
               { key: "noDado", label: "No dado" },
@@ -270,12 +264,15 @@ export default function PatrimonioForm({
               { key: "sobrante", label: "Sobrante" },
               { key: "etiqueta", label: "Problema etiqueta" },
             ].map(({ key, label }) => (
-              <label key={key} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <label
+                key={key}
+                className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300"
+              >
                 <input
                   type="checkbox"
                   checked={form.opciones[key as keyof typeof form.opciones]}
                   onChange={() => handleCheckbox(key as keyof typeof form.opciones)}
-                  className="accent-cyan-700"
+                  className="accent-indigo-600"
                 />
                 {label}
               </label>
@@ -301,13 +298,24 @@ export default function PatrimonioForm({
             Foto del mobiliario
           </label>
           <div className="relative w-full border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg p-6 flex flex-col items-center justify-center text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-12 h-12 text-gray-400 mb-3"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             <p className="text-sm text-gray-600 dark:text-gray-300">
-              <span className="text-cyan-700 font-medium underline">Subir imagen</span> o arrastrar y soltar
+              <span className="text-indigo-600 font-medium underline">Subir imagen</span> o arrastrar y
+              soltar
             </p>
-            <input type="file" onChange={handleImageChange} className="absolute opacity-0 w-full h-full cursor-pointer" />
+            <input
+              type="file"
+              onChange={handleImageChange}
+              className="absolute opacity-0 w-full h-full cursor-pointer"
+            />
           </div>
           {selectedImage && (
             <div className="mt-4 flex justify-center">
@@ -318,7 +326,7 @@ export default function PatrimonioForm({
                   fill
                   className="rounded-lg shadow object-cover"
                 />
-              </div>
+              </div>  
             </div>
           )}
         </div>
@@ -341,29 +349,14 @@ export default function PatrimonioForm({
         </div>
       </form>
 
-      {/* Integración del modal Nomenclador */}
       {nomencladorOpen && (
         <Nomenclador
-          // Se pasan datos de ejemplo; reemplaza con los datos reales según corresponda
-          rubros={[
-            { id_rubro: 1, nombre: "Rubro A" },
-            { id_rubro: 2, nombre: "Rubro B" },
-            { id_rubro: 3, nombre: "Rubro C" },
-          ]}
-          clases={[
-            { id_rubro: 1, id_clase: 101, descripcion: "Clase 101 - Ejemplo" },
-            { id_rubro: 1, id_clase: 102, descripcion: "Clase 102 - Ejemplo" },
-            { id_rubro: 2, id_clase: 201, descripcion: "Clase 201 - Ejemplo" },
-            { id_rubro: 3, id_clase: 301, descripcion: "Clase 301 - Ejemplo" },
-          ]}
-          onSave={(selectedData) => {
-            // Actualiza los campos form.rubro y form.clase según la selección
+          // Aquí pasas props reales a tu componente
+          onSave={(sel) => {
             setForm((prev) => ({
               ...prev,
-              // Aquí puedes decidir qué mostrar; en este ejemplo se asigna el nombre del rubro
-              rubro: selectedData.rubro.nombre,
-              // Y se asigna el id de la clase o la descripción, según necesites
-              clase: selectedData.clase.descripcion,
+              rubro: sel.rubro.nombre,
+              clase: sel.clase.descripcion,
             }));
             setNomencladorOpen(false);
           }}
