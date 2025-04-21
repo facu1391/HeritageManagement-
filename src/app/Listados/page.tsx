@@ -13,16 +13,12 @@ import useIsMobile from "@/hooks/useIsMobile";
 // Función para extraer número y tipo de resolución del campo concatenado
 function parseResolucion(resolucion: string | null): { resolucionNumero: string; resolucionTipo: string } {
   if (!resolucion) return { resolucionNumero: "", resolucionTipo: "" };
-  // Suponiendo el formato: "Resol Nº{numero} {tipo}"
   const regex = /Resol Nº(\S+)\s*(.*)/;
   const matches = resolucion.match(regex);
   if (matches) {
     let numero = matches[1];
-    let tipo = matches[2];
-    // Si el número es "None", lo reseteamos a cadena vacía
-    if (numero.toLowerCase() === "none") {
-      numero = "";
-    }
+    let tipo   = matches[2];
+    if (numero.toLowerCase() === "none") numero = "";
     return { resolucionNumero: numero, resolucionTipo: tipo };
   }
   return { resolucionNumero: "", resolucionTipo: "" };
@@ -42,7 +38,7 @@ export default function Listings() {
 
   useEffect(() => {
     obtenerMobiliario()
-      .then((data) => {
+      .then(data => {
         setMobiliario(data);
         if (data.length > 0) setSelected(data[0]);
       })
@@ -52,29 +48,25 @@ export default function Listings() {
 
   const handleEditSubmit = async (form: FormData) => {
     if (!selected) return;
-
     try {
       await editarMobiliario(selected.id, {
         descripcion: form.descripcion,
         fecha_resolucion: form.fechaResolucion,
         estado_conservacion: form.estado,
         comentarios: form.comentarios,
-        // Se incluyen los nuevos campos de resolución desde el formulario
         resolucion_numero: form.resolucionNumero,
         resolucion_tipo: form.resolucionTipo,
       });
 
-      const updated = mobiliario.map((item) =>
+      const updated = mobiliario.map(item =>
         item.id === selected.id
           ? {
               ...item,
               ...form,
               fecha_resolucion: form.fechaResolucion,
               estado_conservacion: form.estado,
-              // Actualizamos el front con los valores nuevos
               resolucion_numero: form.resolucionNumero,
               resolucion_tipo: form.resolucionTipo,
-              // También se puede recalcular la cadena "resolución" en el front si lo deseas:
               resolucion: `Resol Nº${form.resolucionNumero} ${form.resolucionTipo}`.trim(),
             }
           : item
@@ -84,8 +76,7 @@ export default function Listings() {
       setIsModalOpen(false);
       toast.success("Actualizado correctamente");
     } catch (error) {
-      const msg = error instanceof Error ? error.message : "Error al editar";
-      toast.error(msg);
+      toast.error(error instanceof Error ? error.message : "Error al editar");
     }
   };
 
@@ -94,26 +85,22 @@ export default function Listings() {
     try {
       setDeleting(true);
       await eliminarMobiliario(selected.id);
-      toast.success("Eliminado correctamente");
-      setMobiliario((prev) => prev.filter((m) => m.id !== selected.id));
+      setMobiliario(prev => prev.filter(m => m.id !== selected.id));
       setSelected(null);
-      setIsModalOpen(false);
       setShowConfirmModal(false);
+      setIsModalOpen(false);
+      toast.success("Eliminado correctamente");
     } catch (error) {
-      const msg = error instanceof Error ? error.message : "Error al eliminar";
-      toast.error(msg);
+      toast.error(error instanceof Error ? error.message : "Error al eliminar");
     } finally {
       setDeleting(false);
     }
   };
 
   const filteredMobiliario = mobiliario
-    .filter((item) => {
-      const searchTerm = search.toLowerCase();
-      return (
-        item.descripcion.toLowerCase().includes(searchTerm) ||
-        item.id.toLowerCase().includes(searchTerm)
-      );
+    .filter(item => {
+      const term = search.toLowerCase();
+      return item.descripcion.toLowerCase().includes(term) || item.id.toLowerCase().includes(term);
     })
     .slice(0, 10);
 
@@ -133,31 +120,32 @@ export default function Listings() {
         <p className="text-center text-gray-600 dark:text-gray-300">No hay registros</p>
       ) : (
         <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
+          {/* Lista */}
           <div className="w-full md:w-[40%] bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">Listado</h2>
             <input
               type="text"
               placeholder="Buscar por ID o descripción"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={e => setSearch(e.target.value)}
               className="w-full p-2 mb-3 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-sm"
             />
             <ul className="space-y-2 max-h-[500px] overflow-y-auto">
-              {filteredMobiliario.map((item) => (
+              {filteredMobiliario.map(item => (
                 <li
                   key={item.id}
                   onClick={() => {
                     setSelected(item);
                     if (isMobile) {
-                      setIsModalOpen(true);
                       setIsEditing(true);
+                      setIsModalOpen(true);
                     }
                   }}
                   onDoubleClick={() => {
                     if (!isMobile) {
                       setSelected(item);
-                      setIsModalOpen(true);
                       setIsEditing(true);
+                      setIsModalOpen(true);
                     }
                   }}
                   className={`p-2 rounded-lg cursor-pointer transition ${
@@ -180,6 +168,7 @@ export default function Listings() {
             </ul>
           </div>
 
+          {/* Detalle */}
           <div className="w-full md:w-[60%] bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col gap-4">
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">Detalle</h2>
             {selected ? (
@@ -202,13 +191,12 @@ export default function Listings() {
                 <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
                   <p><strong>ID:</strong> {selected.id}</p>
                   <p><strong>Descripción:</strong> {selected.descripcion}</p>
-                  {/* Se muestran campos parseados */}
                   {(() => {
                     const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
                     return (
                       <>
-                        <p><strong>Resolución N°:</strong> {resolucionNumero || "No definida"}</p>
-                        <p><strong>Tipo Resol.:</strong> {resolucionTipo || "No definida"}</p>
+                        <p><strong>Resol Nº:</strong> {resolucionNumero || "—"}</p>
+                        <p><strong>Tipo:</strong> {resolucionTipo || "—"}</p>
                       </>
                     );
                   })()}
@@ -221,8 +209,8 @@ export default function Listings() {
                     onClick={() => setShowConfirmModal(true)}
                     className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
                   >
-                    <FaTrash className="text-white" />
-                    Eliminar Mobiliario
+                    <FaTrash />
+                    Eliminar
                   </button>
                 </div>
               </div>
@@ -233,6 +221,7 @@ export default function Listings() {
         </div>
       )}
 
+      {/* Modal de edición */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => {
@@ -242,14 +231,12 @@ export default function Listings() {
       >
         {selected && isEditing && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Editar Mobiliario</h2>
-            {/*
-              Antes de pasar "initialData" al formulario, parseamos "selected.resolucion".
-              Así, aunque el back solo retorne "resolucion" concatenado, el form se rellenará con
-              los valores correctos.
-            */}
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+              Editar Mobiliario
+            </h2>
             {(() => {
-              const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
+              const { resolucionNumero, resolucionTipo } =
+                parseResolucion(selected.resolucion);
               return (
                 <PatrimonioForm
                   modo="editar"
@@ -268,11 +255,11 @@ export default function Listings() {
                     foto_url: selected.foto_url,
                     opciones: {
                       noDado: selected.no_dado,
-                      reparacion: selected.para_reparacion,
-                      para_baja: selected.para_baja,
+                      reparacion: selected.reparacion,   // ← corregido
+                      paraBaja: selected.para_baja,      // ← corregido
                       faltante: selected.faltante,
                       sobrante: selected.sobrante,
-                      etiqueta: selected.problema_etiqueta,
+                      etiqueta: selected.etiqueta,       // ← corregido
                     },
                   }}
                   onSubmit={handleEditSubmit}
