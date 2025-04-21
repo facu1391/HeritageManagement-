@@ -7,6 +7,9 @@ export { default as FloatingButton }from "./Layouts/FloatingButton/FloatingButto
 
 export { default as Spinner } from "./Spinner/Spinner";
 
+//Nomeclador
+export { default as Nomenclador } from "./Nomenclador/Nomenclador";
+
 //Alerts
 export { default as ToastMessage } from "./Alerts/ToastMessage";
 export { default as LogoutAlert } from "./Alerts/LogoutAlert";
