@@ -4,20 +4,26 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Wrapper, Modal, PatrimonioForm, ConfirmModal } from "@/components";
-import { editarMobiliario, eliminarMobiliario, obtenerMobiliario } from "@/services/mobiliarioService";
+import {
+  editarMobiliario,
+  eliminarMobiliario,
+  obtenerMobiliario,
+} from "@/services/mobiliarioService";
 import { toast, Toaster } from "react-hot-toast";
 import { FaTrash } from "react-icons/fa";
 import type { Mobiliario, FormData } from "@/types/types";
 import useIsMobile from "@/hooks/useIsMobile";
 
 // Función para extraer número y tipo de resolución del campo concatenado
-function parseResolucion(resolucion: string | null): { resolucionNumero: string; resolucionTipo: string } {
+function parseResolucion(
+  resolucion: string | null
+): { resolucionNumero: string; resolucionTipo: string } {
   if (!resolucion) return { resolucionNumero: "", resolucionTipo: "" };
   const regex = /Resol Nº(\S+)\s*(.*)/;
   const matches = resolucion.match(regex);
   if (matches) {
     let numero = matches[1];
-    let tipo   = matches[2];
+    const tipo = matches[2];       // <-- cambio aquí: ahora es const
     if (numero.toLowerCase() === "none") numero = "";
     return { resolucionNumero: numero, resolucionTipo: tipo };
   }
@@ -38,7 +44,7 @@ export default function Listings() {
 
   useEffect(() => {
     obtenerMobiliario()
-      .then(data => {
+      .then((data) => {
         setMobiliario(data);
         if (data.length > 0) setSelected(data[0]);
       })
@@ -58,7 +64,7 @@ export default function Listings() {
         resolucion_tipo: form.resolucionTipo,
       });
 
-      const updated = mobiliario.map(item =>
+      const updated = mobiliario.map((item) =>
         item.id === selected.id
           ? {
               ...item,
@@ -85,7 +91,7 @@ export default function Listings() {
     try {
       setDeleting(true);
       await eliminarMobiliario(selected.id);
-      setMobiliario(prev => prev.filter(m => m.id !== selected.id));
+      setMobiliario((prev) => prev.filter((m) => m.id !== selected.id));
       setSelected(null);
       setShowConfirmModal(false);
       setIsModalOpen(false);
@@ -98,9 +104,12 @@ export default function Listings() {
   };
 
   const filteredMobiliario = mobiliario
-    .filter(item => {
+    .filter((item) => {
       const term = search.toLowerCase();
-      return item.descripcion.toLowerCase().includes(term) || item.id.toLowerCase().includes(term);
+      return (
+        item.descripcion.toLowerCase().includes(term) ||
+        item.id.toLowerCase().includes(term)
+      );
     })
     .slice(0, 10);
 
@@ -108,30 +117,38 @@ export default function Listings() {
     <Wrapper>
       <Toaster />
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-extrabold text-blue-700">Gestión de Mobiliario</h1>
+        <h1 className="text-4xl font-extrabold text-blue-700">
+          Gestión de Mobiliario
+        </h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
           Visualización detallada de mobiliarios registrados
         </p>
       </div>
 
       {loading ? (
-        <p className="text-center text-gray-600 dark:text-gray-300">Cargando...</p>
+        <p className="text-center text-gray-600 dark:text-gray-300">
+          Cargando...
+        </p>
       ) : mobiliario.length === 0 ? (
-        <p className="text-center text-gray-600 dark:text-gray-300">No hay registros</p>
+        <p className="text-center text-gray-600 dark:text-gray-300">
+          No hay registros
+        </p>
       ) : (
         <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
           {/* Lista */}
           <div className="w-full md:w-[40%] bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
-            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">Listado</h2>
+            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">
+              Listado
+            </h2>
             <input
               type="text"
               placeholder="Buscar por ID o descripción"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={(e) => setSearch(e.target.value)}
               className="w-full p-2 mb-3 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-sm"
             />
             <ul className="space-y-2 max-h-[500px] overflow-y-auto">
-              {filteredMobiliario.map(item => (
+              {filteredMobiliario.map((item) => (
                 <li
                   key={item.id}
                   onClick={() => {
@@ -157,7 +174,9 @@ export default function Listings() {
                   <p className="font-medium text-gray-800 dark:text-white">
                     {item.descripcion || "Sin descripción"}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">ID: {item.id}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    ID: {item.id}
+                  </p>
                 </li>
               ))}
               {filteredMobiliario.length === 0 && (
@@ -170,7 +189,9 @@ export default function Listings() {
 
           {/* Detalle */}
           <div className="w-full md:w-[60%] bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col gap-4">
-            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">Detalle</h2>
+            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">
+              Detalle
+            </h2>
             {selected ? (
               <div className="flex flex-col gap-4">
                 <div className="flex justify-center">
@@ -189,20 +210,35 @@ export default function Listings() {
                   )}
                 </div>
                 <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
-                  <p><strong>ID:</strong> {selected.id}</p>
-                  <p><strong>Descripción:</strong> {selected.descripcion}</p>
+                  <p>
+                    <strong>ID:</strong> {selected.id}
+                  </p>
+                  <p>
+                    <strong>Descripción:</strong> {selected.descripcion}
+                  </p>
                   {(() => {
-                    const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
+                    const { resolucionNumero, resolucionTipo } =
+                      parseResolucion(selected.resolucion);
                     return (
                       <>
-                        <p><strong>Resol Nº:</strong> {resolucionNumero || "—"}</p>
-                        <p><strong>Tipo:</strong> {resolucionTipo || "—"}</p>
+                        <p>
+                          <strong>Resol Nº:</strong> {resolucionNumero || "—"}
+                        </p>
+                        <p>
+                          <strong>Tipo:</strong> {resolucionTipo || "—"}
+                        </p>
                       </>
                     );
                   })()}
-                  <p><strong>Fecha:</strong> {selected.fecha_resolucion}</p>
-                  <p><strong>Estado:</strong> {selected.estado_conservacion}</p>
-                  <p><strong>Comentarios:</strong> {selected.comentarios}</p>
+                  <p>
+                    <strong>Fecha:</strong> {selected.fecha_resolucion}
+                  </p>
+                  <p>
+                    <strong>Estado:</strong> {selected.estado_conservacion}
+                  </p>
+                  <p>
+                    <strong>Comentarios:</strong> {selected.comentarios}
+                  </p>
                 </div>
                 <div className="flex justify-end mt-4">
                   <button
@@ -215,7 +251,9 @@ export default function Listings() {
                 </div>
               </div>
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">Seleccione un mobiliario.</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                Seleccione un mobiliario.
+              </p>
             )}
           </div>
         </div>
@@ -255,11 +293,11 @@ export default function Listings() {
                     foto_url: selected.foto_url,
                     opciones: {
                       noDado: selected.no_dado,
-                      reparacion: selected.reparacion,   // ← corregido
-                      paraBaja: selected.para_baja,      // ← corregido
+                      reparacion: selected.reparacion,
+                      paraBaja: selected.para_baja,
                       faltante: selected.faltante,
                       sobrante: selected.sobrante,
-                      etiqueta: selected.etiqueta,       // ← corregido
+                      etiqueta: selected.etiqueta,
                     },
                   }}
                   onSubmit={handleEditSubmit}
