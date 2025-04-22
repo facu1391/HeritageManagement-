@@ -144,7 +144,7 @@ export default function Nomenclador({ onSave, onClose }: NomencladorProps) {
                   disabled={!selectedRubro}
                 />
                 <button
-                  className="px-4 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+                  className="px-4 bg-cyan-700 text-white rounded hover:bg-cyan-800 dark:bg-cyan-600 dark:hover:bg-cyan-700 disabled:opacity-50"
                   onClick={handleBuscarClaseGlobal}
                   disabled={!claseSearch}
                 >
@@ -191,7 +191,7 @@ export default function Nomenclador({ onSave, onClose }: NomencladorProps) {
 
           <div className="mt-6 text-right">
             <button
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+              className="bg-cyan-700 text-white px-4 py-2 rounded hover:bg-cyan-800 dark:bg-cyan-600 dark:hover:bg-cyan-700 disabled:opacity-50"
               onClick={() => selectedRubro && selectedClase && onSave({ rubro: selectedRubro, clase: selectedClase })}
               disabled={!selectedRubro || !selectedClase}
             >
