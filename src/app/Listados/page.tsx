@@ -4,11 +4,31 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Wrapper, Modal, PatrimonioForm, ConfirmModal } from "@/components";
-import { editarMobiliario, eliminarMobiliario, obtenerMobiliario } from "@/services/mobiliarioService";
+import {
+  editarMobiliario,
+  eliminarMobiliario,
+  obtenerMobiliario,
+} from "@/services/mobiliarioService";
 import { toast, Toaster } from "react-hot-toast";
 import { FaTrash } from "react-icons/fa";
 import type { Mobiliario, FormData } from "@/types/types";
 import useIsMobile from "@/hooks/useIsMobile";
+
+// Función para extraer número y tipo de resolución del campo concatenado
+function parseResolucion(
+  resolucion: string | null
+): { resolucionNumero: string; resolucionTipo: string } {
+  if (!resolucion) return { resolucionNumero: "", resolucionTipo: "" };
+  const regex = /Resol Nº(\S+)\s*(.*)/;
+  const matches = resolucion.match(regex);
+  if (matches) {
+    let numero = matches[1];
+    const tipo = matches[2];       // <-- cambio aquí: ahora es const
+    if (numero.toLowerCase() === "none") numero = "";
+    return { resolucionNumero: numero, resolucionTipo: tipo };
+  }
+  return { resolucionNumero: "", resolucionTipo: "" };
+}
 
 export default function Listings() {
   const [mobiliario, setMobiliario] = useState<Mobiliario[]>([]);
@@ -34,13 +54,14 @@ export default function Listings() {
 
   const handleEditSubmit = async (form: FormData) => {
     if (!selected) return;
-
     try {
       await editarMobiliario(selected.id, {
         descripcion: form.descripcion,
         fecha_resolucion: form.fechaResolucion,
         estado_conservacion: form.estado,
         comentarios: form.comentarios,
+        resolucion_numero: form.resolucionNumero,
+        resolucion_tipo: form.resolucionTipo,
       });
 
       const updated = mobiliario.map((item) =>
@@ -50,6 +71,9 @@ export default function Listings() {
               ...form,
               fecha_resolucion: form.fechaResolucion,
               estado_conservacion: form.estado,
+              resolucion_numero: form.resolucionNumero,
+              resolucion_tipo: form.resolucionTipo,
+              resolucion: `Resol Nº${form.resolucionNumero} ${form.resolucionTipo}`.trim(),
             }
           : item
       );
@@ -58,8 +82,7 @@ export default function Listings() {
       setIsModalOpen(false);
       toast.success("Actualizado correctamente");
     } catch (error) {
-      const msg = error instanceof Error ? error.message : "Error al editar";
-      toast.error(msg);
+      toast.error(error instanceof Error ? error.message : "Error al editar");
     }
   };
 
@@ -68,14 +91,13 @@ export default function Listings() {
     try {
       setDeleting(true);
       await eliminarMobiliario(selected.id);
-      toast.success("Eliminado correctamente");
       setMobiliario((prev) => prev.filter((m) => m.id !== selected.id));
       setSelected(null);
-      setIsModalOpen(false);
       setShowConfirmModal(false);
+      setIsModalOpen(false);
+      toast.success("Eliminado correctamente");
     } catch (error) {
-      const msg = error instanceof Error ? error.message : "Error al eliminar";
-      toast.error(msg);
+      toast.error(error instanceof Error ? error.message : "Error al eliminar");
     } finally {
       setDeleting(false);
     }
@@ -83,10 +105,10 @@ export default function Listings() {
 
   const filteredMobiliario = mobiliario
     .filter((item) => {
-      const searchTerm = search.toLowerCase();
+      const term = search.toLowerCase();
       return (
-        item.descripcion.toLowerCase().includes(searchTerm) ||
-        item.id.toLowerCase().includes(searchTerm)
+        item.descripcion.toLowerCase().includes(term) ||
+        item.id.toLowerCase().includes(term)
       );
     })
     .slice(0, 10);
@@ -95,20 +117,29 @@ export default function Listings() {
     <Wrapper>
       <Toaster />
       <div className="text-center mb-8">
-        <h1 className="text-4xl font-extrabold text-blue-700">Gestión de Mobiliario</h1>
+        <h1 className="text-4xl font-extrabold text-blue-700">
+          Gestión de Mobiliario
+        </h1>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
           Visualización detallada de mobiliarios registrados
         </p>
       </div>
 
       {loading ? (
-        <p className="text-center text-gray-600 dark:text-gray-300">Cargando...</p>
+        <p className="text-center text-gray-600 dark:text-gray-300">
+          Cargando...
+        </p>
       ) : mobiliario.length === 0 ? (
-        <p className="text-center text-gray-600 dark:text-gray-300">No hay registros</p>
+        <p className="text-center text-gray-600 dark:text-gray-300">
+          No hay registros
+        </p>
       ) : (
         <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
+          {/* Lista */}
           <div className="w-full md:w-[40%] bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
-            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">Listado</h2>
+            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">
+              Listado
+            </h2>
             <input
               type="text"
               placeholder="Buscar por ID o descripción"
@@ -123,15 +154,15 @@ export default function Listings() {
                   onClick={() => {
                     setSelected(item);
                     if (isMobile) {
-                      setIsModalOpen(true);
                       setIsEditing(true);
+                      setIsModalOpen(true);
                     }
                   }}
                   onDoubleClick={() => {
                     if (!isMobile) {
                       setSelected(item);
-                      setIsModalOpen(true);
                       setIsEditing(true);
+                      setIsModalOpen(true);
                     }
                   }}
                   className={`p-2 rounded-lg cursor-pointer transition ${
@@ -143,7 +174,9 @@ export default function Listings() {
                   <p className="font-medium text-gray-800 dark:text-white">
                     {item.descripcion || "Sin descripción"}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">ID: {item.id}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    ID: {item.id}
+                  </p>
                 </li>
               ))}
               {filteredMobiliario.length === 0 && (
@@ -154,8 +187,11 @@ export default function Listings() {
             </ul>
           </div>
 
+          {/* Detalle */}
           <div className="w-full md:w-[60%] bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col gap-4">
-            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">Detalle</h2>
+            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">
+              Detalle
+            </h2>
             {selected ? (
               <div className="flex flex-col gap-4">
                 <div className="flex justify-center">
@@ -174,30 +210,56 @@ export default function Listings() {
                   )}
                 </div>
                 <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
-                  <p><strong>ID:</strong> {selected.id}</p>
-                  <p><strong>Descripción:</strong> {selected.descripcion}</p>
-                  <p><strong>Resolución:</strong> {selected.resolucion}</p>
-                  <p><strong>Fecha:</strong> {selected.fecha_resolucion}</p>
-                  <p><strong>Estado:</strong> {selected.estado_conservacion}</p>
-                  <p><strong>Comentarios:</strong> {selected.comentarios}</p>
+                  <p>
+                    <strong>ID:</strong> {selected.id}
+                  </p>
+                  <p>
+                    <strong>Descripción:</strong> {selected.descripcion}
+                  </p>
+                  {(() => {
+                    const { resolucionNumero, resolucionTipo } =
+                      parseResolucion(selected.resolucion);
+                    return (
+                      <>
+                        <p>
+                          <strong>Resol Nº:</strong> {resolucionNumero || "—"}
+                        </p>
+                        <p>
+                          <strong>Tipo:</strong> {resolucionTipo || "—"}
+                        </p>
+                      </>
+                    );
+                  })()}
+                  <p>
+                    <strong>Fecha:</strong> {selected.fecha_resolucion}
+                  </p>
+                  <p>
+                    <strong>Estado:</strong> {selected.estado_conservacion}
+                  </p>
+                  <p>
+                    <strong>Comentarios:</strong> {selected.comentarios}
+                  </p>
                 </div>
                 <div className="flex justify-end mt-4">
                   <button
                     onClick={() => setShowConfirmModal(true)}
                     className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
                   >
-                    <FaTrash className="text-white" />
-                    Eliminar Mobiliario
+                    <FaTrash />
+                    Eliminar
                   </button>
                 </div>
               </div>
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">Seleccione un mobiliario.</p>
+              <p className="text-gray-500 dark:text-gray-400">
+                Seleccione un mobiliario.
+              </p>
             )}
           </div>
         </div>
       )}
 
+      {/* Modal de edición */}
       <Modal
         isOpen={isModalOpen}
         onClose={() => {
@@ -207,37 +269,45 @@ export default function Listings() {
       >
         {selected && isEditing && (
           <div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Editar Mobiliario</h2>
-            <PatrimonioForm
-              modo="editar"
-              initialData={{
-                id: selected.id,
-                anexo: "",
-                subdependencia: String(selected.ubicacion_id),
-                rubro: "",
-                clase: "",
-                descripcion: selected.descripcion,
-                resolucionNumero: selected.resolucion_numero,
-                resolucionTipo: selected.resolucion_tipo,
-                fechaResolucion: selected.fecha_resolucion ?? "",
-                estado: selected.estado_conservacion,
-                comentarios: selected.comentarios,
-                foto_url: selected.foto_url,
-                opciones: {
-                  noDado: selected.no_dado,
-                  reparacion: selected.reparacion,
-                  paraBaja: selected.para_baja,
-                  faltante: selected.faltante,
-                  sobrante: selected.sobrante,
-                  etiqueta: selected.etiqueta,
-                },
-              }}
-              onSubmit={handleEditSubmit}
-              onCancel={() => {
-                setIsModalOpen(false);
-                setIsEditing(false);
-              }}
-            />
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+              Editar Mobiliario
+            </h2>
+            {(() => {
+              const { resolucionNumero, resolucionTipo } =
+                parseResolucion(selected.resolucion);
+              return (
+                <PatrimonioForm
+                  modo="editar"
+                  initialData={{
+                    id: selected.id,
+                    anexo: "",
+                    subdependencia: String(selected.ubicacion_id),
+                    rubro: "",
+                    clase: "",
+                    descripcion: selected.descripcion,
+                    resolucionNumero,
+                    resolucionTipo,
+                    fechaResolucion: selected.fecha_resolucion ?? "",
+                    estado: selected.estado_conservacion,
+                    comentarios: selected.comentarios,
+                    foto_url: selected.foto_url,
+                    opciones: {
+                      noDado: selected.no_dado,
+                      reparacion: selected.reparacion,
+                      paraBaja: selected.para_baja,
+                      faltante: selected.faltante,
+                      sobrante: selected.sobrante,
+                      etiqueta: selected.etiqueta,
+                    },
+                  }}
+                  onSubmit={handleEditSubmit}
+                  onCancel={() => {
+                    setIsModalOpen(false);
+                    setIsEditing(false);
+                  }}
+                />
+              );
+            })()}
           </div>
         )}
       </Modal>

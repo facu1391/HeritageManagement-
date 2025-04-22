@@ -1,6 +1,4 @@
 
-// types.ts
-
 export interface PatrimonioData {
     id: string;
     ubicacion_id: number;
@@ -17,20 +15,19 @@ export interface PatrimonioData {
     etiqueta: boolean;
     comentarios: string;
     foto_url: string;
-}
- 
-
-export interface Anexo {
+  }
+  
+  export interface Anexo {
     id: number;
     nombre: string;
-}
+  }
   
-export interface Subdependencia {
+  export interface Subdependencia {
     id: number;
     nombre: string;
-}
+  }
   
-export interface FormularioPatrimonio {
+  export interface FormularioPatrimonio {
     id: string;
     anexo: string;
     subdependencia: string;
@@ -50,10 +47,10 @@ export interface FormularioPatrimonio {
       faltante: boolean;
       sobrante: boolean;
       etiqueta: boolean;
-};
-}
+    };
+  }
   
-export interface Mobiliario {
+  export interface Mobiliario {
     id: string;
     descripcion: string;
     resolucion: string;
@@ -70,12 +67,15 @@ export interface Mobiliario {
     faltante: boolean;
     sobrante: boolean;
     etiqueta: boolean;
-}
+  }
   
-export interface FormData {
+  // Se actualiza la interfaz de datos para la edición
+  export interface FormData {
     descripcion: string;
     fechaResolucion: string;
     estado: string;
     comentarios: string;
-}
+    resolucionNumero: string;
+    resolucionTipo: string;
+  }
   
