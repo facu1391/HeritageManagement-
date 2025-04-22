@@ -161,9 +161,7 @@ function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }
         </button>
       </div>
 
-      {showAlert && (
-        <LogoutAlert onConfirm={confirmLogout} onCancel={cancelLogout} />
-      )}
+      {showAlert && <LogoutAlert onConfirm={confirmLogout} onCancel={cancelLogout} />}
     </div>
   );
 }
