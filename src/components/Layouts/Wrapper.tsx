@@ -1,4 +1,5 @@
 
+// components/Wrapper.tsx
 "use client";
 
 import { ReactNode, useState } from "react";
@@ -16,13 +17,15 @@ export default function Wrapper({ children }: WrapperProps) {
       {/* Sidebar (fijo en escritorio y desplegable en móvil) */}
       <Sidebar isOpen={isSidebarOpen} setIsOpen={setIsSidebarOpen} />
 
-      {/* Contenedor principal: se añade un margen izquierdo en escritorio para que el contenido no se superponga con el sidebar fijo */}
       <div className="flex-grow flex flex-col lg:ml-64">
-        {/* Navbar fijo */}
-        <Navbar setIsSidebarOpen={setIsSidebarOpen} />
+        {/* Navbar fijo — ahora recibe también isSidebarOpen */}
+        <Navbar
+          isSidebarOpen={isSidebarOpen}
+          setIsSidebarOpen={setIsSidebarOpen}
+        />
+
         <FloatingButton />
 
-        {/* Para que el contenido no quede oculto por el Navbar fijo, se agrega margen superior */}
         <main className="flex-grow p-4 bg-gray-100 dark:bg-gray-900 mt-16">
           {children}
         </main>
@@ -30,3 +33,4 @@ export default function Wrapper({ children }: WrapperProps) {
     </div>
   );
 }
+

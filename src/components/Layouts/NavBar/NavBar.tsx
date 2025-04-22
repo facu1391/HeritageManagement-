@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -5,20 +6,25 @@ import Link from "next/link";
 import Image from "next/image";
 import { Perfil } from "@/public";
 import { useTheme } from "@/Context/ThemeContext";
-import { FaBars } from "react-icons/fa";
+import { FaBars, FaTimes } from "react-icons/fa";
 import { BsSun, BsMoon, BsBell } from "react-icons/bs";
 
 interface NavbarProps {
+  isSidebarOpen: boolean;
   setIsSidebarOpen: (isOpen: boolean) => void;
 }
 
-export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export default function Navbar({
+  isSidebarOpen,
+  setIsSidebarOpen,
+}: NavbarProps) {
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const { darkMode, setTheme } = useTheme();
 
-  const toggleUserMenu = () => setIsMenuOpen((prev) => !prev);
-  const toggleNotifications = () => setIsNotificationsOpen((prev) => !prev);
+  const toggleUserMenu = () => setIsUserMenuOpen((prev) => !prev);
+  const toggleNotifications = () =>
+    setIsNotificationsOpen((prev) => !prev);
 
   const notifications = [
     { id: 1, message: "Nueva solicitud de acceso" },
@@ -27,13 +33,15 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-gray-800 dark:bg-gray-800 px-4 py-3 flex items-center justify-between z-50">
+      {/* Botón mobile: hamburguesa o X */}
       <button
-        onClick={() => setIsSidebarOpen(true)}
+        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         className="lg:hidden text-white focus:outline-none"
       >
-        <FaBars size={24} />
+        {isSidebarOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
       </button>
 
+      {/* Buscador centrado */}
       <div className="flex-grow flex justify-center">
         <div className="relative w-full max-w-md">
           <svg
@@ -58,14 +66,23 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
         </div>
       </div>
 
+      {/* Botones de tema, notificaciones y perfil */}
       <div className="flex items-center gap-2 sm:gap-4 relative">
+        {/* Tema */}
         <button
-          onClick={() => setTheme(darkMode === "light" ? "dark" : "light")}
+          onClick={() =>
+            setTheme(darkMode === "light" ? "dark" : "light")
+          }
           className="text-white p-2 rounded-full bg-gray-700 hover:bg-gray-600 transition"
         >
-          {darkMode === "dark" ? <BsSun size={20} /> : <BsMoon size={20} />}
+          {darkMode === "dark" ? (
+            <BsSun size={20} />
+          ) : (
+            <BsMoon size={20} />
+          )}
         </button>
 
+        {/* Notificaciones */}
         <div className="relative">
           <button
             onClick={toggleNotifications}
@@ -78,19 +95,18 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
               </span>
             )}
           </button>
-
           {isNotificationsOpen && (
             <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-gray-700 rounded-md shadow-lg ring-1 ring-black/5 p-2">
               <h3 className="text-sm font-semibold text-gray-700 dark:text-white border-b pb-2">
                 Notificaciones
               </h3>
-              {notifications.length > 0 ? (
-                notifications.map((notif) => (
+              {notifications.length ? (
+                notifications.map((n) => (
                   <div
-                    key={notif.id}
+                    key={n.id}
                     className="p-2 text-sm text-gray-800 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-lg"
                   >
-                    {notif.message}
+                    {n.message}
                   </div>
                 ))
               ) : (
@@ -102,6 +118,7 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
           )}
         </div>
 
+        {/* Menú de usuario */}
         <div className="relative">
           <button
             onClick={toggleUserMenu}
@@ -115,7 +132,7 @@ export default function Navbar({ setIsSidebarOpen }: NavbarProps) {
               height={32}
             />
           </button>
-          {isMenuOpen && (
+          {isUserMenuOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg ring-1 ring-black/5">
               <Link
                 href="/Perfil"

@@ -1,3 +1,5 @@
+
+// components/Sidebar.tsx
 "use client";
 
 import Link from "next/link";
@@ -92,15 +94,21 @@ function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }
   return (
     <div className="h-full flex flex-col justify-between px-3 pb-4 overflow-y-auto">
       <div>
-        <div className="flex justify-center items-center mb-6">
-          <Link href="/Home">
+        {/* Área del logo realzada */}
+        <div className="flex flex-col items-center mb-6">
+          <div className="relative w-24 h-24 bg-gray-700 dark:bg-gray-600 rounded-full p-2 shadow-lg">
             <Image
               src={Logo4}
               alt="Logo"
-              className="h-28 w-auto cursor-pointer"
+              className="object-contain w-full h-full"
             />
-          </Link>
+          </div>
+          <p className="mt-2 text-xs uppercase text-gray-400">
+            Dirección de Patrimonio
+          </p>
+          <hr className="w-10 border-gray-600 mt-2 mb-4" />
         </div>
+
         <ul className="space-y-2 font-medium">
           {sidebarItems.map((item, index) => (
             <div key={index}>
@@ -110,24 +118,20 @@ function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }
               <li>
                 <Link
                   href={item.href}
-                  className="flex items-center p-2 text-white rounded-lg group"
+                  className="flex items-center p-2 text-white rounded-lg group hover:bg-gray-700"
                   onClick={() => setIsOpen && setIsOpen(false)}
                 >
                   <svg
-                    className="w-6 h-6 text-white group-hover:text-D0298A"
+                    className="w-6 h-6 text-white group-hover:text-cyan-400"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
                     strokeWidth="1.5"
                     stroke="currentColor"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d={item.svgPath}
-                    />
+                    <path strokeLinecap="round" strokeLinejoin="round" d={item.svgPath} />
                   </svg>
-                  <span className="text-white ms-3 group-hover:text-D0298A">
+                  <span className="text-white ms-3 group-hover:text-cyan-400">
                     {item.label}
                   </span>
                 </Link>
@@ -154,7 +158,9 @@ function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 2v1"
+              d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 
+                 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h6a2 2 0 012 
+                 2v1"
             />
           </svg>
           Cerrar sesión
