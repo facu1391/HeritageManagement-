@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -133,7 +134,7 @@ export default function PatrimonioForm({
     <>
       <form className="space-y-6" onSubmit={handleSubmit}>
         {/* ID, Anexo, Subdependencia */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="relative">
             <FaIdBadge className="absolute left-3 top-3 text-gray-400" />
             <input
@@ -145,6 +146,7 @@ export default function PatrimonioForm({
               className="w-full p-3 pl-10 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
             />
           </div>
+
           <select
             value={form.anexo}
             onChange={e => handleInput("anexo", e.target.value)}
@@ -155,6 +157,7 @@ export default function PatrimonioForm({
               <option key={a.id} value={a.id}>{a.nombre}</option>
             ))}
           </select>
+
           <select
             value={form.subdependencia}
             onChange={e => handleInput("subdependencia", e.target.value)}
@@ -167,7 +170,7 @@ export default function PatrimonioForm({
           </select>
 
           {/* Rubro + Clase con botón “Nomenclador” */}
-          <div className="col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="col-span-1 sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
               <p><strong>Rubro:</strong> {form.rubro || "No seleccionado"}</p>
               <p><strong>Clase:</strong> {form.clase || "No seleccionado"}</p>
@@ -208,8 +211,8 @@ export default function PatrimonioForm({
                   type="radio"
                   name="resolucionTipo"
                   value={item}
-                  checked={form.resolucionTipo===item}
-                  onChange={()=>handleInput("resolucionTipo",item)}
+                  checked={form.resolucionTipo === item}
+                  onChange={() => handleInput("resolucionTipo", item)}
                   className="accent-indigo-600"
                 />
                 {item}
@@ -220,7 +223,7 @@ export default function PatrimonioForm({
             <input
               type="date"
               value={form.fechaResolucion}
-              onChange={e=>handleInput("fechaResolucion", e.target.value)}
+              onChange={e => handleInput("fechaResolucion", e.target.value)}
               className="w-full p-3 pl-10 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
             />
             <FiCalendar className="absolute left-3 top-3 text-gray-400" />
@@ -239,8 +242,8 @@ export default function PatrimonioForm({
                   type="radio"
                   name="estado"
                   value={item}
-                  checked={form.estado===item}
-                  onChange={()=>handleInput("estado",item)}
+                  checked={form.estado === item}
+                  onChange={() => handleInput("estado", item)}
                   className="accent-indigo-600"
                 />
                 {item}
@@ -256,18 +259,18 @@ export default function PatrimonioForm({
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
             {[
-              {key:"noDado",label:"No dado"},
-              {key:"reparacion",label:"Reparación"},
-              {key:"paraBaja",label:"Para baja"},
-              {key:"faltante",label:"Faltante"},
-              {key:"sobrante",label:"Sobrante"},
-              {key:"etiqueta",label:"Problema etiqueta"},
-            ].map(({key,label})=>(
+              { key: "noDado",    label: "No dado" },
+              { key: "reparacion",label: "Reparación" },
+              { key: "paraBaja",  label: "Para baja" },
+              { key: "faltante",  label: "Faltante" },
+              { key: "sobrante",  label: "Sobrante" },
+              { key: "etiqueta",  label: "Problema etiqueta" },
+            ].map(({ key, label }) => (
               <label key={key} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <input
                   type="checkbox"
                   checked={form.opciones[key as keyof typeof form.opciones]}
-                  onChange={()=>handleCheckbox(key as keyof typeof form.opciones)}
+                  onChange={() => handleCheckbox(key as keyof typeof form.opciones)}
                   className="accent-indigo-600"
                 />
                 {label}
@@ -284,33 +287,47 @@ export default function PatrimonioForm({
           <textarea
             rows={3}
             value={form.comentarios}
-            onChange={e=>handleInput("comentarios", e.target.value)}
+            onChange={e => handleInput("comentarios", e.target.value)}
             placeholder="Comentarios"
             className="w-full p-3 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
           />
         </div>
 
-        {/* Imagen */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-            Foto del mobiliario
-          </label>
-          <div className="relative w-full border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg p-6 flex flex-col items-center justify-center text-center">
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-            </svg>
-            <p className="text-sm text-gray-600 dark:text-gray-300">
-              <span className="text-indigo-600 font-medium underline">Subir imagen</span> o arrastrar y soltar
-            </p>
-            <input type="file" onChange={handleImageChange} className="absolute opacity-0 w-full h-full cursor-pointer"/>
-          </div>
-          {selectedImage && (
-            <div className="mt-4 flex justify-center">
-              <div className="relative w-32 h-32">
-                <Image src={selectedImage} alt="Vista previa" fill sizes="(max-width: 640px) 100vw, 50vw" className="rounded-lg shadow object-cover" />
-              </div>
+        {/* Foto del mobiliario */}
+        <div className="relative w-full border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg p-6 flex items-center justify-center text-center">
+          {selectedImage ? (
+            <div className="relative w-40 h-40">
+              <Image
+                src={selectedImage}
+                alt="Vista previa"
+                fill
+                className="rounded-lg object-cover"
+              />
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-12 h-12 text-gray-400 mx-auto"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+              </svg>
+              <p className="text-sm text-gray-600 dark:text-gray-300">
+                <span className="text-indigo-600 font-medium underline">
+                  Subir imagen
+                </span>{" "}
+                o arrastrar y soltar
+              </p>
             </div>
           )}
+          <input
+            type="file"
+            onChange={handleImageChange}
+            className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
+          />
         </div>
 
         {/* Botones */}
@@ -327,8 +344,7 @@ export default function PatrimonioForm({
             disabled={loading}
             className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 disabled:opacity-50"
           >
-            {loading ? "Guardando..." :
-              modo === "editar" ? "Guardar cambios" : "Crear registro"}
+            {loading ? "Guardando..." : modo === "editar" ? "Guardar cambios" : "Crear registro"}
           </button>
         </div>
       </form>
@@ -336,7 +352,7 @@ export default function PatrimonioForm({
       {/* Modal Nomenclador */}
       {nomencladorOpen && (
         <Nomenclador
-          onSave={sel => {
+          onSave={(sel) => {
             setForm(prev => ({
               ...prev,
               rubro: sel.rubro.nombre,
