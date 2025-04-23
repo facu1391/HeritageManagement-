@@ -1,5 +1,6 @@
 // components/Nomenclador.tsx
 "use client";
+
 import React, { useEffect, useState } from "react";
 import {
   obtenerRubros,
@@ -72,7 +73,7 @@ export default function Nomenclador({ onSave, onClose }: NomencladorProps) {
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl"
           onClick={onClose}
         >&times;</button>
-        <div className="p-6">
+        <div className="p-6 pb-32 md:pb-6"> {/* extra bottom padding for mobile footer */}
           <h2 className="text-xl font-semibold mb-6">Seleccionar Rubro y Clase</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -188,16 +189,28 @@ export default function Nomenclador({ onSave, onClose }: NomencladorProps) {
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="mt-6 text-right">
-            <button
-              className="bg-cyan-700 text-white px-4 py-2 rounded hover:bg-cyan-800 dark:bg-cyan-600 dark:hover:bg-cyan-700 disabled:opacity-50"
-              onClick={() => selectedRubro && selectedClase && onSave({ rubro: selectedRubro, clase: selectedClase })}
-              disabled={!selectedRubro || !selectedClase}
-            >
-              Guardar
-            </button>
-          </div>
+        {/* Footer botones: sticky en móvil, estático en md+ */}
+        <div className="sticky bottom-0 bg-white p-4 border-t border-gray-200 md:static md:bg-transparent md:p-0 md:border-0 flex justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 rounded hover:bg-gray-100"
+          >
+            Cancelar
+          </button>
+          <button
+            className="px-4 py-2 bg-cyan-700 text-white rounded hover:bg-cyan-800 dark:bg-cyan-600 dark:hover:bg-cyan-700 disabled:opacity-50"
+            onClick={() =>
+              selectedRubro &&
+              selectedClase &&
+              onSave({ rubro: selectedRubro, clase: selectedClase })
+            }
+            disabled={!selectedRubro || !selectedClase}
+          >
+            Guardar
+          </button>
         </div>
       </div>
     </div>
