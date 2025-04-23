@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -110,18 +109,28 @@ export default function PatrimonioForm({
     if (!file) return;
     const formData = new FormData();
     formData.append("foto", file);
+
+    // Construimos dinámicamente la URL de subida,
+    // según si tu API_BASE ya incluye "/api" o no
+    const base = process.env.NEXT_PUBLIC_API_BASE!;
+    const uploadUrl = base.endsWith("/api")
+      ? `${base}/uploads`
+      : `${base}/api/uploads`;
+
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/uploads`, {
+      const res = await fetch(uploadUrl, {
         method: "POST",
         body: formData,
       });
-      if (!res.ok) throw new Error("Error al subir imagen");
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Error al subir imagen");
+      }
       setSelectedImage(data.url);
       handleInput("foto_url", data.url);
       toast.success("Imagen subida correctamente");
     } catch (err) {
-      toast.error((err as Error).message || "Error al subir imagen");
+      toast.error((err as Error).message);
     }
   };
 
@@ -258,14 +267,7 @@ export default function PatrimonioForm({
             Marcar opciones
           </label>
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-            {[
-              { key: "noDado",    label: "No dado" },
-              { key: "reparacion",label: "Reparación" },
-              { key: "paraBaja",  label: "Para baja" },
-              { key: "faltante",  label: "Faltante" },
-              { key: "sobrante",  label: "Sobrante" },
-              { key: "etiqueta",  label: "Problema etiqueta" },
-            ].map(({ key, label }) => (
+            {["noDado","reparacion","paraBaja","faltante","sobrante","etiqueta"].map(key => (
               <label key={key} className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                 <input
                   type="checkbox"
@@ -273,7 +275,14 @@ export default function PatrimonioForm({
                   onChange={() => handleCheckbox(key as keyof typeof form.opciones)}
                   className="accent-indigo-600"
                 />
-                {label}
+                {{
+                  noDado: "No dado",
+                  reparacion: "Reparación",
+                  paraBaja: "Para baja",
+                  faltante: "Faltante",
+                  sobrante: "Sobrante",
+                  etiqueta: "Problema etiqueta"
+                }[key as keyof typeof form.opciones]}
               </label>
             ))}
           </div>
@@ -293,7 +302,7 @@ export default function PatrimonioForm({
           />
         </div>
 
-        {/* Foto del mobiliario */}
+        {/* Subir imagen */}
         <div className="relative w-full border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg p-6 flex items-center justify-center text-center">
           {selectedImage ? (
             <div className="relative w-40 h-40">
@@ -330,7 +339,7 @@ export default function PatrimonioForm({
           />
         </div>
 
-        {/* Botones */}
+        {/* Botones Cancelar / Guardar */}
         <div className="flex justify-end gap-3 mt-6">
           <button
             type="button"
@@ -352,7 +361,7 @@ export default function PatrimonioForm({
       {/* Modal Nomenclador */}
       {nomencladorOpen && (
         <Nomenclador
-          onSave={(sel) => {
+          onSave={sel => {
             setForm(prev => ({
               ...prev,
               rubro: sel.rubro.nombre,
