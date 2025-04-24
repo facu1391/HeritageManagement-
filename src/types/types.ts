@@ -1,6 +1,4 @@
 
-// types/types.ts
-
 export interface PatrimonioData {
   id: string;
   ubicacion_id: number;
@@ -79,25 +77,4 @@ export interface FormData {
   comentarios: string;
   resolucionNumero: string;
   resolucionTipo: string;
-}
-
-// **Nuevo**: detalle completo que devuelve /mobiliario2/:id
-export interface FullDetail {
-  anexo: string;
-  subdependencia: string;
-  mobiliario_id: string;
-  descripcion: string;
-  resolucion: string | null;
-  fecha_resolucion: string | null;
-  estado_conservacion: string | null;
-  comentarios: string | null;
-  foto_url: string | null;
-  no_dado: boolean;
-  para_reparacion: boolean;
-  para_baja: boolean;
-  faltante: boolean;
-  sobrante: boolean;
-  problema_etiqueta: boolean;
-  fecha_creacion: string;
-  fecha_actualizacion: string;
 }

@@ -8,14 +8,13 @@ import {
   editarMobiliario,
   eliminarMobiliario,
   obtenerMobiliario,
-  obtenerDetalleMobiliario,      // <-- nueva función
 } from "@/services/mobiliarioService";
 import { toast, Toaster } from "react-hot-toast";
 import { FaTrash } from "react-icons/fa";
-import type { Mobiliario, FormData, FullDetail } from "@/types/types";
+import type { Mobiliario, FormData } from "@/types/types";
 import useIsMobile from "@/hooks/useIsMobile";
 
-// extrae número y tipo de la cadena "Resol Nº..."
+// Función para extraer número y tipo de resolución del campo concatenado
 function parseResolucion(
   resolucion: string | null
 ): { resolucionNumero: string; resolucionTipo: string } {
@@ -24,7 +23,7 @@ function parseResolucion(
   const matches = resolucion.match(regex);
   if (matches) {
     let numero = matches[1];
-    const tipo = matches[2];
+    const tipo = matches[2];       // <-- cambio aquí: ahora es const
     if (numero.toLowerCase() === "none") numero = "";
     return { resolucionNumero: numero, resolucionTipo: tipo };
   }
@@ -35,8 +34,6 @@ export default function Listings() {
   const [mobiliario, setMobiliario] = useState<Mobiliario[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Mobiliario | null>(null);
-  const [details, setDetails] = useState<FullDetail | null>(null);  // <-- detalle completo
-
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -45,7 +42,6 @@ export default function Listings() {
 
   const isMobile = useIsMobile();
 
-  // carga el listado inicial
   useEffect(() => {
     obtenerMobiliario()
       .then((data) => {
@@ -55,20 +51,6 @@ export default function Listings() {
       .catch(() => console.error("Error al cargar datos"))
       .finally(() => setLoading(false));
   }, []);
-
-  // carga el detalle siempre que cambie `selected`
-  useEffect(() => {
-    if (!selected) {
-      setDetails(null);
-      return;
-    }
-    obtenerDetalleMobiliario(selected.id)
-      .then((d) => setDetails(d))
-      .catch((err) => {
-        console.error(err);
-        setDetails(null);
-      });
-  }, [selected]);
 
   const handleEditSubmit = async (form: FormData) => {
     if (!selected) return;
@@ -82,7 +64,6 @@ export default function Listings() {
         resolucion_tipo: form.resolucionTipo,
       });
 
-      // actualiza localmente la lista
       const updated = mobiliario.map((item) =>
         item.id === selected.id
           ? {
@@ -122,7 +103,6 @@ export default function Listings() {
     }
   };
 
-  // filtro búsqueda
   const filteredMobiliario = mobiliario
     .filter((item) => {
       const term = search.toLowerCase();
@@ -155,7 +135,7 @@ export default function Listings() {
         </p>
       ) : (
         <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
-          {/* -- Listado -- */}
+          {/* Lista */}
           <div className="w-full md:w-[40%] bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">
               Listado
@@ -207,18 +187,17 @@ export default function Listings() {
             </ul>
           </div>
 
-          {/* -- Detalle -- */}
+          {/* Detalle */}
           <div className="w-full md:w-[60%] bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col gap-4">
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">
               Detalle
             </h2>
-            {details ? (
+            {selected ? (
               <div className="flex flex-col gap-4">
-                {/* Foto */}
                 <div className="flex justify-center">
-                  {details.foto_url ? (
+                  {selected.foto_url ? (
                     <Image
-                      src={details.foto_url}
+                      src={selected.foto_url}
                       alt="Foto del mobiliario"
                       width={288}
                       height={288}
@@ -230,26 +209,37 @@ export default function Listings() {
                     </div>
                   )}
                 </div>
-                {/* Campos adicionales */}
                 <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
-                  <p><strong>ID:</strong> {details.mobiliario_id}</p>
-                  <p><strong>Anexo:</strong> {details.anexo}</p>
-                  <p><strong>Subdependencia:</strong> {details.subdependencia}</p>
-                  <p><strong>Descripción:</strong> {details.descripcion}</p>
-                  <p><strong>Resolución:</strong> {details.resolucion ?? "—"}</p>
-                  <p><strong>Fecha resolución:</strong> {details.fecha_resolucion ?? "—"}</p>
-                  <p><strong>Estado conservación:</strong> {details.estado_conservacion ?? "—"}</p>
-                  <p><strong>No dado:</strong> {details.no_dado ? "Sí" : "No"}</p>
-                  <p><strong>Para reparación:</strong> {details.para_reparacion ? "Sí" : "No"}</p>
-                  <p><strong>Para baja:</strong> {details.para_baja ? "Sí" : "No"}</p>
-                  <p><strong>Faltante:</strong> {details.faltante ? "Sí" : "No"}</p>
-                  <p><strong>Sobrante:</strong> {details.sobrante ? "Sí" : "No"}</p>
-                  <p><strong>Problema etiqueta:</strong> {details.problema_etiqueta ? "Sí" : "No"}</p>
-                  <p><strong>Comentarios:</strong> {details.comentarios ?? "—"}</p>
-                  <p><strong>Creado:</strong> {new Date(details.fecha_creacion).toLocaleString()}</p>
-                  <p><strong>Actualizado:</strong> {new Date(details.fecha_actualizacion).toLocaleString()}</p>
+                  <p>
+                    <strong>ID:</strong> {selected.id}
+                  </p>
+                  <p>
+                    <strong>Descripción:</strong> {selected.descripcion}
+                  </p>
+                  {(() => {
+                    const { resolucionNumero, resolucionTipo } =
+                      parseResolucion(selected.resolucion);
+                    return (
+                      <>
+                        <p>
+                          <strong>Resol Nº:</strong> {resolucionNumero || "—"}
+                        </p>
+                        <p>
+                          <strong>Tipo:</strong> {resolucionTipo || "—"}
+                        </p>
+                      </>
+                    );
+                  })()}
+                  <p>
+                    <strong>Fecha:</strong> {selected.fecha_resolucion}
+                  </p>
+                  <p>
+                    <strong>Estado:</strong> {selected.estado_conservacion}
+                  </p>
+                  <p>
+                    <strong>Comentarios:</strong> {selected.comentarios}
+                  </p>
                 </div>
-                {/* Botón Eliminar */}
                 <div className="flex justify-end mt-4">
                   <button
                     onClick={() => setShowConfirmModal(true)}
@@ -322,7 +312,6 @@ export default function Listings() {
         )}
       </Modal>
 
-      {/* Confirmación de eliminación */}
       <ConfirmModal
         isOpen={showConfirmModal}
         onCancel={() => setShowConfirmModal(false)}
