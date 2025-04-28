@@ -1,29 +1,25 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Wrapper, Modal, PatrimonioForm, ConfirmModal } from "@/components";
 import {
+  obtenerMobiliario,
   editarMobiliario,
   eliminarMobiliario,
-  obtenerMobiliario,
 } from "@/services/mobiliarioService";
 import { toast, Toaster } from "react-hot-toast";
 import { FaTrash } from "react-icons/fa";
 import type { Mobiliario, FormData } from "@/types/types";
 import useIsMobile from "@/hooks/useIsMobile";
 
-// Función para extraer número y tipo de resolución del campo concatenado
-function parseResolucion(
-  resolucion: string | null
-): { resolucionNumero: string; resolucionTipo: string } {
+function parseResolucion(resolucion: string | null) {
   if (!resolucion) return { resolucionNumero: "", resolucionTipo: "" };
   const regex = /Resol Nº(\S+)\s*(.*)/;
   const matches = resolucion.match(regex);
   if (matches) {
     let numero = matches[1];
-    const tipo = matches[2];       // <-- cambio aquí: ahora es const
+    const tipo = matches[2];
     if (numero.toLowerCase() === "none") numero = "";
     return { resolucionNumero: numero, resolucionTipo: tipo };
   }
@@ -52,6 +48,16 @@ export default function Listings() {
       .finally(() => setLoading(false));
   }, []);
 
+  const filtered = mobiliario
+    .filter((item) => {
+      const term = search.toLowerCase();
+      return (
+        item.descripcion.toLowerCase().includes(term) ||
+        item.id.toLowerCase().includes(term)
+      );
+    })
+    .slice(0, 10);
+
   const handleEditSubmit = async (form: FormData) => {
     if (!selected) return;
     try {
@@ -63,26 +69,27 @@ export default function Listings() {
         resolucion_numero: form.resolucionNumero,
         resolucion_tipo: form.resolucionTipo,
       });
-
-      const updated = mobiliario.map((item) =>
-        item.id === selected.id
-          ? {
-              ...item,
-              ...form,
-              fecha_resolucion: form.fechaResolucion,
-              estado_conservacion: form.estado,
-              resolucion_numero: form.resolucionNumero,
-              resolucion_tipo: form.resolucionTipo,
-              resolucion: `Resol Nº${form.resolucionNumero} ${form.resolucionTipo}`.trim(),
-            }
-          : item
+      setMobiliario((prev) =>
+        prev.map((m) =>
+          m.id === selected.id
+            ? {
+                ...m,
+                descripcion: form.descripcion,
+                fecha_resolucion: form.fechaResolucion,
+                estado_conservacion: form.estado,
+                comentarios: form.comentarios,
+                resolucion_numero: form.resolucionNumero,
+                resolucion_tipo: form.resolucionTipo,
+                resolucion: `Resol Nº${form.resolucionNumero} ${form.resolucionTipo}`.trim(),
+              }
+            : m
+        )
       );
-      setMobiliario(updated);
       setIsEditing(false);
       setIsModalOpen(false);
       toast.success("Actualizado correctamente");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Error al editar");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al editar");
     }
   };
 
@@ -96,26 +103,17 @@ export default function Listings() {
       setShowConfirmModal(false);
       setIsModalOpen(false);
       toast.success("Eliminado correctamente");
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Error al eliminar");
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Error al eliminar");
     } finally {
       setDeleting(false);
     }
   };
 
-  const filteredMobiliario = mobiliario
-    .filter((item) => {
-      const term = search.toLowerCase();
-      return (
-        item.descripcion.toLowerCase().includes(term) ||
-        item.id.toLowerCase().includes(term)
-      );
-    })
-    .slice(0, 10);
-
   return (
     <Wrapper>
       <Toaster />
+
       <div className="text-center mb-8">
         <h1 className="text-4xl font-extrabold text-blue-700">
           Gestión de Mobiliario
@@ -135,7 +133,7 @@ export default function Listings() {
         </p>
       ) : (
         <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
-          {/* Lista */}
+          {/* Listado */}
           <div className="w-full md:w-[40%] bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">
               Listado
@@ -148,7 +146,7 @@ export default function Listings() {
               className="w-full p-2 mb-3 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-sm"
             />
             <ul className="space-y-2 max-h-[500px] overflow-y-auto">
-              {filteredMobiliario.map((item) => (
+              {filtered.map((item) => (
                 <li
                   key={item.id}
                   onClick={() => {
@@ -179,7 +177,7 @@ export default function Listings() {
                   </p>
                 </li>
               ))}
-              {filteredMobiliario.length === 0 && (
+              {filtered.length === 0 && (
                 <li className="text-center text-sm text-gray-500 dark:text-gray-400">
                   No hay resultados
                 </li>
@@ -192,6 +190,7 @@ export default function Listings() {
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">
               Detalle
             </h2>
+
             {selected ? (
               <div className="flex flex-col gap-4">
                 <div className="flex justify-center">
@@ -209,106 +208,87 @@ export default function Listings() {
                     </div>
                   )}
                 </div>
-                <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
-                  <p>
-                    <strong>ID:</strong> {selected.id}
-                  </p>
-                  <p>
-                    <strong>Descripción:</strong> {selected.descripcion}
-                  </p>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm text-gray-700 dark:text-gray-300">
+                  <div><strong>ID:</strong> {selected.id}</div>
+                  <div><strong>Anexo:</strong> {selected.anexo}</div>
+                  <div><strong>Subdependencia:</strong> {selected.subdependencia}</div>
+                  <div><strong>Descripción:</strong> {selected.descripcion}</div>
                   {(() => {
-                    const { resolucionNumero, resolucionTipo } =
-                      parseResolucion(selected.resolucion);
+                    const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
                     return (
                       <>
-                        <p>
-                          <strong>Resol Nº:</strong> {resolucionNumero || "—"}
-                        </p>
-                        <p>
-                          <strong>Tipo:</strong> {resolucionTipo || "—"}
-                        </p>
+                        <div><strong>Resol Nº:</strong> {resolucionNumero || "—"}</div>
+                        <div><strong>Tipo:</strong> {resolucionTipo || "—"}</div>
                       </>
                     );
                   })()}
-                  <p>
-                    <strong>Fecha:</strong> {selected.fecha_resolucion}
-                  </p>
-                  <p>
-                    <strong>Estado:</strong> {selected.estado_conservacion}
-                  </p>
-                  <p>
-                    <strong>Comentarios:</strong> {selected.comentarios}
-                  </p>
+                  <div><strong>Fecha resolución:</strong> {selected.fecha_resolucion || "—"}</div>
+                  <div><strong>Estado conservación:</strong> {selected.estado_conservacion || "—"}</div>
+                  <div><strong>No dado:</strong> {selected.no_dado ? "Sí" : "No"}</div>
+                  <div><strong>Para reparación:</strong> {selected.para_reparacion ? "Sí" : "No"}</div>
+                  <div><strong>Para baja:</strong> {selected.para_baja ? "Sí" : "No"}</div>
+                  <div><strong>Faltante:</strong> {selected.faltante ? "Sí" : "No"}</div>
+                  <div><strong>Sobrante:</strong> {selected.sobrante ? "Sí" : "No"}</div>
+                  <div><strong>Problema etiqueta:</strong> {selected.problema_etiqueta ? "Sí" : "No"}</div>
+                  <div className="col-span-1 md:col-span-2"><strong>Comentarios:</strong> {selected.comentarios || "—"}</div>
+                  <div><strong>Creado:</strong> {new Date(selected.fecha_creacion).toLocaleString()}</div>
+                  <div><strong>Actualizado:</strong> {new Date(selected.fecha_actualizacion).toLocaleString()}</div>
                 </div>
+
                 <div className="flex justify-end mt-4">
                   <button
                     onClick={() => setShowConfirmModal(true)}
                     className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
                   >
-                    <FaTrash />
-                    Eliminar
+                    <FaTrash /> Eliminar
                   </button>
                 </div>
               </div>
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">
-                Seleccione un mobiliario.
-              </p>
+              <p className="text-gray-500 dark:text-gray-400">Seleccione un mobiliario.</p>
             )}
           </div>
         </div>
       )}
 
-      {/* Modal de edición */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setIsEditing(false);
-        }}
-      >
+      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setIsEditing(false); }}>
         {selected && isEditing && (
-          <div>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-              Editar Mobiliario
-            </h2>
+          <>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Editar Mobiliario</h2>
             {(() => {
-              const { resolucionNumero, resolucionTipo } =
-                parseResolucion(selected.resolucion);
+              const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
               return (
                 <PatrimonioForm
                   modo="editar"
                   initialData={{
                     id: selected.id,
-                    anexo: "",
-                    subdependencia: String(selected.ubicacion_id),
                     rubro: "",
                     clase: "",
+                    anexo: selected.anexo,
+                    subdependencia: selected.subdependencia,
                     descripcion: selected.descripcion,
                     resolucionNumero,
                     resolucionTipo,
                     fechaResolucion: selected.fecha_resolucion ?? "",
-                    estado: selected.estado_conservacion,
-                    comentarios: selected.comentarios,
-                    foto_url: selected.foto_url,
+                    estado: selected.estado_conservacion ?? "",
+                    comentarios: selected.comentarios ?? "",
+                    foto_url: selected.foto_url ?? "",
                     opciones: {
                       noDado: selected.no_dado,
-                      reparacion: selected.reparacion,
+                      reparacion: selected.para_reparacion,
                       paraBaja: selected.para_baja,
                       faltante: selected.faltante,
                       sobrante: selected.sobrante,
-                      etiqueta: selected.etiqueta,
+                      etiqueta: selected.problema_etiqueta,
                     },
                   }}
                   onSubmit={handleEditSubmit}
-                  onCancel={() => {
-                    setIsModalOpen(false);
-                    setIsEditing(false);
-                  }}
+                  onCancel={() => { setIsModalOpen(false); setIsEditing(false); }}
                 />
               );
             })()}
-          </div>
+          </>
         )}
       </Modal>
 
