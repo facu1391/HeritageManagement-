@@ -1,5 +1,3 @@
-
-// pages/Listings.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,10 +13,7 @@ import { FaTrash } from "react-icons/fa";
 import type { Mobiliario, FormData } from "@/types/types";
 import useIsMobile from "@/hooks/useIsMobile";
 
-// Separa número y tipo de la cadena "Resol Nº..."
-function parseResolucion(
-  resolucion: string | null
-): { resolucionNumero: string; resolucionTipo: string } {
+function parseResolucion(resolucion: string | null) {
   if (!resolucion) return { resolucionNumero: "", resolucionTipo: "" };
   const regex = /Resol Nº(\S+)\s*(.*)/;
   const matches = resolucion.match(regex);
@@ -35,7 +30,6 @@ export default function Listings() {
   const [mobiliario, setMobiliario] = useState<Mobiliario[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Mobiliario | null>(null);
-
   const [search, setSearch] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -44,7 +38,6 @@ export default function Listings() {
 
   const isMobile = useIsMobile();
 
-  // 1) Carga inicial
   useEffect(() => {
     obtenerMobiliario()
       .then((data) => {
@@ -55,7 +48,6 @@ export default function Listings() {
       .finally(() => setLoading(false));
   }, []);
 
-  // 2) Filtrado (no modifica `selected`)
   const filtered = mobiliario
     .filter((item) => {
       const term = search.toLowerCase();
@@ -66,7 +58,6 @@ export default function Listings() {
     })
     .slice(0, 10);
 
-  // 3) Guardar edición
   const handleEditSubmit = async (form: FormData) => {
     if (!selected) return;
     try {
@@ -102,7 +93,6 @@ export default function Listings() {
     }
   };
 
-  // 4) Eliminar
   const handleDelete = async () => {
     if (!selected) return;
     try {
@@ -143,7 +133,7 @@ export default function Listings() {
         </p>
       ) : (
         <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
-          {/* — Listado — */}
+          {/* Listado */}
           <div className="w-full md:w-[40%] bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">
               Listado
@@ -195,7 +185,7 @@ export default function Listings() {
             </ul>
           </div>
 
-          {/* — Detalle — */}
+          {/* Detalle */}
           <div className="w-full md:w-[60%] bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col gap-4">
             <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">
               Detalle
@@ -203,7 +193,6 @@ export default function Listings() {
 
             {selected ? (
               <div className="flex flex-col gap-4">
-                {/* Foto */}
                 <div className="flex justify-center">
                   {selected.foto_url ? (
                     <Image
@@ -220,39 +209,33 @@ export default function Listings() {
                   )}
                 </div>
 
-                {/* Campos */}
-                <div className="text-sm text-gray-700 dark:text-gray-300 space-y-2">
-                  <p><strong>ID:</strong> {selected.id}</p>
-                  <p><strong>Anexo:</strong> {selected.anexo}</p>
-                  <p><strong>Subdependencia:</strong> {selected.subdependencia}</p>
-                  <p><strong>Descripción:</strong> {selected.descripcion}</p>
-
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm text-gray-700 dark:text-gray-300">
+                  <div><strong>ID:</strong> {selected.id}</div>
+                  <div><strong>Anexo:</strong> {selected.anexo}</div>
+                  <div><strong>Subdependencia:</strong> {selected.subdependencia}</div>
+                  <div><strong>Descripción:</strong> {selected.descripcion}</div>
                   {(() => {
-                    const { resolucionNumero, resolucionTipo } = parseResolucion(
-                      selected.resolucion
-                    );
+                    const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
                     return (
                       <>
-                        <p><strong>Resol Nº:</strong> {resolucionNumero || "—"}</p>
-                        <p><strong>Tipo:</strong> {resolucionTipo || "—"}</p>
+                        <div><strong>Resol Nº:</strong> {resolucionNumero || "—"}</div>
+                        <div><strong>Tipo:</strong> {resolucionTipo || "—"}</div>
                       </>
                     );
                   })()}
-
-                  <p><strong>Fecha resolución:</strong> {selected.fecha_resolucion || "—"}</p>
-                  <p><strong>Estado conservación:</strong> {selected.estado_conservacion || "—"}</p>
-                  <p><strong>No dado:</strong> {selected.no_dado ? "Sí" : "No"}</p>
-                  <p><strong>Para reparación:</strong> {selected.para_reparacion ? "Sí" : "No"}</p>
-                  <p><strong>Para baja:</strong> {selected.para_baja ? "Sí" : "No"}</p>
-                  <p><strong>Faltante:</strong> {selected.faltante ? "Sí" : "No"}</p>
-                  <p><strong>Sobrante:</strong> {selected.sobrante ? "Sí" : "No"}</p>
-                  <p><strong>Problema etiqueta:</strong> {selected.problema_etiqueta ? "Sí" : "No"}</p>
-                  <p><strong>Comentarios:</strong> {selected.comentarios || "—"}</p>
-                  <p><strong>Creado:</strong> {new Date(selected.fecha_creacion).toLocaleString()}</p>
-                  <p><strong>Actualizado:</strong> {new Date(selected.fecha_actualizacion).toLocaleString()}</p>
+                  <div><strong>Fecha resolución:</strong> {selected.fecha_resolucion || "—"}</div>
+                  <div><strong>Estado conservación:</strong> {selected.estado_conservacion || "—"}</div>
+                  <div><strong>No dado:</strong> {selected.no_dado ? "Sí" : "No"}</div>
+                  <div><strong>Para reparación:</strong> {selected.para_reparacion ? "Sí" : "No"}</div>
+                  <div><strong>Para baja:</strong> {selected.para_baja ? "Sí" : "No"}</div>
+                  <div><strong>Faltante:</strong> {selected.faltante ? "Sí" : "No"}</div>
+                  <div><strong>Sobrante:</strong> {selected.sobrante ? "Sí" : "No"}</div>
+                  <div><strong>Problema etiqueta:</strong> {selected.problema_etiqueta ? "Sí" : "No"}</div>
+                  <div className="col-span-1 md:col-span-2"><strong>Comentarios:</strong> {selected.comentarios || "—"}</div>
+                  <div><strong>Creado:</strong> {new Date(selected.fecha_creacion).toLocaleString()}</div>
+                  <div><strong>Actualizado:</strong> {new Date(selected.fecha_actualizacion).toLocaleString()}</div>
                 </div>
 
-                {/* Botón Eliminar */}
                 <div className="flex justify-end mt-4">
                   <button
                     onClick={() => setShowConfirmModal(true)}
@@ -269,29 +252,17 @@ export default function Listings() {
         </div>
       )}
 
-      {/* Modal Edición */}
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => {
-          setIsModalOpen(false);
-          setIsEditing(false);
-        }}
-      >
+      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setIsEditing(false); }}>
         {selected && isEditing && (
           <>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-              Editar Mobiliario
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Editar Mobiliario</h2>
             {(() => {
-              const { resolucionNumero, resolucionTipo } = parseResolucion(
-                selected.resolucion
-              );
+              const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
               return (
                 <PatrimonioForm
                   modo="editar"
                   initialData={{
                     id: selected.id,
-                    // ahora incluimos rubro y clase aunque sean vacíos
                     rubro: "",
                     clase: "",
                     anexo: selected.anexo,
@@ -321,7 +292,6 @@ export default function Listings() {
         )}
       </Modal>
 
-      {/* Confirmar eliminación */}
       <ConfirmModal
         isOpen={showConfirmModal}
         onCancel={() => setShowConfirmModal(false)}
