@@ -1,7 +1,7 @@
 
 import { Wrapper } from "@/components";
 import { Card } from "@/components/Card/Card";
-import { Anexo1, CasaCentral, Muni, Anexo3, Rivadavia, Urquiza, Santafe } from "@/public";
+import { Anexo1, CasaCentral, Muni, Anexo3, Rivadavia, Urquiza, Santafe, Observatorio } from "@/public";
 
 export default function Annexes() {
   return (
@@ -52,6 +52,12 @@ export default function Annexes() {
             imageSrc={Urquiza} 
             description="Urquiza N 435" 
             href="/Anexos/Anexo-Urquiza" // Nueva ruta
+          />
+           <Card 
+            title="Anexo V" 
+            imageSrc={Observatorio} 
+            description="Urquiza N 435" 
+            href="/Anexos/Observatorio" // Nueva ruta
           />
         </div>
       </div>

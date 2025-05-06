@@ -15,3 +15,4 @@ export { default as Muni } from "./muni.webp";
 export { default as Rivadavia } from "./rivadavia.webp";
 export { default as Santafe } from "./santafe.webp";
 export { default as Urquiza } from "./urquiza.webp";
+export { default as Observatorio } from "./observatorio.png";
