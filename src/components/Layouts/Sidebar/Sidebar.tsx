@@ -1,5 +1,4 @@
 
-// components/Sidebar.tsx
 "use client";
 
 import Link from "next/link";
@@ -61,7 +60,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
         <SidebarContent />
       </aside>
 
-      {/* Sidebar desplegable en móviles */}
+      {/* Sidebar móvil con entrada rápida */}
       {isOpen && (
         <div
           className="fixed inset-0 z-50 bg-black bg-opacity-50 lg:hidden"
@@ -71,7 +70,10 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
             className="fixed top-0 left-0 w-64 h-screen pt-20 bg-gray-800 border-r border-gray-700 transition-transform transform translate-x-0 flex flex-col justify-between"
             onClick={(e) => e.stopPropagation()}
           >
-            <SidebarContent setIsOpen={setIsOpen} />
+            {/* Contenido sin demoras */}
+            <div className="transition-none">
+              <SidebarContent setIsOpen={setIsOpen} />
+            </div>
           </aside>
         </div>
       )}
@@ -94,13 +96,14 @@ function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }
   return (
     <div className="h-full flex flex-col justify-between px-3 pb-4 overflow-y-auto">
       <div>
-        {/* Área del logo realzada */}
+        {/* Logo optimizado */}
         <div className="flex flex-col items-center mb-6">
           <div className="relative w-24 h-24 bg-gray-700 dark:bg-gray-600 rounded-full p-2 shadow-lg">
             <Image
               src={Logo4}
               alt="Logo"
               className="object-contain w-full h-full"
+              priority // 👈 evita demoras al montar
             />
           </div>
           <p className="mt-2 text-xs uppercase text-gray-400">
@@ -141,7 +144,7 @@ function SidebarContent({ setIsOpen }: { setIsOpen?: (isOpen: boolean) => void }
         </ul>
       </div>
 
-      {/* Botón Cerrar sesión */}
+      {/* Botón de cerrar sesión visible sin demoras */}
       <div className="mt-6 border-t border-gray-700 pt-4">
         <button
           onClick={() => setShowAlert(true)}
