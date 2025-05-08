@@ -54,7 +54,7 @@ export default function Annexes() {
             href="/Anexos/Anexo-Urquiza" // Nueva ruta
           />
            <Card 
-            title="Anexo V" 
+            title="Anexo x" 
             imageSrc={Observatorio} 
             description="Urquiza N 435" 
             href="/Anexos/Observatorio" // Nueva ruta
