@@ -1,5 +1,4 @@
 
-// services/mobiliarioService.ts
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
 
 import type { Mobiliario } from "@/types/types";
@@ -17,6 +16,7 @@ export interface MobiliarioUpdate {
   comentarios: string;
   resolucion_numero?: string;
   resolucion_tipo?: string;
+  foto_url?: string; // ✅ AÑADIDO
 }
 
 export const editarMobiliario = async (

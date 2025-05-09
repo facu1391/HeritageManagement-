@@ -1,7 +1,7 @@
 
 import { Wrapper } from "@/components";
 import { Card } from "@/components/Card/Card";
-import { Anexo1, CasaCentral, Muni, Rivadavia, Urquiza, Santafe } from "@/public";
+import { Anexo1, CasaCentral, Muni, Anexo3, Rivadavia, Urquiza, Santafe, Observatorio } from "@/public";
 
 export default function Annexes() {
   return (
@@ -20,32 +20,44 @@ export default function Annexes() {
           <Card 
             title="Anexo 1" 
             imageSrc={Anexo1} 
-            description="Descripción breve del segundo anexo." 
+            description="Copiapo N 110" 
             href="/Anexos/Anexo-1" // Nueva ruta
           />
           <Card 
             title="Anexo 2" 
             imageSrc={Muni} 
-            description="Descripción breve del cuarto anexo." 
+            description="Santa fe N 627" 
             href="/Anexos/Anexo-2" // Nueva ruta
+          />
+          <Card 
+            title="Anexo 3" 
+            imageSrc={Anexo3} 
+            description="Dalacio velez N 765" 
+            href="/Anexos/Anexo-3" // Nueva ruta
           />
             <Card 
             title="Anexo rivadavia" 
             imageSrc={Rivadavia} 
-            description="Descripción breve del cuarto anexo." 
-            href="/Anexos/Anexo-rivadavia" // Nueva ruta
+            description="Rivadavia N 938" 
+            href="/Anexos/Anexo-Rivadavia" // Nueva ruta
           />
             <Card 
             title="Anexo santafe" 
             imageSrc={Santafe} 
             description="Descripción breve del cuarto anexo." 
-            href="/Anexos/Anexo-santafe" // Nueva ruta
+            href="/Anexos/Anexo-Santafe" // Nueva ruta
           />
             <Card 
-            title="Anexo 2" 
+            title="Anexo V" 
             imageSrc={Urquiza} 
-            description="Descripción breve del cuarto anexo." 
-            href="/Anexos/Anexo-2" // Nueva ruta
+            description="Urquiza N 435" 
+            href="/Anexos/Anexo-Urquiza" // Nueva ruta
+          />
+           <Card 
+            title="Anexo x" 
+            imageSrc={Observatorio} 
+            description="Urquiza N 435" 
+            href="/Anexos/Observatorio" // Nueva ruta
           />
         </div>
       </div>

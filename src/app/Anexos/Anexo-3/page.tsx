@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
 import { obtenerSubdependencias } from "@/services/anexosService";
 import { useRouter } from "next/navigation";
 
-export default function Anexo2() {
+export default function AnexoDalmacioVelez() {
   const [subdependencias, setSubdependencias] = useState<string[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     const fetchSubdependencias = async () => {
       try {
-        const data = await obtenerSubdependencias(902); // Asegurate de que este sea el ID real
+        const data = await obtenerSubdependencias(900);
         setSubdependencias(data.map((item: { nombre: string }) => item.nombre));
       } catch (error) {
         console.error("Error al obtener subdependencias", error);
@@ -26,7 +26,7 @@ export default function Anexo2() {
     <main className="min-h-screen px-6 py-10 bg-gradient-to-br from-gray-100 via-blue-50 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <h1 className="text-center text-3xl md:text-4xl font-extrabold text-blue-900 dark:text-white mb-10">
-          902 ANEXO II : SANTA FE N° 627
+          900 ANEXO VIII : DALMACIO VELEZ 7655
         </h1>
 
         <div className="flex justify-start mb-8">
@@ -42,8 +42,8 @@ export default function Anexo2() {
           {/* Mapa */}
           <div className="w-full h-[400px] rounded-xl overflow-hidden shadow-lg border border-blue-200 dark:border-gray-700">
             <iframe
-              title="Mapa Santa Fe 627"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3545.9000000000005!2d-66.85500000000002!3d-29.416000000000004!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x96834dd8d779432b%3A0x0!2sSanta%20Fe%20627%2C%20La%20Rioja!5e0!3m2!1ses-419!2sar!4v1715000000000!5m2!1ses-419!2sar"
+              title="Mapa Dalmacio Velez"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3545.964701106881!2d-66.86055158498174!3d-29.414737782110206!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x96834ddc66bdf97f%3A0xf780582d4b00c3e1!2sDalmacio%20V%C3%A9lez%20765%2C%20La%20Rioja!5e0!3m2!1ses!2sar!4v1714916644923!5m2!1ses!2sar"
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -63,9 +63,7 @@ export default function Anexo2() {
                 {subdependencias.map((nombre, index) => (
                   <li
                     key={index}
-                    onClick={() =>
-                      router.push(`/Subdependencia/${encodeURIComponent(nombre)}`)
-                    }
+                    onClick={() => router.push(`/Subdependencia/${encodeURIComponent(nombre)}`)}
                     className="px-4 py-3 bg-blue-50 dark:bg-gray-700 rounded-lg text-gray-900 dark:text-white font-medium cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md"
                   >
                     {nombre}
