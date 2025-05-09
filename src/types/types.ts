@@ -44,6 +44,7 @@ export interface FormData {
   comentarios: string;
   resolucionNumero: string;
   resolucionTipo: string;
+  foto_url: string;
 }
 
 // --- Shape que devuelve GET /api/mobiliario (ahora con ubicación) ---

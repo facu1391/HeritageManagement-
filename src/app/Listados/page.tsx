@@ -58,40 +58,44 @@ export default function Listings() {
     })
     .slice(0, 10);
 
-  const handleEditSubmit = async (form: FormData) => {
-    if (!selected) return;
-    try {
-      await editarMobiliario(selected.id, {
-        descripcion: form.descripcion,
-        fecha_resolucion: form.fechaResolucion,
-        estado_conservacion: form.estado,
-        comentarios: form.comentarios,
-        resolucion_numero: form.resolucionNumero,
-        resolucion_tipo: form.resolucionTipo,
-      });
-      setMobiliario((prev) =>
-        prev.map((m) =>
-          m.id === selected.id
-            ? {
-                ...m,
-                descripcion: form.descripcion,
-                fecha_resolucion: form.fechaResolucion,
-                estado_conservacion: form.estado,
-                comentarios: form.comentarios,
-                resolucion_numero: form.resolucionNumero,
-                resolucion_tipo: form.resolucionTipo,
-                resolucion: `Resol Nº${form.resolucionNumero} ${form.resolucionTipo}`.trim(),
-              }
-            : m
-        )
-      );
-      setIsEditing(false);
-      setIsModalOpen(false);
-      toast.success("Actualizado correctamente");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Error al editar");
-    }
-  };
+    const handleEditSubmit = async (form: FormData) => {
+      if (!selected) return;
+      try {
+        await editarMobiliario(selected.id, {
+          descripcion: form.descripcion,
+          fecha_resolucion: form.fechaResolucion,
+          estado_conservacion: form.estado,
+          comentarios: form.comentarios,
+          resolucion_numero: form.resolucionNumero,
+          resolucion_tipo: form.resolucionTipo,
+          foto_url: form.foto_url, // ✅ AÑADIDO
+        });
+    
+        setMobiliario((prev) =>
+          prev.map((m) =>
+            m.id === selected.id
+              ? {
+                  ...m,
+                  descripcion: form.descripcion,
+                  fecha_resolucion: form.fechaResolucion,
+                  estado_conservacion: form.estado,
+                  comentarios: form.comentarios,
+                  resolucion_numero: form.resolucionNumero,
+                  resolucion_tipo: form.resolucionTipo,
+                  resolucion: `Resol Nº${form.resolucionNumero} ${form.resolucionTipo}`.trim(),
+                  foto_url: form.foto_url, // ✅ AÑADIDO
+                }
+              : m
+          )
+        );
+    
+        setIsEditing(false);
+        setIsModalOpen(false);
+        toast.success("Actualizado correctamente");
+      } catch (err) {
+        toast.error(err instanceof Error ? err.message : "Error al editar");
+      }
+    };
 
   const handleDelete = async () => {
     if (!selected) return;
