@@ -21,5 +21,4 @@ export { default as ConfirmModal } from "./Modal/ConfirmModal";
 //Forms
 export { default as PatrimonioForm  } from "./Forms/PatrimonioForm"
 
-export { default as  PlanoPlantaBaja } from "./PlanoInteractivo/PlanoPlantaBaja"
 

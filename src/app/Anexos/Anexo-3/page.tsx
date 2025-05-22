@@ -5,8 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { obtenerSubdependencias } from "@/services/anexosService";
 import Image from "next/image";
-import { AnexoPlantaAlta } from "@/public";
-import { PlanoPlantaBaja } from "@/components";
+import { AnexoPlantabaja, AnexoPlantaAlta } from "@/public";
 
 export default function AnexoDalmacioVelez() {
   const [subdependencias, setSubdependencias] = useState<string[]>([]);
@@ -44,12 +43,14 @@ export default function AnexoDalmacioVelez() {
         <div className="grid md:grid-cols-2 gap-10 items-start">
           {/* Planos de planta baja y alta */}
           <div className="space-y-6">
-            {/* SVG interactivo */}
             <div className="w-full rounded-xl overflow-hidden shadow-lg border border-blue-200 dark:border-gray-700">
-              <PlanoPlantaBaja />
+              <Image
+                src={AnexoPlantabaja}
+                alt="Plano Planta Baja"
+                className="w-full h-auto object-cover"
+                placeholder="blur"
+              />
             </div>
-
-            {/* Imagen tradicional planta alta */}
             <div className="w-full rounded-xl overflow-hidden shadow-lg border border-blue-200 dark:border-gray-700">
               <Image
                 src={AnexoPlantaAlta}
