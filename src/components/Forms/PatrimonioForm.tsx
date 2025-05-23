@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -46,17 +47,16 @@ export default function PatrimonioForm({
       etiqueta: false,
     },
   });
+
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [anexos, setAnexos] = useState<Anexo[]>([]);
   const [subdependencias, setSubdependencias] = useState<Subdependencia[]>([]);
   const [nomencladorOpen, setNomencladorOpen] = useState(false);
 
-  // Cargo anexos al montar
   useEffect(() => {
     obtenerAnexos().then(setAnexos);
   }, []);
 
-  // Cargo subdependencias al cambiar anexo
   useEffect(() => {
     if (form.anexo) {
       obtenerSubdependencias(Number(form.anexo)).then(setSubdependencias);
@@ -65,7 +65,6 @@ export default function PatrimonioForm({
     }
   }, [form.anexo]);
 
-  // Relleno el form si llega initialData
   useEffect(() => {
     if (!initialData) return;
     setForm({
@@ -110,8 +109,6 @@ export default function PatrimonioForm({
     const formData = new FormData();
     formData.append("foto", file);
 
-    // Construimos dinámicamente la URL de subida,
-    // según si tu API_BASE ya incluye "/api" o no
     const base = process.env.NEXT_PUBLIC_API_BASE!;
     const uploadUrl = base.endsWith("/api")
       ? `${base}/uploads`
@@ -136,13 +133,18 @@ export default function PatrimonioForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (modo === "editar" && (!form.anexo || !form.subdependencia)) {
+      toast.error("Anexo y Subdependencia son obligatorios");
+      return;
+    }
+
     onSubmit(form);
   };
 
   return (
     <>
       <form className="space-y-6" onSubmit={handleSubmit}>
-        {/* ID, Anexo, Subdependencia */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="relative">
             <FaIdBadge className="absolute left-3 top-3 text-gray-400" />
@@ -178,7 +180,6 @@ export default function PatrimonioForm({
             ))}
           </select>
 
-          {/* Rubro + Clase con botón “Nomenclador” */}
           <div className="col-span-1 sm:col-span-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
               <p><strong>Rubro:</strong> {form.rubro || "No seleccionado"}</p>
@@ -194,7 +195,6 @@ export default function PatrimonioForm({
           </div>
         </div>
 
-        {/* Descripción */}
         <input
           type="text"
           value={form.descripcion}
@@ -203,7 +203,6 @@ export default function PatrimonioForm({
           className="w-full p-3 text-sm border border-gray-300 rounded-md dark:bg-gray-700 dark:text-white"
         />
 
-        {/* Resolución */}
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
           <input
             type="number"
@@ -239,7 +238,6 @@ export default function PatrimonioForm({
           </div>
         </div>
 
-        {/* Estado conservación */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
             <FaWrench /> Estado de Conservación
@@ -261,7 +259,6 @@ export default function PatrimonioForm({
           </div>
         </div>
 
-        {/* Opciones */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
             Marcar opciones
@@ -288,7 +285,6 @@ export default function PatrimonioForm({
           </div>
         </div>
 
-        {/* Comentarios */}
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-2">
             <FaRegCommentDots /> Comentarios
@@ -302,7 +298,6 @@ export default function PatrimonioForm({
           />
         </div>
 
-        {/* Subir imagen */}
         <div className="relative w-full border-2 border-dashed border-gray-300 dark:border-gray-500 rounded-lg p-6 flex items-center justify-center text-center">
           {selectedImage ? (
             <div className="relative w-40 h-40">
@@ -315,20 +310,11 @@ export default function PatrimonioForm({
             </div>
           ) : (
             <div className="space-y-3">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-12 h-12 text-gray-400 mx-auto"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-400 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
               </svg>
               <p className="text-sm text-gray-600 dark:text-gray-300">
-                <span className="text-indigo-600 font-medium underline">
-                  Subir imagen
-                </span>{" "}
-                o arrastrar y soltar
+                <span className="text-indigo-600 font-medium underline">Subir imagen</span> o arrastrar y soltar
               </p>
             </div>
           )}
@@ -339,7 +325,6 @@ export default function PatrimonioForm({
           />
         </div>
 
-        {/* Botones Cancelar / Guardar */}
         <div className="flex justify-end gap-3 mt-6">
           <button
             type="button"
@@ -358,7 +343,6 @@ export default function PatrimonioForm({
         </div>
       </form>
 
-      {/* Modal Nomenclador */}
       {nomencladorOpen && (
         <Nomenclador
           onSave={sel => {
