@@ -7,15 +7,21 @@ import { obtenerSubdependencias } from "@/services/anexosService";
 import Image from "next/image";
 import { AnexoPlantabaja, AnexoPlantaAlta } from "@/public";
 
+interface Subdependencia {
+  id: number;
+  nombre: string;
+}
+
 export default function AnexoDalmacioVelez() {
-  const [subdependencias, setSubdependencias] = useState<string[]>([]);
+  const [subdependencias, setSubdependencias] = useState<Subdependencia[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     const fetchSubdependencias = async () => {
       try {
         const data = await obtenerSubdependencias(900);
-        setSubdependencias(data.map((item: { nombre: string }) => item.nombre));
+        const ordenadas = data.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id);
+        setSubdependencias(ordenadas);
       } catch (error) {
         console.error("Error al obtener subdependencias", error);
       }
@@ -41,7 +47,7 @@ export default function AnexoDalmacioVelez() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-10 items-start">
-          {/* Planos de planta baja y alta */}
+          {/* Planos */}
           <div className="space-y-6">
             <div className="w-full rounded-xl overflow-hidden shadow-lg border border-blue-200 dark:border-gray-700">
               <Image
@@ -62,19 +68,19 @@ export default function AnexoDalmacioVelez() {
           </div>
 
           {/* Subdependencias */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 max-h-[500px] overflow-y-auto">
             <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
               Subdependencias
             </h2>
             {subdependencias.length > 0 ? (
               <ul className="space-y-3">
-                {subdependencias.map((nombre, index) => (
+                {subdependencias.map((sub) => (
                   <li
-                    key={index}
-                    onClick={() => router.push(`/Subdependencia/${encodeURIComponent(nombre)}`)}
+                    key={sub.id}
+                    onClick={() => router.push(`/Subdependencia/${encodeURIComponent(sub.nombre)}`)}
                     className="px-4 py-3 bg-blue-50 dark:bg-gray-700 rounded-lg text-gray-900 dark:text-white font-medium cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md"
                   >
-                    {nombre}
+                    {sub.id} - {sub.nombre}
                   </li>
                 ))}
               </ul>
