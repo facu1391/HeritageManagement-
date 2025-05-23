@@ -2,18 +2,26 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { obtenerSubdependencias } from "@/services/anexosService";
 import { useRouter } from "next/navigation";
+import { obtenerSubdependencias } from "@/services/anexosService";
+import Image from "next/image";
+import { AnexoPlantabaja, AnexoPlantaAlta } from "@/public";
+
+interface Subdependencia {
+  id: number;
+  nombre: string;
+}
 
 export default function AnexoDalmacioVelez() {
-  const [subdependencias, setSubdependencias] = useState<string[]>([]);
+  const [subdependencias, setSubdependencias] = useState<Subdependencia[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     const fetchSubdependencias = async () => {
       try {
         const data = await obtenerSubdependencias(900);
-        setSubdependencias(data.map((item: { nombre: string }) => item.nombre));
+        const ordenadas = data.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id);
+        setSubdependencias(ordenadas);
       } catch (error) {
         console.error("Error al obtener subdependencias", error);
       }
@@ -39,34 +47,40 @@ export default function AnexoDalmacioVelez() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-10 items-start">
-          {/* Mapa */}
-          <div className="w-full h-[400px] rounded-xl overflow-hidden shadow-lg border border-blue-200 dark:border-gray-700">
-            <iframe
-              title="Mapa Dalmacio Velez"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3545.964701106881!2d-66.86055158498174!3d-29.414737782110206!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x96834ddc66bdf97f%3A0xf780582d4b00c3e1!2sDalmacio%20V%C3%A9lez%20765%2C%20La%20Rioja!5e0!3m2!1ses!2sar!4v1714916644923!5m2!1ses!2sar"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+          {/* Planos */}
+          <div className="space-y-6">
+            <div className="w-full rounded-xl overflow-hidden shadow-lg border border-blue-200 dark:border-gray-700">
+              <Image
+                src={AnexoPlantabaja}
+                alt="Plano Planta Baja"
+                className="w-full h-auto object-cover"
+                placeholder="blur"
+              />
+            </div>
+            <div className="w-full rounded-xl overflow-hidden shadow-lg border border-blue-200 dark:border-gray-700">
+              <Image
+                src={AnexoPlantaAlta}
+                alt="Plano Planta Alta"
+                className="w-full h-auto object-cover"
+                placeholder="blur"
+              />
+            </div>
           </div>
 
           {/* Subdependencias */}
-          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
+          <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 max-h-[500px] overflow-y-auto">
             <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
               Subdependencias
             </h2>
             {subdependencias.length > 0 ? (
               <ul className="space-y-3">
-                {subdependencias.map((nombre, index) => (
+                {subdependencias.map((sub) => (
                   <li
-                    key={index}
-                    onClick={() => router.push(`/Subdependencia/${encodeURIComponent(nombre)}`)}
+                    key={sub.id}
+                    onClick={() => router.push(`/Subdependencia/${encodeURIComponent(sub.nombre)}`)}
                     className="px-4 py-3 bg-blue-50 dark:bg-gray-700 rounded-lg text-gray-900 dark:text-white font-medium cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-600 transition-all duration-200 shadow-sm hover:shadow-md"
                   >
-                    {nombre}
+                    {sub.id} - {sub.nombre}
                   </li>
                 ))}
               </ul>

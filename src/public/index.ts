@@ -16,3 +16,7 @@ export { default as Rivadavia } from "./rivadavia.webp";
 export { default as Santafe } from "./santafe.webp";
 export { default as Urquiza } from "./urquiza.webp";
 export { default as Observatorio } from "./observatorio.png";
+
+//PlanosAnexos
+export { default as AnexoPlantabaja } from "./Anexo-Platabaja.png";
+export { default as AnexoPlantaAlta } from "./Anexo-PlataAlta.png";

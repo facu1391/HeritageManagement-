@@ -45,6 +45,11 @@ const sidebarItems: SidebarItem[] = [
     svgPath:
       "M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m-9.75 0h9.75",
   },
+  {
+    href: "/Diputados",
+    label: "Diputados",
+    svgPath: "M3 10h18M4 10v10h3V10M9 10v10h3V10m2 0v10h3V10m3 0v10h2V10M12 3l7 7H5l7-7z" // ícono de líneas horizontales
+  }
 ];
 
 interface SidebarProps {

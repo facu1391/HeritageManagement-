@@ -17,6 +17,11 @@ export { default as LogoutAlert } from "./Alerts/LogoutAlert";
 //Modals
 export { default as Modal } from "./Modal/Modal";
 export { default as ConfirmModal } from "./Modal/ConfirmModal";
+export { default as DeleteModal } from "./Modal/DeleteModal";
 
 //Forms
-export { default as PatrimonioForm  } from "./Forms/PatrimonioForm"
+export { default as PatrimonioForm  } from "./Forms/PatrimonioForm";
+
+//Diputados
+export { default as DiputadoCard  } from "./Diputados/DiputadoCard";
+export { diputadosData } from "./Diputados/DiputadosData";
