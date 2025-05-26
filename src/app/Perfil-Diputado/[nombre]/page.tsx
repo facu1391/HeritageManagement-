@@ -1,4 +1,5 @@
 
+// src/app/perfil-diputado/[nombre]/page.tsx
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
@@ -10,7 +11,6 @@ export default function DiputadoDetalle() {
   const router = useRouter();
   const nombre = decodeURIComponent(params.nombre as string);
 
-  // Datos ficticios hasta que se conecte al backend
   const datosOficina = {
     anexo: "Anexo Central",
     direccion: "Calle de los Diputados 123, Capital",
@@ -31,7 +31,7 @@ export default function DiputadoDetalle() {
   return (
     <main className="min-h-screen px-6 py-10 bg-gradient-to-br from-gray-100 via-blue-50 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
       <Wrapper>
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
           <button
             onClick={() => router.back()}
             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow"
@@ -43,7 +43,7 @@ export default function DiputadoDetalle() {
             placeholder="Buscar en inventario"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="px-4 py-2 rounded-lg shadow border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-white"
+            className="w-full sm:w-auto px-4 py-2 rounded-lg shadow border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-sm text-gray-800 dark:text-white"
           />
         </div>
 
