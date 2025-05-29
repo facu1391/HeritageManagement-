@@ -1,5 +1,10 @@
 export const diputadosData = [
+<<<<<<< HEAD
   {
+=======
+<<<<<<< HEAD
+   {
+>>>>>>> 0919af6 (fix:peril/diputados)
     nombre: "Carla Noelia Aliendro",
     departamento: "Chamical",
     partido: "PJ",
@@ -14,6 +19,20 @@ export const diputadosData = [
   {
     nombre: "Luis Cleto Arce Agüero",
     departamento: "Rosario Vera Peñaloza",
+=======
+  { nombre: "Carla Noelia Aliendro", 
+    departamento: "Chamical", 
+    partido: "PJ",
+    foto: "/fotos/aliendro.png",
+  },
+  { nombre: "María Gabriela Amoroso Fernández", 
+    departamento: "Chilecito", 
+    partido: "PJ",
+     foto: "/fotos/amoroso.png",
+  },
+  { nombre: "Luis Cleto Arce Agüero", 
+    departamento: "Rosario Vera Peñaloza", 
+>>>>>>> 998e972 (fix:peril/diputados)
     partido: "PJ",
     foto: "/fotos/arce.png",
   },
@@ -21,31 +40,68 @@ export const diputadosData = [
     nombre: "Raúl Eduardo Cabral",
     departamento: "Chilecito",
     partido: "PJ",
+<<<<<<< HEAD
     foto: "/fotos/cabral.png",
+=======
+<<<<<<< HEAD
+    foto: "/fotos/carla-aliendro.webp",
+=======
+     foto: "/fotos/cabral.png",
+>>>>>>> 998e972 (fix:peril/diputados)
+>>>>>>> 0919af6 (fix:peril/diputados)
   },
   {
     nombre: "Jesús Omar Castro",
     departamento: "Rosario Vera Peñaloza",
     partido: "PJ",
+<<<<<<< HEAD
     foto: "/fotos/castro.png",
+=======
+<<<<<<< HEAD
+    foto: "/fotos/carla-aliendro.webp",
+=======
+     foto: "/fotos/castro.png",
+>>>>>>> 998e972 (fix:peril/diputados)
+>>>>>>> 0919af6 (fix:peril/diputados)
   },
   {
     nombre: "Oscar Eduardo Chamía",
     departamento: "General Felipe Varela",
     partido: "PJ",
+<<<<<<< HEAD
     foto: "/fotos/chamia.png",
+=======
+<<<<<<< HEAD
+    foto: "/fotos/carla-aliendro.webp",
+=======
+    foto: "/fotos/chamia.png",
+>>>>>>> 998e972 (fix:peril/diputados)
+>>>>>>> 0919af6 (fix:peril/diputados)
   },
   {
     nombre: "Luis Alberto Chumbita",
     departamento: "Chamical",
     partido: "PJ",
+<<<<<<< HEAD
     foto: "/fotos/chumbita.png",
+=======
+<<<<<<< HEAD
+    foto: "/fotos/carla-aliendro.webp",
+=======
+    foto: "/fotos/chumbita.png",
+>>>>>>> 998e972 (fix:peril/diputados)
+>>>>>>> 0919af6 (fix:peril/diputados)
   },
   {
     nombre: "José Abrahán Couceiro",
     departamento: "General San Martín",
     partido: "PJ",
+<<<<<<< HEAD
     foto: "/fotos/couceiro.png",
+=======
+<<<<<<< HEAD
+    foto: "/fotos/carla-aliendro.webp",
+>>>>>>> 0919af6 (fix:peril/diputados)
   },
   {
     nombre: "Fernando Exequiel Delgado",
@@ -203,10 +259,154 @@ export const diputadosData = [
     partido: "PJ",
     foto: "/fotos/villagra-luis.png",
   },
+<<<<<<< HEAD
   {
     nombre: "Silvio Horacio Villagra",
     departamento: "San Blas de los Sauces",
     partido: "PJ",
     foto: "/fotos/villagra-silvio.png",
+=======
+  { nombre: "Silvio Horacio Villagra", 
+    departamento: "San Blas de los Sauces", 
+    partido: "PJ" 
+=======
+    foto: "/fotos/couceiro.png",
+  },
+  { nombre: "Fernando Exequiel Delgado", 
+    departamento: "Castro Barros", 
+    partido: "PJ",
+    foto: "/fotos/delgado.png",
+  },
+  { nombre: "Juan José Elías", 
+    departamento: "Chamical", 
+    partido: "PJ",
+    foto: "/fotos/elias.png",
+  },
+  { nombre: "Mario Gustavo Galván", 
+    departamento: "Capital", 
+    partido: "UCR",
+    foto: "/fotos/galvan.png",
+  },
+  { nombre: "Fabián Nicolás Gauna",
+    departamento: "General Ortiz de Ocampo", 
+    partido: "PJ",
+    foto: "/fotos/gauna.png",
+  },
+  { nombre: "Antonio Roberto Godoy", 
+    departamento: "Rozario Vera Peñaloza", 
+    partido: "PJ",
+    foto: "/fotos/godoy.png",
+  },
+  { nombre: "Hernán Gabriel Gurgone Flores", 
+    departamento: "Sanagasta", 
+    partido: "PJ",
+    foto: "/fotos/gurgone.png",
+  },
+  { nombre: "Sebastían Gutiérrez", 
+    departamento: "Chilecito", 
+    partido: "PJ",
+    foto: "/fotos/gutierrez.png",
+  },
+  { nombre: "Sofía Lorena Laso", 
+    departamento: "Famatina", 
+    partido: "PJ",
+    foto: "/fotos/loso.png",
+  },
+  { nombre: "Pablo Darío Leo", 
+    departamento: "Arauco", 
+    partido: "PJ",
+    foto: "/fotos/leo.png",
+  },
+  { nombre: "Mirtha María Teresita Luna", 
+    departamento: "Capital", 
+    partido: "PJ",
+    foto: "/fotos/luna.png",
+  },
+  { nombre: "Carlos Alberto Machicote", 
+    departamento: "Capital", 
+    partido: "PJ",
+    foto: "/fotos/machicote.png",
+  },
+  { nombre: "Nicolás Antonio Martínez", 
+    departamento: "Arauco", 
+    partido: "PJ",
+    foto: "/fotos/martinez.png",
+  },
+  { nombre: "María Liliana Medina", 
+    departamento: "Capital", 
+    partido: "Livertad Avanza",
+    foto: "/fotos/liliana-medina.png",
+  },
+  { nombre: "Paul Alberto Mercado", 
+    departamento: "General Belgrano", 
+    partido: "PJ",
+    foto: "/fotos/mercado.png",
+  },
+  { nombre: "Egle Maricel Muñoz", 
+    departamento: "General Felipe Varela", 
+    partido: "PJ",
+    foto: "/fotos/maricel-munoz.png",
+  },
+  { nombre: "Natalia Noelia Oros", 
+    departamento: "Indepencia", 
+    partido: "PJ",
+    foto: "/fotos/oros.png",
+  },
+  { nombre: "Lourdes Alejandrina Ortiz", 
+    departamento: "Capital", 
+    partido: "PJ",
+    foto: "/fotos/ortiz.png",
+  },
+  { nombre: "Cristian Eduardo Pérez", 
+    departamento: "Rosario Vera Peñaloza", 
+    partido: "PJ",
+    foto: "/fotos/perez.png",
+  },
+  { nombre: "Julio César Reinoso", 
+    departamento: "Arauco", 
+    partido: "PJ",
+    foto: "/fotos/reinoso.png",
+  },
+  { nombre: "Nadina Verónica Reynoso", 
+    departamento: "Capital", 
+    partido: "Hay Futuro",
+    foto: "/fotos/reynoso.png",
+  },
+  { nombre: "Gabriela Azucena Rodríguez", 
+    departamento: "Chilecito", 
+    partido: "UCR",
+    foto: "/fotos/rodriguez.png",
+  },
+  { nombre: "Luis Lisandro Rojo", 
+    departamento: "General la Madrid", 
+    partido: "PJ",
+    foto: "/fotos/rojo.png",
+  },
+  { nombre: "Mario Claudio Ruíz", 
+    departamento: "Chilecito", 
+    partido: "PJ",
+    foto: "/fotos/ruiz.png",
+  },
+  { nombre: "Juan Carlos Santander", 
+    departamento: "Capital", 
+    partido: "PJ",
+    foto: "/fotos/santander.png",
+  },
+  { nombre: "Alejandro Norberto Verazay", 
+    departamento: "Vinchina", 
+    partido: "PJ",
+    foto: "/fotos/verazay.png",
+  },
+  { nombre: "Luis Alberto Villagra", 
+    departamento: "General Felipe Varela", 
+    partido: "PJ",
+    foto: "/fotos/villagra-luis.png",
+  },
+  { nombre: "Silvio Horacio Villagra", 
+    departamento: "San Blas de los Sauces", 
+    partido: "PJ",
+    foto: "/fotos/villagra-silvio.png",
+>>>>>>> 998e972 (fix:peril/diputados)
+>>>>>>> 0919af6 (fix:peril/diputados)
   },
 ];

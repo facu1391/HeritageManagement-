@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> 998e972 (fix:peril/diputados)
+>>>>>>> 0919af6 (fix:peril/diputados)
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
@@ -53,6 +61,7 @@ export default function DiputadoDetalle() {
 
         <div className="flex flex-col items-center text-center mb-6">
           {diputado?.foto && (
+<<<<<<< HEAD
             <Image
               src={diputado.foto}
               alt={`Foto de ${nombre}`}
@@ -62,16 +71,34 @@ export default function DiputadoDetalle() {
             />
           )}
           <h1 className="text-3xl font-bold text-blue-900 dark:text-white mb-2">
+=======
+            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gray-300 dark:bg-gray-600 mb-3">
+              <Image
+                src={diputado.foto}
+                alt={`Foto de ${nombre}`}
+                width={112}
+                height={112}
+                className="object-cover w-full h-full"
+              />
+            </div>
+          )}
+          <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 dark:text-white mb-2">
+>>>>>>> 998e972 (fix:peril/diputados)
             {nombre}
           </h1>
           {diputado && (
             <>
+<<<<<<< HEAD
               <p className="text-gray-700 dark:text-gray-300 text-sm">
                 Departamento: {diputado.departamento}
               </p>
               <p className="text-gray-500 dark:text-gray-400 text-sm italic">
                 Partido: {diputado.partido}
               </p>
+=======
+              <p className="text-gray-700 dark:text-gray-300 text-sm">{`Departamento: ${diputado.departamento}`}</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm italic">{`Partido: ${diputado.partido}`}</p>
+>>>>>>> 998e972 (fix:peril/diputados)
             </>
           )}
         </div>
