@@ -315,7 +315,7 @@ export const diputadosData = [
   { nombre: "Sofía Lorena Laso", 
     departamento: "Famatina", 
     partido: "PJ",
-    foto: "/fotos/loso.png",
+    foto: "/fotos/laso.png",
   },
   { nombre: "Pablo Darío Leo", 
     departamento: "Arauco", 
