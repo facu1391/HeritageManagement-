@@ -3,7 +3,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Logo4 } from "@/public";
+import { Logo4 } from "../../../../public";
 import { useState } from "react";
 import { LogoutAlert } from "@/components";
 

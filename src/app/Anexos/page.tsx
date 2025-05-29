@@ -1,7 +1,7 @@
 
 import { Wrapper } from "@/components";
 import { Card } from "@/components/Card/Card";
-import { Anexo1, CasaCentral, Muni, Anexo3, Rivadavia, Urquiza, Santafe, Observatorio } from "@/public";
+import { Anexo1, CasaCentral, Muni, Anexo3, Rivadavia, Urquiza, Santafe, Observatorio } from "../../../public";
 
 export default function Annexes() {
   return (

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { obtenerSubdependencias } from "@/services/anexosService";
 import Image from "next/image";
-import { AnexoPlantabaja, AnexoPlantaAlta } from "@/public";
+import { AnexoPlantabaja, AnexoPlantaAlta } from "../../../../public";
 
 interface Subdependencia {
   id: number;

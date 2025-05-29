@@ -4,7 +4,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Perfil } from "@/public";
+import { Perfil } from "../../../../public";
 import { useTheme } from "@/Context/ThemeContext";
 import { FaBars, FaTimes } from "react-icons/fa";
 import { BsSun, BsMoon, BsBell } from "react-icons/bs";
