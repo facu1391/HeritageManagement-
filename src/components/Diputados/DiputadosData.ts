@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 1b3f832 (fix:diputadoData)
 export const diputadosData = [
 <<<<<<< HEAD
   {
@@ -335,7 +340,7 @@ export const diputadosData = [
   { nombre: "María Liliana Medina", 
     departamento: "Capital", 
     partido: "Livertad Avanza",
-    foto: "/fotos/liliana-medina.png",
+    foto: "/fotos/medina.png",
   },
   { nombre: "Paul Alberto Mercado", 
     departamento: "General Belgrano", 
@@ -345,7 +350,7 @@ export const diputadosData = [
   { nombre: "Egle Maricel Muñoz", 
     departamento: "General Felipe Varela", 
     partido: "PJ",
-    foto: "/fotos/maricel-munoz.png",
+    foto: "/fotos/munoz.png",
   },
   { nombre: "Natalia Noelia Oros", 
     departamento: "Indepencia", 
