@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 <<<<<<< HEAD
 
@@ -6,6 +7,10 @@
 =======
 >>>>>>> 998e972 (fix:peril/diputados)
 >>>>>>> 0919af6 (fix:peril/diputados)
+=======
+
+// src/app/Perfil-Diputado/[nombre]/page.tsx
+>>>>>>> 168cd8a (fix: resolver conflictos tras rebase desde feature/integration)
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
@@ -41,12 +46,12 @@ export default function DiputadoDetalle() {
   );
 
   return (
-    <main className="min-h-screen px-4 sm:px-6 py-10 bg-gradient-to-br from-gray-100 via-blue-50 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
+    <main className="min-h-screen px-6 py-10 bg-gradient-to-br from-gray-100 via-blue-50 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
       <Wrapper>
         <div className="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow transition"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg shadow"
           >
             ← Volver
           </button>
@@ -61,7 +66,6 @@ export default function DiputadoDetalle() {
 
         <div className="flex flex-col items-center text-center mb-6">
           {diputado?.foto && (
-<<<<<<< HEAD
             <Image
               src={diputado.foto}
               alt={`Foto de ${nombre}`}
@@ -71,34 +75,16 @@ export default function DiputadoDetalle() {
             />
           )}
           <h1 className="text-3xl font-bold text-blue-900 dark:text-white mb-2">
-=======
-            <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-gray-300 dark:bg-gray-600 mb-3">
-              <Image
-                src={diputado.foto}
-                alt={`Foto de ${nombre}`}
-                width={112}
-                height={112}
-                className="object-cover w-full h-full"
-              />
-            </div>
-          )}
-          <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 dark:text-white mb-2">
->>>>>>> 998e972 (fix:peril/diputados)
             {nombre}
           </h1>
           {diputado && (
             <>
-<<<<<<< HEAD
               <p className="text-gray-700 dark:text-gray-300 text-sm">
                 Departamento: {diputado.departamento}
               </p>
               <p className="text-gray-500 dark:text-gray-400 text-sm italic">
                 Partido: {diputado.partido}
               </p>
-=======
-              <p className="text-gray-700 dark:text-gray-300 text-sm">{`Departamento: ${diputado.departamento}`}</p>
-              <p className="text-gray-500 dark:text-gray-400 text-sm italic">{`Partido: ${diputado.partido}`}</p>
->>>>>>> 998e972 (fix:peril/diputados)
             </>
           )}
         </div>
@@ -108,7 +94,7 @@ export default function DiputadoDetalle() {
           <p><strong>Dirección:</strong> {datosOficina.direccion}</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 sm:p-6 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">
             Inventario de oficina
           </h2>
