@@ -1,23 +1,10 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 998e972 (fix:peril/diputados)
->>>>>>> 0919af6 (fix:peril/diputados)
-=======
-
 // src/app/Perfil-Diputado/[nombre]/page.tsx
->>>>>>> 168cd8a (fix: resolver conflictos tras rebase desde feature/integration)
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
 import { useState } from "react";
 import { Wrapper, diputadosData } from "@/components";
 import Image from "next/image";
-
 
 export default function DiputadoDetalle() {
   const params = useParams();
