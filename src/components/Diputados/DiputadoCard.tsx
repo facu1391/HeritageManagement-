@@ -1,3 +1,4 @@
+
 import Image from "next/image";
 
 interface DiputadoCardProps {
@@ -27,7 +28,9 @@ export default function DiputadoCard({
         )}
       </div>
       <div className="flex-1 flex flex-col justify-between">
-        <p className="font-semibold text-sm text-gray-900 dark:text-white break-words">{nombre}</p>
+        <p className="font-semibold text-sm text-gray-900 dark:text-white break-words">
+          {nombre}
+        </p>
         <p className="text-xs text-gray-500 dark:text-gray-300">{departamento}</p>
         <p className="text-xs text-gray-400 dark:text-gray-400 italic">{partido}</p>
       </div>
