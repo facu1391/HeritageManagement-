@@ -14,7 +14,7 @@ export default function Annexes() {
           <Card 
             title="Casa Central" 
             imageSrc={CasaCentral} 
-            description="Descripción breve del primer anexo." 
+            description="Vélez Sársfield 800-898" 
             href="/Anexos/CasaCentral" // Nueva ruta
           />
           <Card 
