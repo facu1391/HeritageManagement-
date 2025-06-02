@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Wrapper, ToastMessage } from "@/components";
-import { Lesgilatura } from "@/public";
+import { Lesgilatura } from "../../../public";
 import { FaMapMarkerAlt } from "react-icons/fa";
 import { GOOGLE_MAPS_LINK, GOOGLE_MAPS_EMBED_SRC } from "@/config/constants";
 
