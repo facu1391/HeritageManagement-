@@ -1,4 +1,3 @@
-
 "use client";
 
 import Link from "next/link";
@@ -40,6 +39,11 @@ const sidebarItems: SidebarItem[] = [
     href: "/Listados",
     label: "Listados",
     icon: <HiClipboardList className="w-6 h-6" />,
+  },
+  {
+    href: "/Bajas",
+    label: "Bajas Mobiliario",
+    icon: <HiOutlineLogout className="w-6 h-6" />, // Podés cambiar el ícono si querés
   },
   {
     href: "/Control",
