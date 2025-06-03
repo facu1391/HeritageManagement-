@@ -1,16 +1,13 @@
 
 "use client";
 
-import { useRouter } from "next/navigation";
+import { Wrapper } from "@/components";
 import PatrimonioForm from "@/components/Forms/PatrimonioForm";
 import { createPatrimonio } from "@/services/patrimonioService";
 import { FormularioPatrimonio } from "@/types/types";
 import { toast, Toaster } from "react-hot-toast";
-import { Wrapper } from "@/components";
 
 export default function CrearPatrimonioPage() {
-  const router = useRouter();
-
   const handleSubmit = async (form: FormularioPatrimonio) => {
     try {
       const payload = {
@@ -33,8 +30,7 @@ export default function CrearPatrimonioPage() {
 
       await createPatrimonio(payload);
       toast.success("Registro creado correctamente.");
-      // No redirigimos más
-    } catch (error) {
+    } catch {
       toast.error("Error al crear el mobiliario");
     }
   };
@@ -49,8 +45,8 @@ export default function CrearPatrimonioPage() {
         <PatrimonioForm
           modo="crear"
           onSubmit={handleSubmit}
-          onCancel={() => {}} // ya no redirige
-          resetOnSuccess={true} // limpia el formulario
+          onCancel={() => {}}
+          resetOnSuccess={true}
         />
       </main>
     </Wrapper>
