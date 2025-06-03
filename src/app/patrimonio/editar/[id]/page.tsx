@@ -49,7 +49,7 @@ export default function EditarMobiliarioPage() {
           etiqueta: data.problema_etiqueta,
         },
       });
-    } catch (err) {
+    } catch {
       toast.error("Error al procesar los datos.");
     }
   }, []);
@@ -75,7 +75,7 @@ export default function EditarMobiliarioPage() {
 
       toast.success("Mobiliario actualizado correctamente");
       localStorage.removeItem("mobiliario-edicion");
-    } catch (error) {
+    } catch {
       toast.error("Error al guardar los cambios");
     } finally {
       setLoading(false);
