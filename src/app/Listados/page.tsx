@@ -12,7 +12,6 @@ import {
 import { toast, Toaster } from "react-hot-toast";
 import { FaTrash, FaEdit } from "react-icons/fa";
 import type { Mobiliario } from "@/types/types";
-import useIsMobile from "@/hooks/useIsMobile";
 
 function parseResolucion(resolucion: string | null) {
   if (!resolucion) return { resolucionNumero: "", resolucionTipo: "" };
@@ -34,7 +33,6 @@ export default function Listings() {
   const [search, setSearch] = useState("");
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const isMobile = useIsMobile();
   const router = useRouter();
 
   useEffect(() => {
@@ -66,8 +64,8 @@ export default function Listings() {
       setSelected(null);
       setShowConfirmModal(false);
       toast.success("Eliminado correctamente");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Error al eliminar");
+    } catch {
+      toast.error("Error al eliminar");
     } finally {
       setDeleting(false);
     }
