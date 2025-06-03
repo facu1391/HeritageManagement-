@@ -17,6 +17,14 @@ export interface MobiliarioUpdate {
   resolucion_numero?: string;
   resolucion_tipo?: string;
   foto_url?: string; // ✅ AÑADIDO
+
+  // 🔥 Agregá estos:
+  no_dado: boolean;
+  para_reparacion: boolean;
+  para_baja: boolean;
+  faltante: boolean;
+  sobrante: boolean;
+  etiqueta: boolean;
 }
 
 export const editarMobiliario = async (
