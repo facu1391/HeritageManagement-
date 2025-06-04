@@ -3,8 +3,8 @@
 
 import { useEffect, useState } from "react";
 import { Wrapper } from "@/components";
-import {ConfirmarBajaModal} from "@/components";
-import { obtenerMobiliario, darDeBajaMobiliario } from "@/services/mobiliarioService";
+import { ConfirmarBajaModal } from "@/components";
+import { obtenerMobiliario } from "@/services/mobiliarioService";
 import type { Mobiliario } from "@/types/types";
 import { toast, Toaster } from "react-hot-toast";
 
@@ -23,7 +23,7 @@ export default function Bajas() {
       const dadosDeBaja = data.filter((item) => item.para_baja === true);
       setMobiliarios(dadosDeBaja);
     } catch (error) {
-      console.error("Error al obtener mobiliario", error);
+      console.error("Error al obtener mobiliario:", error);
     }
   };
 
@@ -35,7 +35,6 @@ export default function Bajas() {
 
   return (
     <Wrapper>
-      <Toaster />
       <main className="min-h-screen px-6 py-10 bg-gradient-to-br from-gray-100 via-blue-50 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
@@ -91,3 +90,4 @@ export default function Bajas() {
     </Wrapper>
   );
 }
+
