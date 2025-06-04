@@ -2,8 +2,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Wrapper } from "@/components";
-import { ConfirmarBajaModal } from "@/components";
+import Image from "next/image";
+import { Wrapper, ConfirmarBajaModal } from "@/components";
 import { obtenerMobiliario } from "@/services/mobiliarioService";
 import type { Mobiliario } from "@/types/types";
 
@@ -21,8 +21,8 @@ export default function Bajas() {
       const data = await obtenerMobiliario();
       const dadosDeBaja = data.filter((item) => item.para_baja === true);
       setMobiliarios(dadosDeBaja);
-    } catch (error) {
-      console.error("Error al obtener mobiliario:", error);
+    } catch (_error) {
+      console.error("Error al obtener mobiliario", _error);
     }
   };
 
@@ -63,13 +63,27 @@ export default function Bajas() {
                   key={item.id}
                   className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 shadow"
                 >
-                  <p className="text-lg font-semibold text-gray-800 dark:text-white">
-                    {item.descripcion || "Sin descripción"}
-                  </p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">ID: {item.id}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">
-                    Anexo: {item.anexo} | Subdependencia: {item.subdependencia}
-                  </p>
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                    <div>
+                      <p className="text-lg font-semibold text-gray-800 dark:text-white">
+                        {item.descripcion || "Sin descripción"}
+                      </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">ID: {item.id}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        Anexo: {item.anexo} | Subdependencia: {item.subdependencia}
+                      </p>
+                    </div>
+                    {item.foto_url && (
+                      <div className="w-28 h-28 relative">
+                        <Image
+                          src={item.foto_url}
+                          alt="Imagen del bien"
+                          fill
+                          className="object-cover rounded-md"
+                        />
+                      </div>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
