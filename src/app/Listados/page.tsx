@@ -38,8 +38,9 @@ export default function Listings() {
   useEffect(() => {
     obtenerMobiliario()
       .then((data) => {
-        setMobiliario(data);
-        if (data.length > 0) setSelected(data[0]);
+        const activos = data.filter((item) => !item.para_baja); // ❌ excluye dados de baja
+        setMobiliario(activos);
+        if (activos.length > 0) setSelected(activos[0]);
       })
       .catch(() => console.error("Error al cargar datos"))
       .finally(() => setLoading(false));
@@ -70,7 +71,7 @@ export default function Listings() {
       setDeleting(false);
     }
   };
-
+  
   return (
     <Wrapper>
       <Toaster />
