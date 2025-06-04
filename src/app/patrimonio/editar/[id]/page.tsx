@@ -2,7 +2,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { editarMobiliario } from "@/services/mobiliarioService";
 import { FormularioPatrimonio } from "@/types/types";
 import PatrimonioForm from "@/components/Forms/PatrimonioForm";
@@ -10,7 +9,6 @@ import { toast, Toaster } from "react-hot-toast";
 import { Wrapper } from "@/components";
 
 export default function EditarMobiliarioPage() {
-  const router = useRouter();
   const [initialData, setInitialData] = useState<FormularioPatrimonio | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -88,12 +86,7 @@ export default function EditarMobiliarioPage() {
         <Toaster />
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-blue-700">Editar Mobiliario</h1>
-          <button
-            onClick={() => router.push("/Listados")}
-            className="px-4 py-2 bg-gray-200 rounded-lg dark:bg-gray-700 text-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600"
-          >
-            Volver al listado
-          </button>
+         
         </div>
 
         {initialData ? (

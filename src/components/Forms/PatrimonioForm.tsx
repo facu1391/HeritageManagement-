@@ -23,7 +23,6 @@ export default function PatrimonioForm({
   modo,
   initialData,
   onSubmit,
-  onCancel,
   loading,
   resetOnSuccess,
 }: Props) {
@@ -202,8 +201,16 @@ export default function PatrimonioForm({
 
         <div className="col-span-1 sm:col-span-2 lg:col-span-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="text-sm text-gray-700 dark:text-gray-300 space-y-1">
-            <p><strong>Rubro:</strong> {form.rubro || "No seleccionado"}</p>
-            <p><strong>Clase:</strong> {form.clase || "No seleccionado"}</p>
+             <p>
+                <strong>Rubro:</strong>{" "}
+                {form.rubro ? `${form.rubro} ` : "No seleccionado"}
+                {form.id_rubro && <span className="text-sm text-black font-medium"> (ID: {form.id_rubro})</span>}
+              </p>
+              <p>
+                <strong>Clase:</strong>{" "}
+                {form.clase ? `${form.clase} ` : "No seleccionada"}
+                {form.id_clase && <span className="text-sm text-black font-medium"> (ID: {form.id_clase})</span>}
+              </p>
           </div>
           <button
             type="button"
@@ -342,13 +349,6 @@ export default function PatrimonioForm({
 
       <div className="flex justify-between items-center mt-6">
         <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 bg-gray-200 rounded-lg dark:bg-gray-700 text-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600"
-        >
-          Volver al listado
-        </button>
-        <button
           type="submit"
           disabled={loading}
           className="px-4 py-2 bg-cyan-600 text-white rounded-lg hover:bg-cyan-700 disabled:opacity-50"
@@ -364,6 +364,8 @@ export default function PatrimonioForm({
               ...prev,
               rubro: sel.rubro.nombre,
               clase: sel.clase.descripcion,
+              id_rubro: sel.rubro.id_rubro, // 👈 agregado
+              id_clase: sel.clase.id_clase, // 👈 agregado
             }));
             setNomencladorOpen(false);
           }}
