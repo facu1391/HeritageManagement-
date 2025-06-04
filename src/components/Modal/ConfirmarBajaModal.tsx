@@ -1,72 +1,115 @@
 
+
 "use client";
 
-import { Dialog } from "@headlessui/react";
-import { Fragment } from "react";
-import { FaExclamationTriangle } from "react-icons/fa";
-import { IoClose } from "react-icons/io5";
+import { Dialog, Transition } from "@headlessui/react";
+import { Fragment, useState } from "react";
+import { toast } from "react-hot-toast";
+import { FaTimes } from "react-icons/fa";
+import { darDeBajaMobiliario } from "@/services/mobiliarioService";
 
 interface ConfirmarBajaModalProps {
   isOpen: boolean;
-  onCancel: () => void;
-  onConfirm: () => void;
-  title: string;
-  message: string;
-  loading?: boolean;
-  children?: React.ReactNode;
+  onClose: () => void;
+  onSuccess: () => void;
 }
 
 export default function ConfirmarBajaModal({
   isOpen,
-  onCancel,
-  onConfirm,
-  title,
-  message,
-  loading = false,
-  children,
+  onClose,
+  onSuccess,
 }: ConfirmarBajaModalProps) {
+  const [inputID, setInputID] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    if (!inputID.trim()) {
+      toast.error("Ingresá un ID válido");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      await darDeBajaMobiliario(inputID);
+      toast.success("Mobiliario dado de baja correctamente");
+      setInputID("");
+      onClose();
+      onSuccess();
+    } catch (error) {
+      toast.error("No se pudo dar de baja el mobiliario");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <Dialog open={isOpen} onClose={onCancel} as={Fragment}>
-      <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
-        <Dialog.Panel className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl w-full max-w-md relative">
-          <button
-            onClick={onCancel}
-            className="absolute top-3 right-3 text-gray-500 hover:text-red-600 dark:text-gray-300 dark:hover:text-red-400"
+    <Transition show={isOpen} as={Fragment}>
+      <Dialog onClose={onClose} className="relative z-50">
+        <Transition.Child
+          as={Fragment}
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-black/30 backdrop-blur-sm" />
+        </Transition.Child>
+
+        <div className="fixed inset-0 flex items-center justify-center p-4">
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-300"
+            enterFrom="opacity-0 scale-95"
+            enterTo="opacity-100 scale-100"
+            leave="ease-in duration-200"
+            leaveFrom="opacity-100 scale-100"
+            leaveTo="opacity-0 scale-95"
           >
-            <IoClose className="text-2xl" />
-          </button>
+            <Dialog.Panel className="w-full max-w-md p-6 bg-white dark:bg-gray-800 rounded-xl shadow-xl relative">
+              <button
+                onClick={onClose}
+                className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 dark:hover:text-white"
+              >
+                <FaTimes />
+              </button>
 
-          <div className="flex items-center gap-3 mb-4">
-            <FaExclamationTriangle className="text-red-600 dark:text-red-400 text-xl" />
-            <Dialog.Title className="text-lg font-bold text-gray-800 dark:text-white">
-              {title}
-            </Dialog.Title>
-          </div>
+              <Dialog.Title className="text-lg font-bold text-gray-900 dark:text-white mb-2">
+                Dar de baja un mobiliario
+              </Dialog.Title>
+              <Dialog.Description className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                Ingresá el ID del mobiliario que deseás dar de baja
+              </Dialog.Description>
 
-          <Dialog.Description className="text-sm text-gray-600 dark:text-gray-300">
-            {message}
-          </Dialog.Description>
+              <input
+                type="text"
+                value={inputID}
+                onChange={(e) => setInputID(e.target.value)}
+                className="w-full mt-2 p-2 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-sm text-gray-800 dark:text-white"
+                placeholder="ID del mobiliario"
+              />
 
-          {children && <div className="mt-4">{children}</div>}
-
-          <div className="flex justify-end gap-3 mt-6">
-            <button
-              onClick={onCancel}
-              className="px-4 py-2 rounded bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600"
-              disabled={loading}
-            >
-              Cancelar
-            </button>
-            <button
-              onClick={onConfirm}
-              className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50"
-              disabled={loading}
-            >
-              {loading ? "Procesando..." : "Dar de baja"}
-            </button>
-          </div>
-        </Dialog.Panel>
-      </div>
-    </Dialog>
+              <div className="mt-6 flex justify-end space-x-3">
+                <button
+                  onClick={onClose}
+                  className="px-4 py-2 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-white rounded-lg"
+                  disabled={loading}
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleConfirm}
+                  className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg"
+                  disabled={loading}
+                >
+                  {loading ? "Procesando..." : "Dar de baja"}
+                </button>
+              </div>
+            </Dialog.Panel>
+          </Transition.Child>
+        </div>
+      </Dialog>
+    </Transition>
   );
 }

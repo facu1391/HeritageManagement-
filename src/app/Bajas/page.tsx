@@ -6,7 +6,6 @@ import { Wrapper } from "@/components";
 import { ConfirmarBajaModal } from "@/components";
 import { obtenerMobiliario } from "@/services/mobiliarioService";
 import type { Mobiliario } from "@/types/types";
-import { toast, Toaster } from "react-hot-toast";
 
 export default function Bajas() {
   const [mobiliarios, setMobiliarios] = useState<Mobiliario[]>([]);
@@ -90,4 +89,3 @@ export default function Bajas() {
     </Wrapper>
   );
 }
-
