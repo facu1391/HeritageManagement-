@@ -2,12 +2,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { Wrapper } from "@/components";
 import { ConfirmarBajaModal } from "@/components";
 import { obtenerMobiliario } from "@/services/mobiliarioService";
 import type { Mobiliario } from "@/types/types";
-import { Toaster } from "react-hot-toast";
 
 export default function Bajas() {
   const [mobiliarios, setMobiliarios] = useState<Mobiliario[]>([]);
@@ -36,7 +34,6 @@ export default function Bajas() {
 
   return (
     <Wrapper>
-      <Toaster />
       <main className="min-h-screen px-6 py-10 bg-gradient-to-br from-gray-100 via-blue-50 to-gray-200 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-colors duration-300">
         <div className="max-w-7xl mx-auto">
           <div className="flex justify-between items-center mb-8">
@@ -73,16 +70,6 @@ export default function Bajas() {
                   <p className="text-sm text-gray-600 dark:text-gray-300">
                     Anexo: {item.anexo} | Subdependencia: {item.subdependencia}
                   </p>
-                  {item.foto_url && (
-                    <div className="mt-2 relative w-32 h-32 rounded overflow-hidden">
-                      <Image
-                        src={item.foto_url}
-                        alt="Imagen del mobiliario"
-                        fill
-                        className="object-cover rounded"
-                      />
-                    </div>
-                  )}
                 </li>
               ))}
             </ul>
@@ -102,3 +89,4 @@ export default function Bajas() {
     </Wrapper>
   );
 }
+
