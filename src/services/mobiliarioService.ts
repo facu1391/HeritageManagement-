@@ -53,3 +53,16 @@ export const eliminarMobiliario = async (id: string) => {
   }
   return await res.json();
 };
+
+export const darDeBajaMobiliario = async (id: string) => {
+  const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ para_baja: true }),
+  });
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(msg || "Error al dar de baja el mobiliario");
+  }
+  return await res.json();
+};
