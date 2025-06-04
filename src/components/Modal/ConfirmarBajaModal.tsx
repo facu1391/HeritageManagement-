@@ -35,6 +35,7 @@ export default function ConfirmarBajaModal({
       onClose();
       onSuccess();
     } catch (error) {
+      console.error("Error al dar de baja:", error);
       toast.error("No se pudo dar de baja el mobiliario");
     } finally {
       setLoading(false);
