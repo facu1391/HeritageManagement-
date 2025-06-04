@@ -19,6 +19,8 @@ export interface FormularioPatrimonio {
   subdependencia: string;
   rubro: string;
   clase: string;
+  id_rubro?: number; // 👈 nuevo
+  id_clase?: number; // 👈 nuevo
   descripcion: string;
   resolucionNumero: string;
   resolucionTipo: string;
