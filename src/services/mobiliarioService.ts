@@ -17,6 +17,14 @@ export interface MobiliarioUpdate {
   resolucion_numero?: string;
   resolucion_tipo?: string;
   foto_url?: string; // ✅ AÑADIDO
+
+  // 🔥 Agregá estos:
+  no_dado: boolean;
+  para_reparacion: boolean;
+  para_baja: boolean;
+  faltante: boolean;
+  sobrante: boolean;
+  etiqueta: boolean;
 }
 
 export const editarMobiliario = async (
@@ -42,6 +50,19 @@ export const eliminarMobiliario = async (id: string) => {
   if (!res.ok) {
     const msg = await res.text();
     throw new Error(msg || "Error al eliminar mobiliario");
+  }
+  return await res.json();
+};
+
+export const darDeBajaMobiliario = async (id: string) => {
+  const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ para_baja: true }),
+  });
+  if (!res.ok) {
+    const msg = await res.text();
+    throw new Error(msg || "Error al dar de baja el mobiliario");
   }
   return await res.json();
 };

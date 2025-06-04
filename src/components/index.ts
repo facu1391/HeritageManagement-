@@ -18,6 +18,7 @@ export { default as LogoutAlert } from "./Alerts/LogoutAlert";
 export { default as Modal } from "./Modal/Modal";
 export { default as ConfirmModal } from "./Modal/ConfirmModal";
 export { default as DeleteModal } from "./Modal/DeleteModal";
+export { default as ConfirmarBajaModal } from "./Modal/ConfirmarBajaModal";
 
 //Forms
 export { default as PatrimonioForm  } from "./Forms/PatrimonioForm";

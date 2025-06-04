@@ -20,7 +20,9 @@ export default function MobiliarioPorSubdependencia() {
       try {
         const data = await obtenerMobiliario();
         const filtrados = data.filter(
-          (item) => item.subdependencia?.toLowerCase() === nombre.toLowerCase()
+          (item) =>
+            item.subdependencia?.toLowerCase() === nombre.toLowerCase() &&
+            item.para_baja !== true
         );
         setMobiliarios(filtrados);
         setFiltered(filtrados);

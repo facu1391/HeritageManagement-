@@ -1,17 +1,17 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Wrapper, Modal, PatrimonioForm, ConfirmModal } from "@/components";
+import { useRouter } from "next/navigation";
+import { Wrapper, ConfirmModal } from "@/components";
 import {
   obtenerMobiliario,
-  editarMobiliario,
   eliminarMobiliario,
 } from "@/services/mobiliarioService";
 import { toast, Toaster } from "react-hot-toast";
-import { FaTrash } from "react-icons/fa";
-import type { Mobiliario, FormData } from "@/types/types";
-import useIsMobile from "@/hooks/useIsMobile";
+import { FaTrash, FaEdit } from "react-icons/fa";
+import type { Mobiliario } from "@/types/types";
 
 function parseResolucion(resolucion: string | null) {
   if (!resolucion) return { resolucionNumero: "", resolucionTipo: "" };
@@ -31,18 +31,16 @@ export default function Listings() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<Mobiliario | null>(null);
   const [search, setSearch] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
-
-  const isMobile = useIsMobile();
+  const router = useRouter();
 
   useEffect(() => {
     obtenerMobiliario()
       .then((data) => {
-        setMobiliario(data);
-        if (data.length > 0) setSelected(data[0]);
+        const activos = data.filter((item) => !item.para_baja); // ❌ excluye dados de baja
+        setMobiliario(activos);
+        if (activos.length > 0) setSelected(activos[0]);
       })
       .catch(() => console.error("Error al cargar datos"))
       .finally(() => setLoading(false));
@@ -58,45 +56,6 @@ export default function Listings() {
     })
     .slice(0, 10);
 
-    const handleEditSubmit = async (form: FormData) => {
-      if (!selected) return;
-      try {
-        await editarMobiliario(selected.id, {
-          descripcion: form.descripcion,
-          fecha_resolucion: form.fechaResolucion,
-          estado_conservacion: form.estado,
-          comentarios: form.comentarios,
-          resolucion_numero: form.resolucionNumero,
-          resolucion_tipo: form.resolucionTipo,
-          foto_url: form.foto_url, // ✅ AÑADIDO
-        });
-    
-        setMobiliario((prev) =>
-          prev.map((m) =>
-            m.id === selected.id
-              ? {
-                  ...m,
-                  descripcion: form.descripcion,
-                  fecha_resolucion: form.fechaResolucion,
-                  estado_conservacion: form.estado,
-                  comentarios: form.comentarios,
-                  resolucion_numero: form.resolucionNumero,
-                  resolucion_tipo: form.resolucionTipo,
-                  resolucion: `Resol Nº${form.resolucionNumero} ${form.resolucionTipo}`.trim(),
-                  foto_url: form.foto_url, // ✅ AÑADIDO
-                }
-              : m
-          )
-        );
-    
-        setIsEditing(false);
-        setIsModalOpen(false);
-        toast.success("Actualizado correctamente");
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Error al editar");
-      }
-    };
-
   const handleDelete = async () => {
     if (!selected) return;
     try {
@@ -105,19 +64,17 @@ export default function Listings() {
       setMobiliario((prev) => prev.filter((m) => m.id !== selected.id));
       setSelected(null);
       setShowConfirmModal(false);
-      setIsModalOpen(false);
       toast.success("Eliminado correctamente");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Error al eliminar");
+    } catch {
+      toast.error("Error al eliminar");
     } finally {
       setDeleting(false);
     }
   };
-
+  
   return (
     <Wrapper>
       <Toaster />
-
       <div className="text-center mb-8">
         <h1 className="text-4xl font-extrabold text-blue-700">
           Gestión de Mobiliario
@@ -153,20 +110,7 @@ export default function Listings() {
               {filtered.map((item) => (
                 <li
                   key={item.id}
-                  onClick={() => {
-                    setSelected(item);
-                    if (isMobile) {
-                      setIsEditing(true);
-                      setIsModalOpen(true);
-                    }
-                  }}
-                  onDoubleClick={() => {
-                    if (!isMobile) {
-                      setSelected(item);
-                      setIsEditing(true);
-                      setIsModalOpen(true);
-                    }
-                  }}
+                  onClick={() => setSelected(item)}
                   className={`p-2 rounded-lg cursor-pointer transition ${
                     selected?.id === item.id
                       ? "bg-blue-100 dark:bg-cyan-700"
@@ -240,7 +184,17 @@ export default function Listings() {
                   <div><strong>Actualizado:</strong> {new Date(selected.fecha_actualizacion).toLocaleString()}</div>
                 </div>
 
-                <div className="flex justify-end mt-4">
+                <div className="flex justify-end gap-4 mt-4">
+                  <button
+                    onClick={() => {
+                      localStorage.setItem("mobiliario-edicion", JSON.stringify(selected));
+                      router.push(`/patrimonio/editar/${selected.id}`);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600 transition"
+                  >
+                    <FaEdit /> Editar
+                  </button>
+
                   <button
                     onClick={() => setShowConfirmModal(true)}
                     className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
@@ -255,46 +209,6 @@ export default function Listings() {
           </div>
         </div>
       )}
-
-      <Modal isOpen={isModalOpen} onClose={() => { setIsModalOpen(false); setIsEditing(false); }}>
-        {selected && isEditing && (
-          <>
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">Editar Mobiliario</h2>
-            {(() => {
-              const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
-              return (
-                <PatrimonioForm
-                  modo="editar"
-                  initialData={{
-                    id: selected.id,
-                    rubro: "",
-                    clase: "",
-                    anexo: selected.anexo,
-                    subdependencia: selected.subdependencia,
-                    descripcion: selected.descripcion,
-                    resolucionNumero,
-                    resolucionTipo,
-                    fechaResolucion: selected.fecha_resolucion ?? "",
-                    estado: selected.estado_conservacion ?? "",
-                    comentarios: selected.comentarios ?? "",
-                    foto_url: selected.foto_url ?? "",
-                    opciones: {
-                      noDado: selected.no_dado,
-                      reparacion: selected.para_reparacion,
-                      paraBaja: selected.para_baja,
-                      faltante: selected.faltante,
-                      sobrante: selected.sobrante,
-                      etiqueta: selected.problema_etiqueta,
-                    },
-                  }}
-                  onSubmit={handleEditSubmit}
-                  onCancel={() => { setIsModalOpen(false); setIsEditing(false); }}
-                />
-              );
-            })()}
-          </>
-        )}
-      </Modal>
 
       <ConfirmModal
         isOpen={showConfirmModal}
