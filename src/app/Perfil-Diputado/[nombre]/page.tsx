@@ -1,4 +1,4 @@
-// src/app/Perfil-Diputado/[nombre]/page.tsx
+
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
@@ -14,11 +14,6 @@ export default function DiputadoDetalle() {
   const diputado = diputadosData.find(
     (d) => d.nombre.toLowerCase() === nombre.toLowerCase()
   );
-
-  const datosOficina = {
-    anexo: "Anexo Central",
-    direccion: "Calle de los Diputados 123, Capital",
-  };
 
   const inventario = [
     { id: "PC-001", descripcion: "Computadora escritorio HP i5" },
@@ -66,19 +61,35 @@ export default function DiputadoDetalle() {
           </h1>
           {diputado && (
             <>
-              <p className="text-gray-700 dark:text-gray-300 text-sm">
+              <p className="text-gray-700 dark:text-gray-300 text-lg">
                 Departamento: {diputado.departamento}
               </p>
-              <p className="text-gray-500 dark:text-gray-400 text-sm italic">
+              <p className="text-gray-500 dark:text-gray-400 text-lg italic">
                 Partido: {diputado.partido}
               </p>
+              {diputado.bloque && (
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Bloque: {diputado.bloque}
+                </p>
+              )}
+              {diputado.mandato && (
+                <p className="text-sm text-gray-600 text-lg dark:text-gray-300">
+                  Mandato: {diputado.mandato}
+                </p>
+              )}
             </>
           )}
         </div>
 
         <div className="mb-6 text-center text-gray-700 dark:text-gray-200">
-          <p><strong>Anexo:</strong> {datosOficina.anexo}</p>
-          <p><strong>Dirección:</strong> {datosOficina.direccion}</p>
+          <p>
+            <strong>Anexo:</strong>{" "}
+            {diputado?.anexo || "Sin especificar"}
+          </p>
+          <p>
+            <strong>Dirección:</strong>{" "}
+            {diputado?.direccion || "Sin especificar"}
+          </p>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 border border-gray-200 dark:border-gray-700">
@@ -88,9 +99,14 @@ export default function DiputadoDetalle() {
           {filtered.length > 0 ? (
             <ul className="space-y-3">
               {filtered.map((item) => (
-                <li key={item.id} className="p-4 bg-blue-50 dark:bg-gray-700 rounded-md shadow text-gray-900 dark:text-white">
+                <li
+                  key={item.id}
+                  className="p-4 bg-blue-50 dark:bg-gray-700 rounded-md shadow text-gray-900 dark:text-white"
+                >
                   <p className="font-semibold">{item.descripcion}</p>
-                  <p className="text-sm text-gray-600 dark:text-gray-300">ID: {item.id}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
+                    ID: {item.id}
+                  </p>
                 </li>
               ))}
             </ul>
