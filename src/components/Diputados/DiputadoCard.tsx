@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 
 interface DiputadoCardProps {
@@ -37,3 +36,4 @@ export default function DiputadoCard({
     </div>
   );
 }
+
