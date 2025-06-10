@@ -3,7 +3,7 @@
 "use client";
 
 import { ReactNode, useState } from "react";
-import { Sidebar, Navbar, FloatingButton } from "@/components";
+import { Sidebar, Navbar, FloatingButton,  Footer } from "@/components";
 
 interface WrapperProps {
   children: ReactNode;
@@ -29,6 +29,7 @@ export default function Wrapper({ children }: WrapperProps) {
         <main className="flex-grow p-4 bg-gray-100 dark:bg-gray-900 mt-16">
           {children}
         </main>
+         <Footer />
       </div>
     </div>
   );
