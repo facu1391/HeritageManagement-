@@ -185,15 +185,16 @@ export default function Listings() {
                 </div>
 
                 <div className="flex justify-end gap-4 mt-4">
-                  <button
-                    onClick={() => {
-                      localStorage.setItem("mobiliario-edicion", JSON.stringify(selected));
-                      router.push(`/patrimonio/editar/${selected.id}`);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600 transition"
-                  >
-                    <FaEdit /> Editar
-                  </button>
+                    <button
+                      onClick={() => {
+                        if (selected) {
+                          router.push(`/patrimonio/editar/${selected.id}`);
+                        }
+                      }}
+                      className="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600 transition"
+                    >
+                      <FaEdit /> Editar
+                    </button>
 
                   <button
                     onClick={() => setShowConfirmModal(true)}
