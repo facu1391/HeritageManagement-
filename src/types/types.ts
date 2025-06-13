@@ -85,3 +85,34 @@ export interface PatrimonioData {
   sobrante: boolean;
   etiqueta: boolean;
 }
+
+export interface MobiliarioUltimo {
+  id: string;                   // alias de id_mobiliario
+  id_mobiliario: string;        // tal cual viene del backend
+  descripcion: string;
+  clase_bien: string | null;
+  rubro: string | null;
+
+  anexo: string;
+  subdependencia: string;
+
+  direccion_anexo: string | null;
+  piso: string | null;
+
+  estado_conservacion: string | null;
+  fecha_resolucion: string | null;
+  resolucion: string | null;
+
+  foto_url: string | null;
+
+  no_dado: boolean;
+  para_reparacion: boolean;
+  para_baja: boolean;
+  faltante: boolean;
+  sobrante: boolean;
+  problema_etiqueta: boolean;
+
+  fecha_creacion: string;
+  fecha_actualizacion: string;
+  comentarios: string | null;
+}
