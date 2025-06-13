@@ -1,8 +1,17 @@
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+// services/mobiliarioService.ts
+"use client";
 
-import type { Mobiliario } from "@/types/types";
+import type {
+  Mobiliario,
+  MobiliarioUltimo,   // interface con los campos que trae /mobiliario/ultimos
+} from "@/types/types";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
+
+/* ------------------------------------------------------------------ */
+/*  Interfaces                                                         */
+/* ------------------------------------------------------------------ */
 export interface MobiliarioUpdate {
   descripcion: string;
   fecha_resolucion: string;
@@ -20,54 +29,69 @@ export interface MobiliarioUpdate {
   etiqueta: boolean;
 }
 
+/* ------------------------------------------------------------------ */
+/*  GET – todos los registros (listado completo)                       */
+/* ------------------------------------------------------------------ */
 export const obtenerMobiliario = async (): Promise<Mobiliario[]> => {
   const res = await fetch(`${API_BASE}/mobiliario`);
   if (!res.ok) throw new Error("Error al obtener registros");
-  return await res.json();
+  return res.json();
 };
 
+/* ------------------------------------------------------------------ */
+/*  GET – últimos 5 registros (nuevo endpoint)                         */
+/* ------------------------------------------------------------------ */
+export const obtenerUltimosMobiliarios = async (): Promise<MobiliarioUltimo[]> => {
+  const res = await fetch(`${API_BASE}/mobiliario/ultimos`);
+  if (!res.ok) throw new Error("Error al obtener últimos mobiliarios");
+  return res.json();
+};
+
+/* ------------------------------------------------------------------ */
+/*  GET – uno por ID                                                   */
+/* ------------------------------------------------------------------ */
 export const obtenerMobiliarioPorId = async (id: string): Promise<Mobiliario> => {
   const res = await fetch(`${API_BASE}/mobiliario/${id}`);
   if (!res.ok) throw new Error("Error al obtener mobiliario");
-  return await res.json();
+  return res.json();
 };
 
-export const editarMobiliario = async (
-  id: string,
-  datos: MobiliarioUpdate
-) => {
+/* ------------------------------------------------------------------ */
+/*  PUT – editar                                                       */
+/* ------------------------------------------------------------------ */
+export const editarMobiliario = async (id: string, datos: MobiliarioUpdate) => {
   const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(datos),
   });
+
   if (!res.ok) {
     const msg = await res.text();
     throw new Error(msg || "Error al editar mobiliario");
   }
-  return await res.json();
+  return res.json();
 };
 
+/* ------------------------------------------------------------------ */
+/*  DELETE – eliminar                                                  */
+/* ------------------------------------------------------------------ */
 export const eliminarMobiliario = async (id: string) => {
-  const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
-    method: "DELETE",
-  });
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(msg || "Error al eliminar mobiliario");
-  }
-  return await res.json();
+  const res = await fetch(`${API_BASE}/mobiliario/${id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error((await res.text()) || "Error al eliminar mobiliario");
+  return res.json();
 };
 
+/* ------------------------------------------------------------------ */
+/*  PATCH – dar de baja                                                */
+/* ------------------------------------------------------------------ */
 export const darDeBajaMobiliario = async (id: string) => {
   const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ para_baja: true }),
   });
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(msg || "Error al dar de baja el mobiliario");
-  }
-  return await res.json();
+
+  if (!res.ok) throw new Error((await res.text()) || "Error al dar de baja");
+  return res.json();
 };
