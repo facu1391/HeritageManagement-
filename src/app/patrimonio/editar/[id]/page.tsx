@@ -29,6 +29,8 @@ export default function EditarMobiliarioPage() {
           id: data.id,
           rubro: data.rubro || "",
           clase: data.clase || "",
+          id_rubro: data.id_rubro || undefined,
+          id_clase: data.id_clase || undefined,
           anexo: data.anexo,
           subdependencia: data.subdependencia,
           descripcion: data.descripcion,
@@ -69,6 +71,8 @@ export default function EditarMobiliarioPage() {
         faltante: form.opciones.faltante,
         sobrante: form.opciones.sobrante,
         etiqueta: form.opciones.etiqueta,
+        id_clase: form.id_clase,
+        id_rubro: form.id_rubro,
       });
 
       toast.success("Mobiliario actualizado correctamente");
