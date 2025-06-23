@@ -32,7 +32,7 @@ export default function Annexes() {
           <Card 
             title="Anexo 3" 
             imageSrc={Anexo3} 
-            description="Dalacio velez N 765" 
+            description="Dalmacio velez N 765" 
             href="/Anexos/Anexo-3" // Nueva ruta
           />
             <Card 

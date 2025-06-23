@@ -1,222 +1,207 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+
+import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { Wrapper, ConfirmModal } from "@/components";
 import {
-  obtenerMobiliario,
+  obtenerUltimosMobiliarios,
   eliminarMobiliario,
 } from "@/services/mobiliarioService";
 import { toast, Toaster } from "react-hot-toast";
-import { FaTrash, FaEdit } from "react-icons/fa";
-import type { Mobiliario } from "@/types/types";
+import type { MobiliarioUltimo } from "@/types/types";
 
-function parseResolucion(resolucion: string | null) {
-  if (!resolucion) return { resolucionNumero: "", resolucionTipo: "" };
-  const regex = /Resol Nº(\S+)\s*(.*)/;
-  const matches = resolucion.match(regex);
-  if (matches) {
-    let numero = matches[1];
-    const tipo = matches[2];
-    if (numero.toLowerCase() === "none") numero = "";
-    return { resolucionNumero: numero, resolucionTipo: tipo };
-  }
-  return { resolucionNumero: "", resolucionTipo: "" };
+// Utilidad para parsear la cadena "Resol Nº123 PSA" → { numero, tipo }
+function parseResol(res: string | null) {
+  if (!res) return { numero: "", tipo: "" };
+  const match = res.match(/Resol Nº(\S+)\s*(.*)/);
+  return match
+    ? { numero: match[1] || "", tipo: match[2] || "" }
+    : { numero: "", tipo: "" };
 }
 
 export default function Listings() {
-  const [mobiliario, setMobiliario] = useState<Mobiliario[]>([]);
+  /* ------------------------------------------------------------------ */
+  /*  Estado                                                            */
+  /* ------------------------------------------------------------------ */
+  const [lista, setLista] = useState<MobiliarioUltimo[]>([]);
+  const [selected, setSelected] = useState<MobiliarioUltimo | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selected, setSelected] = useState<Mobiliario | null>(null);
-  const [search, setSearch] = useState("");
-  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
+  const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const router = useRouter();
 
+  /* ------------------------------------------------------------------ */
+  /*  Cargar últimos 5 al montar                                         */
+  /* ------------------------------------------------------------------ */
   useEffect(() => {
-    obtenerMobiliario()
+    obtenerUltimosMobiliarios()
       .then((data) => {
-        const activos = data.filter((item) => !item.para_baja); // ❌ excluye dados de baja
-        setMobiliario(activos);
-        if (activos.length > 0) setSelected(activos[0]);
+        // Normalizamos para tener una key "id" igual que el resto del código
+        const normalizado = data.map((d) => ({
+          ...d,
+          id: d.id_mobiliario,
+        }));
+        setLista(normalizado);
+        if (normalizado.length) setSelected(normalizado[0]);
       })
-      .catch(() => console.error("Error al cargar datos"))
+      .catch(() => toast.error("Error al cargar datos"))
       .finally(() => setLoading(false));
   }, []);
 
-  const filtered = mobiliario
-    .filter((item) => {
-      const term = search.toLowerCase();
-      return (
-        item.descripcion.toLowerCase().includes(term) ||
-        item.id.toLowerCase().includes(term)
-      );
-    })
-    .slice(0, 10);
+  /* ------------------------------------------------------------------ */
+  /*  Filtro de búsqueda rápido                                           */
+  /* ------------------------------------------------------------------ */
+  const filtrados = useMemo(() => {
+    const term = busqueda.toLowerCase();
+    return lista.filter(
+      (i) => i.descripcion.toLowerCase().includes(term) || i.id.toLowerCase().includes(term)
+    );
+  }, [lista, busqueda]);
 
+  /* ------------------------------------------------------------------ */
+  /*  Eliminar registro                                                   */
+  /* ------------------------------------------------------------------ */
   const handleDelete = async () => {
     if (!selected) return;
     try {
       setDeleting(true);
       await eliminarMobiliario(selected.id);
-      setMobiliario((prev) => prev.filter((m) => m.id !== selected.id));
+      setLista((prev) => prev.filter((m) => m.id !== selected.id));
       setSelected(null);
-      setShowConfirmModal(false);
       toast.success("Eliminado correctamente");
     } catch {
       toast.error("Error al eliminar");
     } finally {
       setDeleting(false);
+      setShowConfirm(false);
     }
   };
-  
+
+  /* ------------------------------------------------------------------ */
+  /*  Render                                                             */
+  /* ------------------------------------------------------------------ */
   return (
     <Wrapper>
       <Toaster />
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-extrabold text-blue-700">
-          Gestión de Mobiliario
-        </h1>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
-          Visualización detallada de mobiliarios registrados
-        </p>
-      </div>
+      <h1 className="text-3xl font-bold text-center mt-6 mb-8 text-blue-700">
+         Gestión de Mobiliario
+      </h1>
 
       {loading ? (
-        <p className="text-center text-gray-600 dark:text-gray-300">
-          Cargando...
-        </p>
-      ) : mobiliario.length === 0 ? (
-        <p className="text-center text-gray-600 dark:text-gray-300">
-          No hay registros
-        </p>
+        <p className="text-center text-gray-500">Cargando...</p>
+      ) : !lista.length ? (
+        <p className="text-center text-gray-500">No hay registros</p>
       ) : (
         <div className="flex flex-col md:flex-row gap-6 max-w-7xl mx-auto">
           {/* Listado */}
-          <div className="w-full md:w-[40%] bg-white dark:bg-gray-800 rounded-xl shadow p-4 h-fit">
-            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2 mb-3">
-              Listado
-            </h2>
+          <div className="w-full md:w-1/2 bg-white dark:bg-gray-800 rounded-xl shadow p-4">
             <input
-              type="text"
               placeholder="Buscar por ID o descripción"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full p-2 mb-3 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 text-sm"
+              className="w-full p-2 mb-4 border rounded-md bg-gray-50 dark:bg-gray-700"
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
             />
-            <ul className="space-y-2 max-h-[500px] overflow-y-auto">
-              {filtered.map((item) => (
+            <ul className="space-y-2 max-h-[480px] overflow-y-auto">
+              {filtrados.map((item) => (
                 <li
                   key={item.id}
                   onClick={() => setSelected(item)}
-                  className={`p-2 rounded-lg cursor-pointer transition ${
-                    selected?.id === item.id
-                      ? "bg-blue-100 dark:bg-cyan-700"
-                      : "hover:bg-gray-100 dark:hover:bg-gray-700"
+                  className={`p-2 cursor-pointer rounded transition ${
+                    /* highlight */ '${selected?.id === item.id ? "bg-blue-100 dark:bg-cyan-700" : "hover:bg-gray-100 dark:hover:bg-gray-700"}'
                   }`}
                 >
-                  <p className="font-medium text-gray-800 dark:text-white">
+                  <p className="font-medium text-gray-800 dark:text-white truncate">
                     {item.descripcion || "Sin descripción"}
                   </p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400">
-                    ID: {item.id}
-                  </p>
+                  <p className="text-xs text-gray-500">ID: {item.id}</p>
                 </li>
               ))}
-              {filtered.length === 0 && (
-                <li className="text-center text-sm text-gray-500 dark:text-gray-400">
-                  No hay resultados
-                </li>
+              {!filtrados.length && (
+                <li className="text-center text-gray-500 text-sm">Sin resultados</li>
               )}
             </ul>
           </div>
 
           {/* Detalle */}
-          <div className="w-full md:w-[60%] bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col gap-4">
-            <h2 className="text-lg font-semibold text-blue-700 border-b pb-2">
-              Detalle
-            </h2>
-
+          <div className="w-full md:w-1/2 bg-white dark:bg-gray-800 rounded-xl shadow p-6">
             {selected ? (
-              <div className="flex flex-col gap-4">
-                <div className="flex justify-center">
+              <>
+                <h2 className="text-lg font-semibold mb-4 text-blue-700">Detalle</h2>
+
+                {/* Imagen */}
+                <div className="flex justify-center mb-4">
                   {selected.foto_url ? (
                     <Image
                       src={selected.foto_url}
-                      alt="Foto del mobiliario"
-                      width={288}
-                      height={288}
-                      className="w-72 h-72 object-cover rounded-lg shadow"
+                      alt="Foto"
+                      width={260}
+                      height={260}
+                      className="object-cover rounded-lg shadow"
                     />
                   ) : (
-                    <div className="w-72 h-72 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg text-sm text-gray-500 dark:text-gray-300 shadow">
+                    <div className="w-64 h-64 flex items-center justify-center bg-gray-200 dark:bg-gray-700 rounded-lg text-gray-500 text-sm">
                       Sin foto
                     </div>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 text-sm text-gray-700 dark:text-gray-300">
+                {/* Datos */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm text-gray-700 dark:text-gray-300">
                   <div><strong>ID:</strong> {selected.id}</div>
+                  <div><strong>Clase:</strong> {selected.clase_bien || "—"}</div>
+                  <div><strong>Rubro:</strong> {selected.rubro || "—"}</div>
                   <div><strong>Anexo:</strong> {selected.anexo}</div>
                   <div><strong>Subdependencia:</strong> {selected.subdependencia}</div>
-                  <div><strong>Descripción:</strong> {selected.descripcion}</div>
+                  <div className="sm:col-span-2"><strong>Descripción:</strong> {selected.descripcion}</div>
                   {(() => {
-                    const { resolucionNumero, resolucionTipo } = parseResolucion(selected.resolucion);
+                    const { numero, tipo } = parseResol(selected.resolucion);
                     return (
                       <>
-                        <div><strong>Resol Nº:</strong> {resolucionNumero || "—"}</div>
-                        <div><strong>Tipo:</strong> {resolucionTipo || "—"}</div>
+                        <div><strong>Resol Nº:</strong> {numero || "—"}</div>
+                        <div><strong>Tipo:</strong> {tipo || "—"}</div>
                       </>
                     );
                   })()}
-                  <div><strong>Fecha resolución:</strong> {selected.fecha_resolucion || "—"}</div>
-                  <div><strong>Estado conservación:</strong> {selected.estado_conservacion || "—"}</div>
-                  <div><strong>No dado:</strong> {selected.no_dado ? "Sí" : "No"}</div>
-                  <div><strong>Para reparación:</strong> {selected.para_reparacion ? "Sí" : "No"}</div>
-                  <div><strong>Para baja:</strong> {selected.para_baja ? "Sí" : "No"}</div>
-                  <div><strong>Faltante:</strong> {selected.faltante ? "Sí" : "No"}</div>
-                  <div><strong>Sobrante:</strong> {selected.sobrante ? "Sí" : "No"}</div>
-                  <div><strong>Problema etiqueta:</strong> {selected.problema_etiqueta ? "Sí" : "No"}</div>
-                  <div className="col-span-1 md:col-span-2"><strong>Comentarios:</strong> {selected.comentarios || "—"}</div>
-                  <div><strong>Creado:</strong> {new Date(selected.fecha_creacion).toLocaleString()}</div>
-                  <div><strong>Actualizado:</strong> {new Date(selected.fecha_actualizacion).toLocaleString()}</div>
+                  <div><strong>Estado:</strong> {selected.estado_conservacion || "—"}</div>
+                  <div><strong>Fecha res.:</strong> {selected.fecha_resolucion || "—"}</div>
                 </div>
 
-                <div className="flex justify-end gap-4 mt-4">
-                  <button
-                    onClick={() => {
-                      localStorage.setItem("mobiliario-edicion", JSON.stringify(selected));
-                      router.push(`/patrimonio/editar/${selected.id}`);
-                    }}
-                    className="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600 transition"
+                {/* Botones */}
+                <div className="flex justify-end gap-4 mt-6">
+                  <Link
+                    href={`/patrimonio/editar/${selected.id}`}
+                    className="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600"
                   >
                     <FaEdit /> Editar
-                  </button>
-
+                  </Link>
                   <button
-                    onClick={() => setShowConfirmModal(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700 transition"
+                    onClick={() => setShowConfirm(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg shadow hover:bg-red-700"
                   >
                     <FaTrash /> Eliminar
                   </button>
                 </div>
-              </div>
+              </>
             ) : (
-              <p className="text-gray-500 dark:text-gray-400">Seleccione un mobiliario.</p>
+              <p className="text-gray-500 text-center">Seleccioná un mobiliario.</p>
             )}
           </div>
         </div>
       )}
 
+      {/* Modal eliminar */}
       <ConfirmModal
-        isOpen={showConfirmModal}
-        onCancel={() => setShowConfirmModal(false)}
+        isOpen={showConfirm}
+        onCancel={() => setShowConfirm(false)}
         onConfirm={handleDelete}
         loading={deleting}
         title="¿Eliminar mobiliario?"
-        message="Esta acción no se puede deshacer. ¿Deseás continuar?"
+        message="Esta acción no se puede deshacer."
       />
     </Wrapper>
   );

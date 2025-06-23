@@ -11,21 +11,22 @@ export default function CrearPatrimonioPage() {
   const handleSubmit = async (form: FormularioPatrimonio) => {
     try {
       const payload = {
-        id: form.id,
-        ubicacion_id: parseInt(form.subdependencia),
-        descripcion: form.descripcion,
+        id:               form.id,
+        ubicacion_id:     Number(form.subdependencia),
+        id_clase:         form.id_clase,
+        descripcion:      form.descripcion,
         resolucion_numero: form.resolucionNumero,
-        resolucion_tipo: form.resolucionTipo,
-        fecha_resolucion: form.fechaResolucion,
+        resolucion_tipo:   form.resolucionTipo,
+        fecha_resolucion:  form.fechaResolucion,
         estado_conservacion: form.estado,
-        no_dado: form.opciones.noDado,
-        reparacion: form.opciones.reparacion,
-        para_baja: form.opciones.paraBaja,
-        faltante: form.opciones.faltante,
-        sobrante: form.opciones.sobrante,
-        etiqueta: form.opciones.etiqueta,
-        comentarios: form.comentarios,
-        foto_url: form.foto_url,
+        no_dado:          form.opciones.noDado,
+        reparacion:       form.opciones.reparacion,
+        para_baja:        form.opciones.paraBaja,
+        faltante:         form.opciones.faltante,
+        sobrante:         form.opciones.sobrante,
+        etiqueta:         form.opciones.etiqueta,
+        comentarios:      form.comentarios,
+        foto_url:         form.foto_url,
       };
 
       await createPatrimonio(payload);
@@ -37,16 +38,16 @@ export default function CrearPatrimonioPage() {
 
   return (
     <Wrapper>
-      <main className="min-h-screen px-4 py-8 bg-gray-50 dark:bg-gray-900">
+      <main className="min-h-screen px-4 py-8">
         <Toaster />
-        <h1 className="text-2xl font-bold text-center text-blue-900 dark:text-white mb-6">
+        <h1 className="text-2xl font-bold text-center mb-6">
           Registrar nuevo mobiliario
         </h1>
         <PatrimonioForm
           modo="crear"
           onSubmit={handleSubmit}
           onCancel={() => {}}
-          resetOnSuccess={true}
+          resetOnSuccess
         />
       </main>
     </Wrapper>

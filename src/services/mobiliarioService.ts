@@ -1,68 +1,81 @@
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE;
+"use client";
 
-import type { Mobiliario } from "@/types/types";
+import {
+  Mobiliario,
+  MobiliarioUltimo,
+  MobiliarioUpdate,
+  PatrimonioData,
+} from "@/types/types";
+
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
 
 export const obtenerMobiliario = async (): Promise<Mobiliario[]> => {
   const res = await fetch(`${API_BASE}/mobiliario`);
   if (!res.ok) throw new Error("Error al obtener registros");
-  return await res.json();
+  return res.json();
 };
 
-export interface MobiliarioUpdate {
-  descripcion: string;
-  fecha_resolucion: string;
-  estado_conservacion: string;
-  comentarios: string;
-  resolucion_numero?: string;
-  resolucion_tipo?: string;
-  foto_url?: string; // ✅ AÑADIDO
+export const obtenerUltimosMobiliarios = async (): Promise<MobiliarioUltimo[]> => {
+  const res = await fetch(`${API_BASE}/mobiliario/ultimos`);
+  if (!res.ok) throw new Error("Error al obtener últimos mobiliarios");
+  return res.json();
+};
 
-  // 🔥 Agregá estos:
-  no_dado: boolean;
-  para_reparacion: boolean;
-  para_baja: boolean;
-  faltante: boolean;
-  sobrante: boolean;
-  etiqueta: boolean;
-}
+export const obtenerMobiliarioPorId = async (
+  id: string,
+): Promise<Mobiliario & { id_clase?: number; id_rubro?: number }> => {
+  const res = await fetch(`${API_BASE}/mobiliario/${id}`);
+  if (!res.ok) throw new Error("Error al obtener mobiliario");
+  return res.json();
+};
 
 export const editarMobiliario = async (
   id: string,
-  datos: MobiliarioUpdate
-) => {
+  datos: MobiliarioUpdate,
+): Promise<Mobiliario> => {
   const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(datos),
   });
+
   if (!res.ok) {
     const msg = await res.text();
     throw new Error(msg || "Error al editar mobiliario");
   }
-  return await res.json();
+
+  return res.json();
 };
 
-export const eliminarMobiliario = async (id: string) => {
+export const eliminarMobiliario = async (id: string): Promise<Mobiliario> => {
   const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
     method: "DELETE",
   });
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(msg || "Error al eliminar mobiliario");
-  }
-  return await res.json();
+
+  if (!res.ok) throw new Error((await res.text()) || "Error al eliminar mobiliario");
+  return res.json();
 };
 
-export const darDeBajaMobiliario = async (id: string) => {
+export const darDeBajaMobiliario = async (id: string): Promise<Mobiliario> => {
   const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ para_baja: true }),
   });
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(msg || "Error al dar de baja el mobiliario");
-  }
-  return await res.json();
+
+  if (!res.ok) throw new Error((await res.text()) || "Error al dar de baja");
+  return res.json();
 };
+
+export const createMobiliario = async (payload: PatrimonioData): Promise<Mobiliario> => {
+  const res = await fetch(`${API_BASE}/mobiliario`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) throw new Error((await res.text()) || "Error al crear mobiliario");
+  return res.json();
+};
+

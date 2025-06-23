@@ -1,6 +1,4 @@
 
-// types/types.ts
-
 // --- Para los selects del formulario ---
 export interface Anexo {
   id: number;
@@ -12,6 +10,27 @@ export interface Subdependencia {
   nombre: string;
 }
 
+// --- Datos que se envían al crear un nuevo mobiliario ---
+export interface PatrimonioData {
+  id: string;
+  ubicacion_id: number;
+  id_clase?: number;
+  id_rubro?: number;
+  descripcion: string;
+  resolucion_numero: string;
+  resolucion_tipo: string;
+  fecha_resolucion: string;
+  estado_conservacion: string;
+  comentarios: string;
+  foto_url: string;
+  no_dado: boolean;
+  reparacion: boolean;
+  para_baja: boolean;
+  faltante: boolean;
+  sobrante: boolean;
+  etiqueta: boolean;
+}
+
 // --- Shape que usa PatrimonioForm para creación/edición ---
 export interface FormularioPatrimonio {
   id: string;
@@ -19,8 +38,8 @@ export interface FormularioPatrimonio {
   subdependencia: string;
   rubro: string;
   clase: string;
-  id_rubro?: number; // 👈 nuevo
-  id_clase?: number; // 👈 nuevo
+  id_rubro?: number;
+  id_clase?: number;
   descripcion: string;
   resolucionNumero: string;
   resolucionTipo: string;
@@ -38,18 +57,7 @@ export interface FormularioPatrimonio {
   };
 }
 
-// --- Lo que envia PatrimonioForm cuando guardas ---
-export interface FormData {
-  descripcion: string;
-  fechaResolucion: string;
-  estado: string;
-  comentarios: string;
-  resolucionNumero: string;
-  resolucionTipo: string;
-  foto_url: string;
-}
-
-// --- Shape que devuelve GET /api/mobiliario (ahora con ubicación) ---
+// --- Datos que devuelve el backend desde GET /api/mobiliario ---
 export interface Mobiliario {
   id: string;
   descripcion: string;
@@ -74,24 +82,52 @@ export interface Mobiliario {
 
   fecha_creacion: string;
   fecha_actualizacion: string;
+
+  rubro?: string;
+  clase?: string;
 }
 
-// --- 🔥 FALTABA AGREGAR ESTA INTERFAZ 🔥 ---
-// Este es el shape que se manda cuando creas un patrimonio
-export interface PatrimonioData {
-  id: string;
-  ubicacion_id: number;
+// --- Modelo para editar un mobiliario (PUT) ---
+export interface MobiliarioUpdate {
   descripcion: string;
-  resolucion_numero: string;
-  resolucion_tipo: string;
   fecha_resolucion: string;
   estado_conservacion: string;
+  comentarios: string;
+  resolucion_numero?: string;
+  resolucion_tipo?: string;
+  foto_url?: string;
   no_dado: boolean;
-  reparacion: boolean;
+  para_reparacion: boolean;
   para_baja: boolean;
   faltante: boolean;
   sobrante: boolean;
   etiqueta: boolean;
-  comentarios: string;
-  foto_url: string;
+  id_clase?: number;
+  id_rubro?: number;
+}
+
+// --- Datos reducidos para la vista de últimos registrados ---
+export interface MobiliarioUltimo {
+  id: string;
+  id_mobiliario: string;
+  descripcion: string;
+  clase_bien: string | null;
+  rubro: string | null;
+  anexo: string;
+  subdependencia: string;
+  direccion_anexo: string | null;
+  piso: string | null;
+  estado_conservacion: string | null;
+  fecha_resolucion: string | null;
+  resolucion: string | null;
+  foto_url: string | null;
+  no_dado: boolean;
+  para_reparacion: boolean;
+  para_baja: boolean;
+  faltante: boolean;
+  sobrante: boolean;
+  problema_etiqueta: boolean;
+  fecha_creacion: string;
+  fecha_actualizacion: string;
+  comentarios: string | null;
 }
