@@ -43,11 +43,16 @@ export interface Mobiliario {
   clase?: string;
   id_rubro?: number;
   id_clase?: number;
+
+  // 👇 campos agregados para evitar errores de compilación
+  ubicacion_id: number;
+  fecha_creacion: string;
+  fecha_actualizacion: string;
 }
 
 // Últimos mobiliarios devueltos por API para Listados
 export interface MobiliarioUltimo {
-  id_mobiliario: string; // Normalizado a `id` en el frontend
+  id_mobiliario: string;
   descripcion: string;
   foto_url?: string;
   rubro?: string;
