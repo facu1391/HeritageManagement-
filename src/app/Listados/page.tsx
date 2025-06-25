@@ -1,7 +1,4 @@
-
 "use client";
-
-/* eslint-disable react-hooks/exhaustive-deps */
 
 import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
@@ -15,7 +12,6 @@ import {
 import { toast, Toaster } from "react-hot-toast";
 import type { MobiliarioUltimo } from "@/types/types";
 
-// Utilidad para parsear la cadena "Resol Nº123 PSA" → { numero, tipo }
 function parseResol(res: string | null) {
   if (!res) return { numero: "", tipo: "" };
   const match = res.match(/Resol Nº(\S+)\s*(.*)/);
@@ -25,23 +21,16 @@ function parseResol(res: string | null) {
 }
 
 export default function Listings() {
-  /* ------------------------------------------------------------------ */
-  /*  Estado                                                            */
-  /* ------------------------------------------------------------------ */
-  const [lista, setLista] = useState<MobiliarioUltimo[]>([]);
-  const [selected, setSelected] = useState<MobiliarioUltimo | null>(null);
+  const [lista, setLista] = useState<(MobiliarioUltimo & { id: string })[]>([]);
+  const [selected, setSelected] = useState<(MobiliarioUltimo & { id: string }) | null>(null);
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
-  /* ------------------------------------------------------------------ */
-  /*  Cargar últimos 5 al montar                                         */
-  /* ------------------------------------------------------------------ */
   useEffect(() => {
     obtenerUltimosMobiliarios()
       .then((data) => {
-        // Normalizamos para tener una key "id" igual que el resto del código
         const normalizado = data.map((d) => ({
           ...d,
           id: d.id_mobiliario,
@@ -53,19 +42,15 @@ export default function Listings() {
       .finally(() => setLoading(false));
   }, []);
 
-  /* ------------------------------------------------------------------ */
-  /*  Filtro de búsqueda rápido                                           */
-  /* ------------------------------------------------------------------ */
   const filtrados = useMemo(() => {
     const term = busqueda.toLowerCase();
     return lista.filter(
-      (i) => i.descripcion.toLowerCase().includes(term) || i.id.toLowerCase().includes(term)
+      (i) =>
+        i.descripcion.toLowerCase().includes(term) ||
+        i.id.toLowerCase().includes(term)
     );
   }, [lista, busqueda]);
 
-  /* ------------------------------------------------------------------ */
-  /*  Eliminar registro                                                   */
-  /* ------------------------------------------------------------------ */
   const handleDelete = async () => {
     if (!selected) return;
     try {
@@ -82,14 +67,11 @@ export default function Listings() {
     }
   };
 
-  /* ------------------------------------------------------------------ */
-  /*  Render                                                             */
-  /* ------------------------------------------------------------------ */
   return (
     <Wrapper>
       <Toaster />
       <h1 className="text-3xl font-bold text-center mt-6 mb-8 text-blue-700">
-         Gestión de Mobiliario
+        Gestión de Mobiliario
       </h1>
 
       {loading ? (
@@ -112,7 +94,9 @@ export default function Listings() {
                   key={item.id}
                   onClick={() => setSelected(item)}
                   className={`p-2 cursor-pointer rounded transition ${
-                    /* highlight */ '${selected?.id === item.id ? "bg-blue-100 dark:bg-cyan-700" : "hover:bg-gray-100 dark:hover:bg-gray-700"}'
+                    selected?.id === item.id
+                      ? "bg-blue-100 dark:bg-cyan-700"
+                      : "hover:bg-gray-100 dark:hover:bg-gray-700"
                   }`}
                 >
                   <p className="font-medium text-gray-800 dark:text-white truncate">
@@ -122,7 +106,9 @@ export default function Listings() {
                 </li>
               ))}
               {!filtrados.length && (
-                <li className="text-center text-gray-500 text-sm">Sin resultados</li>
+                <li className="text-center text-gray-500 text-sm">
+                  Sin resultados
+                </li>
               )}
             </ul>
           </div>
@@ -133,7 +119,6 @@ export default function Listings() {
               <>
                 <h2 className="text-lg font-semibold mb-4 text-blue-700">Detalle</h2>
 
-                {/* Imagen */}
                 <div className="flex justify-center mb-4">
                   {selected.foto_url ? (
                     <Image
@@ -150,7 +135,6 @@ export default function Listings() {
                   )}
                 </div>
 
-                {/* Datos */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm text-gray-700 dark:text-gray-300">
                   <div><strong>ID:</strong> {selected.id}</div>
                   <div><strong>Clase:</strong> {selected.clase_bien || "—"}</div>
@@ -171,7 +155,6 @@ export default function Listings() {
                   <div><strong>Fecha res.:</strong> {selected.fecha_resolucion || "—"}</div>
                 </div>
 
-                {/* Botones */}
                 <div className="flex justify-end gap-4 mt-6">
                   <Link
                     href={`/patrimonio/editar/${selected.id}`}

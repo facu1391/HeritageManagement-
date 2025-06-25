@@ -58,21 +58,22 @@ export default function EditarMobiliarioPage() {
     try {
       setLoading(true);
       await editarMobiliario(form.id, {
+        ubicacion_id: Number(form.subdependencia),
+        clase_bien_id: form.id_clase,
+        rubro_id: form.id_rubro,
         descripcion: form.descripcion,
+        resolucion_numero: form.resolucionNumero,
+        resolucion_tipo: form.resolucionTipo,
         fecha_resolucion: form.fechaResolucion,
         estado_conservacion: form.estado,
         comentarios: form.comentarios,
-        resolucion_numero: form.resolucionNumero,
-        resolucion_tipo: form.resolucionTipo,
         foto_url: form.foto_url,
         no_dado: form.opciones.noDado,
         para_reparacion: form.opciones.reparacion,
         para_baja: form.opciones.paraBaja,
         faltante: form.opciones.faltante,
         sobrante: form.opciones.sobrante,
-        etiqueta: form.opciones.etiqueta,
-        id_clase: form.id_clase,
-        id_rubro: form.id_rubro,
+        problema_etiqueta: form.opciones.etiqueta,
       });
 
       toast.success("Mobiliario actualizado correctamente");

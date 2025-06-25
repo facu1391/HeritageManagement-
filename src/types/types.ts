@@ -1,5 +1,5 @@
+// ---------------------------------- Entidades ----------------------------------
 
-// --- Para los selects del formulario ---
 export interface Anexo {
   id: number;
   nombre: string;
@@ -8,30 +8,64 @@ export interface Anexo {
 export interface Subdependencia {
   id: number;
   nombre: string;
+  anexo_id: number;
 }
 
-// --- Datos que se envían al crear un nuevo mobiliario ---
-export interface PatrimonioData {
-  id: string;
-  ubicacion_id: number;
-  id_clase?: number;
-  id_rubro?: number;
+export interface ClaseBien {
+  id_clase: number;
   descripcion: string;
-  resolucion_numero: string;
-  resolucion_tipo: string;
+}
+
+export interface Rubro {
+  id_rubro: number;
+  nombre: string;
+}
+
+export interface Mobiliario {
+  id: string;
+  descripcion: string;
+  resolucion: string;
   fecha_resolucion: string;
   estado_conservacion: string;
-  comentarios: string;
-  foto_url: string;
+  estado_control?: string;
+  historial_movimientos?: string;
   no_dado: boolean;
-  reparacion: boolean;
+  para_reparacion: boolean;
   para_baja: boolean;
   faltante: boolean;
   sobrante: boolean;
-  etiqueta: boolean;
+  problema_etiqueta: boolean;
+  comentarios?: string;
+  foto_url?: string;
+  anexo: string;
+  subdependencia: string;
+  rubro?: string;
+  clase?: string;
+  id_rubro?: number;
+  id_clase?: number;
+
+  // 👇 campos agregados para evitar errores de compilación
+  ubicacion_id: number;
+  fecha_creacion: string;
+  fecha_actualizacion: string;
 }
 
-// --- Shape que usa PatrimonioForm para creación/edición ---
+// Últimos mobiliarios devueltos por API para Listados
+export interface MobiliarioUltimo {
+  id_mobiliario: string;
+  descripcion: string;
+  foto_url?: string;
+  rubro?: string;
+  clase_bien?: string;
+  anexo: string;
+  subdependencia: string;
+  resolucion: string;
+  estado_conservacion?: string;
+  fecha_resolucion?: string;
+}
+
+// ---------------------------------- Formularios ----------------------------------
+
 export interface FormularioPatrimonio {
   id: string;
   anexo: string;
@@ -41,12 +75,12 @@ export interface FormularioPatrimonio {
   id_rubro?: number;
   id_clase?: number;
   descripcion: string;
-  resolucionNumero: string;
-  resolucionTipo: string;
-  fechaResolucion: string;
-  estado: string;
-  comentarios: string;
-  foto_url: string;
+  resolucionNumero?: string;
+  resolucionTipo?: string;
+  fechaResolucion?: string;
+  estado?: string;
+  comentarios?: string;
+  foto_url?: string;
   opciones: {
     noDado: boolean;
     reparacion: boolean;
@@ -57,77 +91,29 @@ export interface FormularioPatrimonio {
   };
 }
 
-// --- Datos que devuelve el backend desde GET /api/mobiliario ---
-export interface Mobiliario {
+// ---------------------------------- Payloads API ----------------------------------
+
+export interface PatrimonioCreatePayload {
   id: string;
-  descripcion: string;
-  resolucion: string | null;
-  resolucion_tipo: string | null;
-  resolucion_numero: string | null;
-  fecha_resolucion: string | null;
-  estado_conservacion: string | null;
-  comentarios: string | null;
-  foto_url: string | null;
-
   ubicacion_id: number;
-  subdependencia: string;
-  anexo: string;
-
-  no_dado: boolean;
-  para_reparacion: boolean;
-  para_baja: boolean;
-  faltante: boolean;
-  sobrante: boolean;
-  problema_etiqueta: boolean;
-
-  fecha_creacion: string;
-  fecha_actualizacion: string;
-
-  rubro?: string;
-  clase?: string;
-}
-
-// --- Modelo para editar un mobiliario (PUT) ---
-export interface MobiliarioUpdate {
+  clase_bien_id?: number;
+  rubro_id?: number;
   descripcion: string;
-  fecha_resolucion: string;
-  estado_conservacion: string;
-  comentarios: string;
   resolucion_numero?: string;
   resolucion_tipo?: string;
-  foto_url?: string;
-  no_dado: boolean;
-  para_reparacion: boolean;
-  para_baja: boolean;
-  faltante: boolean;
-  sobrante: boolean;
-  etiqueta: boolean;
-  id_clase?: number;
-  id_rubro?: number;
-}
-
-// --- Datos reducidos para la vista de últimos registrados ---
-export interface MobiliarioUltimo {
-  id: string;
-  id_mobiliario: string;
-  descripcion: string;
-  clase_bien: string | null;
-  rubro: string | null;
-  anexo: string;
-  subdependencia: string;
-  direccion_anexo: string | null;
-  piso: string | null;
-  estado_conservacion: string | null;
-  fecha_resolucion: string | null;
-  resolucion: string | null;
-  foto_url: string | null;
+  fecha_resolucion?: string;
+  estado_conservacion?: string;
+  estado_control?: string;
+  historial_movimientos?: string;
   no_dado: boolean;
   para_reparacion: boolean;
   para_baja: boolean;
   faltante: boolean;
   sobrante: boolean;
   problema_etiqueta: boolean;
-  fecha_creacion: string;
-  fecha_actualizacion: string;
-  comentarios: string | null;
+  comentarios?: string;
+  foto_url?: string;
 }
+
+export type PatrimonioUpdatePayload = Partial<PatrimonioCreatePayload>;
+
