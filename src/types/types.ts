@@ -1,4 +1,3 @@
-
 // ---------------------------------- Entidades ----------------------------------
 
 export interface Anexo {
@@ -46,10 +45,18 @@ export interface Mobiliario {
   id_clase?: number;
 }
 
+// Últimos mobiliarios devueltos por API para Listados
 export interface MobiliarioUltimo {
-  id: string;
+  id_mobiliario: string; // Normalizado a `id` en el frontend
   descripcion: string;
-  fecha_creacion: string;
+  foto_url?: string;
+  rubro?: string;
+  clase_bien?: string;
+  anexo: string;
+  subdependencia: string;
+  resolucion: string;
+  estado_conservacion?: string;
+  fecha_resolucion?: string;
 }
 
 // ---------------------------------- Formularios ----------------------------------
@@ -104,3 +111,4 @@ export interface PatrimonioCreatePayload {
 }
 
 export type PatrimonioUpdatePayload = Partial<PatrimonioCreatePayload>;
+
