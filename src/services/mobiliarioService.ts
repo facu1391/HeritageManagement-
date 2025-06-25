@@ -4,11 +4,36 @@
 import {
   Mobiliario,
   MobiliarioUltimo,
-  MobiliarioUpdate,
-  PatrimonioData,
 } from "@/types/types";
 
+// Base de la API
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE!;
+
+/* --------------------------------- Tipos --------------------------------- */
+
+export interface PatrimonioCreatePayload {
+  id: string;
+  ubicacion_id: number;
+  clase_bien_id?: number;
+  rubro_id?: number;
+  descripcion: string;
+  resolucion_numero?: string;
+  resolucion_tipo?: string;
+  fecha_resolucion?: string;
+  estado_conservacion?: string;
+  no_dado: boolean;
+  para_reparacion: boolean;
+  para_baja: boolean;
+  faltante: boolean;
+  sobrante: boolean;
+  problema_etiqueta: boolean;
+  comentarios?: string;
+  foto_url?: string;
+}
+
+export type PatrimonioUpdatePayload = Partial<PatrimonioCreatePayload>;
+
+/* ----------------------------- Funciones GET ----------------------------- */
 
 export const obtenerMobiliario = async (): Promise<Mobiliario[]> => {
   const res = await fetch(`${API_BASE}/mobiliario`);
@@ -30,9 +55,24 @@ export const obtenerMobiliarioPorId = async (
   return res.json();
 };
 
+/* ------------------------- Crear / Editar / Eliminar ------------------------- */
+
+export const createMobiliario = async (
+  payload: PatrimonioCreatePayload
+): Promise<Mobiliario> => {
+  const res = await fetch(`${API_BASE}/mobiliario`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+
+  if (!res.ok) throw new Error((await res.text()) || "Error al crear mobiliario");
+  return res.json();
+};
+
 export const editarMobiliario = async (
   id: string,
-  datos: MobiliarioUpdate,
+  datos: PatrimonioUpdatePayload
 ): Promise<Mobiliario> => {
   const res = await fetch(`${API_BASE}/mobiliario/${id}`, {
     method: "PUT",
@@ -40,11 +80,7 @@ export const editarMobiliario = async (
     body: JSON.stringify(datos),
   });
 
-  if (!res.ok) {
-    const msg = await res.text();
-    throw new Error(msg || "Error al editar mobiliario");
-  }
-
+  if (!res.ok) throw new Error((await res.text()) || "Error al editar mobiliario");
   return res.json();
 };
 
@@ -65,17 +101,6 @@ export const darDeBajaMobiliario = async (id: string): Promise<Mobiliario> => {
   });
 
   if (!res.ok) throw new Error((await res.text()) || "Error al dar de baja");
-  return res.json();
-};
-
-export const createMobiliario = async (payload: PatrimonioData): Promise<Mobiliario> => {
-  const res = await fetch(`${API_BASE}/mobiliario`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-
-  if (!res.ok) throw new Error((await res.text()) || "Error al crear mobiliario");
   return res.json();
 };
 
