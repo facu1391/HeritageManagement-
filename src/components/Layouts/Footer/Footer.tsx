@@ -1,6 +1,7 @@
 
 "use client";
 
+import { Separator } from "@/components/ui/separator";
 import { FaLinkedin } from "react-icons/fa";
 
 export default function Footer() {
@@ -11,9 +12,11 @@ export default function Footer() {
           © {new Date().getFullYear()} Dirección de Patrimonio — Todos los derechos reservados.
         </p>
 
-        <p className="text-sm text-gray-300 max-w-xl">
+        <p className="text-sm text-gray-400 max-w-xl">
           Desarrollado por el equipo técnico de la Dirección de Patrimonio, Poder Legislativo de La Rioja.
         </p>
+
+        <Separator className="my-2 w-1/2 bg-gray-600" />
 
         <p className="text-xs text-gray-400">
           Contacto:{" "}
