@@ -161,6 +161,11 @@ export default function Listings() {
                   </div>
 
                   <div className="flex flex-col sm:flex-row justify-end gap-4 mt-4 w-full">
+                    <Link href={`/Etiqueta/${selected.id}`} passHref className="w-full sm:w-auto">
+                      <Button className="bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto">
+                        Etiqueta
+                      </Button>
+                    </Link>
                     <Link href={`/patrimonio/editar/${selected.id}`} passHref className="w-full sm:w-auto">
                       <Button className="bg-yellow-500 hover:bg-yellow-600 w-full sm:w-auto">
                         <FaEdit className="mr-2" /> Editar
