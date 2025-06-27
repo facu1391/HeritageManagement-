@@ -1,4 +1,4 @@
-
+// src/app/GestionAnexos/page.tsx
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -61,11 +61,7 @@ export default function GestionAnexos() {
     if (anexoSeleccionado) {
       setLoadingSubs(true);
       obtenerSubdependencias(parseInt(anexoSeleccionado))
-        .then((subs) =>
-          setSubdependencias(
-            subs.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id)
-          )
-        )
+        .then((subs) => setSubdependencias(subs.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id)))
         .catch(() => toast.error("Error al cargar subdependencias"))
         .finally(() => setLoadingSubs(false));
     } else {
@@ -75,11 +71,7 @@ export default function GestionAnexos() {
 
   const handleGuardarAnexo = async () => {
     try {
-      await agregarAnexo({
-        id: parseInt(idAnexo),
-        nombre: nombreAnexo,
-        direccion: direccionAnexo,
-      });
+      await agregarAnexo({ id: parseInt(idAnexo), nombre: nombreAnexo, direccion: direccionAnexo });
       toast.success("Anexo guardado correctamente");
       setIdAnexo("");
       setNombreAnexo("");
@@ -114,9 +106,7 @@ export default function GestionAnexos() {
         await eliminarSubdependencia(id);
         toast.success("Subdependencia eliminada");
         const actualizadas = await obtenerSubdependencias(parseInt(anexoSeleccionado));
-        setSubdependencias(
-          actualizadas.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id)
-        );
+        setSubdependencias(actualizadas.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id));
       } catch {
         toast.error("Error al eliminar subdependencia");
       }
@@ -136,9 +126,7 @@ export default function GestionAnexos() {
       setIdSub("");
       setNombreSub("");
       const actualizadas = await obtenerSubdependencias(parseInt(anexoSeleccionado));
-      setSubdependencias(
-        actualizadas.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id)
-      );
+      setSubdependencias(actualizadas.sort((a: Subdependencia, b: Subdependencia) => a.id - b.id));
     } catch {
       toast.error("Error al guardar subdependencia");
     }
@@ -171,9 +159,9 @@ export default function GestionAnexos() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 w-full max-w-4xl lg:max-w-5xl mx-auto">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold mb-4">Agregar Anexo</h2>
-          <input type="text" placeholder="ID" value={idAnexo} onChange={(e) => setIdAnexo(e.target.value)} className="w-full mb-3 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" />
-          <input type="text" placeholder="Nombre" value={nombreAnexo} onChange={(e) => setNombreAnexo(e.target.value)} className="w-full mb-3 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" />
-          <input type="text" placeholder="Dirección" value={direccionAnexo} onChange={(e) => setDireccionAnexo(e.target.value)} className="w-full mb-4 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" />
+          <input type="text" placeholder="ID" value={idAnexo} onChange={(e) => setIdAnexo(e.target.value)} lang="es" spellCheck={true} className="w-full mb-3 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" />
+          <input type="text" placeholder="Nombre" value={nombreAnexo} onChange={(e) => setNombreAnexo(e.target.value)} lang="es" spellCheck={true} className="w-full mb-3 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" />
+          <input type="text" placeholder="Dirección" value={direccionAnexo} onChange={(e) => setDireccionAnexo(e.target.value)} lang="es" spellCheck={true} className="w-full mb-4 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" />
           <button className="w-full bg-blue-600 hover:bg-blue-700 text-white p-2 rounded" onClick={handleGuardarAnexo}>Guardar Anexo</button>
         </div>
 
@@ -185,9 +173,7 @@ export default function GestionAnexos() {
             <select className="w-full mb-3 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" value={anexoSeleccionado} onChange={(e) => setAnexoSeleccionado(e.target.value)}>
               <option value="">Seleccione un Anexo</option>
               {anexos.map((anexo) => (
-                <option key={anexo.id} value={anexo.id}>
-                  {anexo.id} - {anexo.nombre}
-                </option>
+                <option key={anexo.id} value={anexo.id}>{anexo.id} - {anexo.nombre}</option>
               ))}
             </select>
           )}
@@ -209,8 +195,8 @@ export default function GestionAnexos() {
 
         <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md">
           <h2 className="text-lg font-semibold mb-4">Agregar Subdependencia</h2>
-          <input type="text" placeholder="ID" value={idSub} onChange={(e) => setIdSub(e.target.value)} className="w-full mb-3 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" />
-          <input type="text" placeholder="Nombre" value={nombreSub} onChange={(e) => setNombreSub(e.target.value)} className="w-full mb-4 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" />
+          <input type="text" placeholder="ID" value={idSub} onChange={(e) => setIdSub(e.target.value)} lang="es" spellCheck={true} className="w-full mb-3 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" />
+          <input type="text" placeholder="Nombre" value={nombreSub} onChange={(e) => setNombreSub(e.target.value)} lang="es" spellCheck={true} className="w-full mb-4 p-2 rounded border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700" />
           <button className="w-full bg-green-600 hover:bg-green-700 text-white p-2 rounded" onClick={handleGuardarSubdependencia}>Guardar Subdependencia</button>
         </div>
       </div>
