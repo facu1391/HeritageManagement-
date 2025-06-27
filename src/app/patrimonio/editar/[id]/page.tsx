@@ -1,4 +1,6 @@
 
+// src/app/patrimonio/editar/[id]/page.tsx
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -6,7 +8,8 @@ import { useParams } from "next/navigation";
 import { Wrapper } from "@/components";
 import { toast, Toaster } from "react-hot-toast";
 import { editarMobiliario, obtenerMobiliarioPorId } from "@/services/mobiliarioService";
-import { FormularioPatrimonio } from "@/types/types";
+import { obtenerAnexos, obtenerSubdependencias } from "@/services/anexosService";
+import { FormularioPatrimonio, Anexo, Subdependencia } from "@/types/types";
 import PatrimonioForm from "@/components/Forms/PatrimonioForm";
 
 export default function EditarMobiliarioPage() {
@@ -18,21 +21,32 @@ export default function EditarMobiliarioPage() {
   useEffect(() => {
     if (!id) return;
 
-    setLoading(true);
-    obtenerMobiliarioPorId(id)
-      .then((data) => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const data = await obtenerMobiliarioPorId(id);
         const resolMatch = data.resolucion?.match(/Resol Nº(\S+)\s*(.*)/) || [];
         const resolucionNumero = resolMatch[1] || "";
         const resolucionTipo = resolMatch[2] || "";
 
+        const anexos: Anexo[] = await obtenerAnexos();
+        const anexoEncontrado = anexos.find((a) => a.nombre === data.anexo);
+
+        let subdependenciaEncontradaId = "";
+        if (anexoEncontrado) {
+          const subdependencias: Subdependencia[] = await obtenerSubdependencias(anexoEncontrado.id);
+          const subdepEncontrada = subdependencias.find((s) => s.nombre === data.subdependencia);
+          subdependenciaEncontradaId = subdepEncontrada ? subdepEncontrada.id.toString() : "";
+        }
+
         setInitialData({
           id: data.id,
           rubro: data.rubro || "",
-          clase: data.clase || "",
+          clase: data.clase_bien || "",
           id_rubro: data.id_rubro || undefined,
           id_clase: data.id_clase || undefined,
-          anexo: data.anexo,
-          subdependencia: data.subdependencia,
+          anexo: anexoEncontrado ? anexoEncontrado.id.toString() : "",
+          subdependencia: subdependenciaEncontradaId,
           descripcion: data.descripcion,
           resolucionNumero,
           resolucionTipo,
@@ -49,9 +63,14 @@ export default function EditarMobiliarioPage() {
             etiqueta: data.problema_etiqueta,
           },
         });
-      })
-      .catch(() => toast.error("Error al cargar el mobiliario"))
-      .finally(() => setLoading(false));
+      } catch {
+        toast.error("Error al cargar el mobiliario");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, [id]);
 
   const handleSubmit = async (form: FormularioPatrimonio) => {
