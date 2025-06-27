@@ -43,6 +43,7 @@ export interface Mobiliario {
   clase?: string;
   id_rubro?: number;
   id_clase?: number;
+  clase_bien?: string;
 
   // 👇 campos agregados para evitar errores de compilación
   ubicacion_id: number;
